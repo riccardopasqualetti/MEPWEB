@@ -1,0 +1,137 @@
+﻿@using Mep01Web.DTO.Request;
+@using System.Globalization;
+@using Mep01Web.Type;
+@model CrrgGetRequest;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Timesheet</h1>
+
+<div class="w-75 btn-group" role="group">
+    <a onclick="NascondiFiltro()"><i class="bi bi-filter"></i></a>
+</div>
+<div id="divGetFilterForm" @(Model.FilterHidden == "Y" ? "style=&#39;display:none;&#39;" : "style=&#39;display:block;&#39;")>
+
+        <form method="post" name="CrrgGetFilterForm">
+        <div class="border p-3 mt-4">
+            <div class="row pb-2">
+                <h2 class="text-primary">
+                    Filtri
+                </h2>
+                <hr />
+            </div>
+            
+            <div class="mb-3">
+                <table>
+                    <tr>
+                        <td>
+                            <label asp-for="FilterCrrgCRis">Risorsa</label>
+                            <input asp-for="FilterCrrgCRis" class="form-control" style="width:50px" />
+                            <span asp-validation-for="FilterCrrgCRis" class="text-danger"></span>
+                        </td>
+                        <td>
+                            <label asp-for="FilterCrrgDttStart">Data ini.</label>
+                            <input asp-for="FilterCrrgDttStart" class="form-control" style="width:150px" type="date" />
+                            <span asp-validation-for="FilterCrrgDttStart" class="text-danger"></span>
+                        </td>
+                        <td>
+                            <label asp-for="FilterCrrgDttEnd">Data fine</label>
+                            <input asp-for="FilterCrrgDttEnd" class="form-control" style="width:150px" type="date" />
+                            <span asp-validation-for="FilterCrrgDttEnd" class="text-danger"></span>
+                        </td>
+                        <td>
+                            <label asp-for="FilterRifCliente">ISL</label>
+                            <input asp-for="FilterRifCliente" class="form-control" style="width:150px" />
+                        </td>
+                    </tr>
+                </table>
+
+            </div> 
+            <br />
+            <button type="submit" class="btn btn-primary" style="width:150px">Reload</button>
+                       
+        </div>
+        </form>
+    </div>
+
+<div class="container p-3"> 
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Consuntivi</h2>
+        </div>
+        <div class="col-6 text-end" >
+            <a asp-controller="Crrg" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> &nbsp; Nuovo consuntivo
+            </a>
+        </div>
+    </div>
+
+    <br /> <br />
+
+
+    <table class="table table-borderer table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th width="5%" align="left">
+                Ris.
+            </th>
+            <th width="10%" align="left">
+                Data
+            </th>
+            <th width="10%" align="left">
+                Effort
+            </th>
+            <th width="12%" align="left">
+                Codice ISL                
+            </th>
+            <th width="10" align="left">
+                Commessa
+            </th>
+            <th width="53%" align="left">
+                Description
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var obj in Model.CrrgList)                
+            {
+            
+            var duration = new Duration(@obj.CrrgTmRunIncr);
+            var com = string.Concat(@obj.CrrgTstDoc, "/", @obj.CrrgPrfDoc, "/", @obj.CrrgADoc, "/", @obj.CrrgNDoc);            
+            <tr>
+                 <td width="5%" align="left">
+                     @obj.CrrgCRis
+                 </td>
+                 <td width="10%" align="left">
+                     @obj.CrrgDtt?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                 </td>
+                 <td width="10%" align="left">
+                     @duration.GetDuration()
+                 </td>
+                 <td width="10%" align="left">
+                    @obj.CrrgRifCliente
+                 </td>
+                 <td width="10%" align="left">
+                    @com
+                 </td>
+                 <td width="55%" align="left">
+                    @obj.CrrgNote
+                 </td>                    
+                 <td>
+                     <div class="w-75 btn-group" role="group">
+                            @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>*@
+                            <a asp-controller="Crrg" asp-action="Delete" asp-route-id="@obj.CrrgCSrl" ><i class="bi bi-trash-fill"></i></a>
+                     </div>
+                 </td>                    
+             </tr>        
+            }
+    </tbody>
+
+    </table>
+</div>
+
+
+<script src="~/js/Filter.js?v=1.1"></script>

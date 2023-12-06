@@ -1,0 +1,77 @@
+﻿@using Mep01Web.DTO.Request;
+@model CrrgCreateRequest
+@inject IHttpContextAccessor _contextAccessor
+
+<form method="post" name="CrrgDeleteForm">
+	<div class="border p-3 mt-4">
+		<div class="row pb-2">
+			<h2 class="text-primary">
+				Cancellazione consuntivo
+			</h2>
+			<hr />
+		</div>
+		@*<div asp-validation-summary="All"></div>*@ @*Riporta qui gli stessi errori che mostra sotto i componenti che hanno asp-validation-for*@
+		<p>Utente : @_contextAccessor.HttpContext.Session.GetString("User")</p>
+
+		<input asp-for="CrrgCSrl" hidden />
+
+		<div class="mb-3">
+			<table>
+                <tr>
+					<td>
+						<label asp-for="CrrgCRis">Risorsa</label>
+						<input asp-for="CrrgCRis" class="form-control" style="width:50px" disabled="disabled" />
+					</td>
+                    <td>
+						<label asp-for="CrrgDtt">Data</label>
+						<input asp-for="CrrgDtt" class="form-control" style="width:150px" disabled="disabled" type="date" />						
+					</td>
+					<td>
+						<label asp-for="CrrgTmRunIncrHMS">Tempo</label>
+						<input asp-for="CrrgTmRunIncrHMS" class="form-control" style="width:150px" disabled="disabled" type="time" />
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		@* ISL *@
+		<div class="mb-3">
+			<label asp-for="CrrgRifCliente">Codice ISL</label>
+			<input asp-for="CrrgRifCliente" class="form-control" style="width:150px" disabled="disabled" />
+		</div>
+
+		@* Cliente *@
+		<div class="mb-3">
+			<label asp-for="ComCCli">Cliente</label>
+			<input asp-for="ComCCli" class="form-control" style="width:350px" disabled="disabled">
+		</div>
+		
+		@* Commessa *@
+		<div class="mb-3">
+			<label asp-for="CommCodeDesc">Commessa</label>
+			<input asp-for="CommCodeDesc" class="form-control" style="width:100%" disabled="disabled"></input>
+		</div>
+		
+		@* Note *@
+		<div class="mb-3">
+			<label asp-for="CrrgNote">Note</label>
+			<textarea asp-for="CrrgNote" class="form-control" style="width:100%" disabled="disabled"></textarea>
+		</div>
+		<br />
+
+		<button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
+		<a asp-controller="Crrg" asp-action="Index" class="btn btn-secondary" style="width:150px">
+			Back to List		
+		</a>
+	</div>
+</form>
+
+@section Scripts{
+	@{
+		<partial name="_ValidationScriptsPartial" />
+	}
+}
+
+
+<script src="~/js/Crrg.js?v=1.117"></script>
+

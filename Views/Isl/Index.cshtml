@@ -1,0 +1,203 @@
+﻿@using Mep01Web.DTO.Request;
+@model IslGetRequest;
+@inject IHttpContextAccessor _contextAccessor;
+
+
+@{
+    ViewData["Title"] = "Isl";
+}
+
+<h1>Gestione ISL in corso</h1>
+
+<div class="w-75 btn-group" role="group">
+    <a onclick="NascondiFiltro()"><i class="bi bi-filter"></i></a>
+</div>
+
+<div id="divGetFilterForm" @(Model.FilterHidden == "Y" ? "style=&#39;display:none;&#39;" : "style=&#39;display:block;&#39;")>
+    <form method="post" name="IslGetFilterForm">
+        <div class="border p-3 mt-4">
+            <div class="row pb-2">
+                <h2 class="text-primary">
+                    Filtri
+                </h2>
+                <hr />
+            </div>
+
+            <div class="mb-3">
+                <table>
+                    <tr>
+                        <td>
+                            <label asp-for="FilterIslCRis">Risorsa</label>
+                            <input asp-for="FilterIslCRis" class="form-control" style="width:50px" />                            
+                        </td>
+@*                        <td>
+                            <label asp-for="FilterIslDttStart">Data ini.</label>
+                            <input asp-for="FilterIslDttStart" class="form-control" style="width:150px" type="date" />
+                            <span asp-validation-for="FilterIslDttStart" class="text-danger"></span>
+                        </td>
+                        <td>
+                            <label asp-for="FilterIslDttEnd">Data fine</label>
+                            <input asp-for="FilterIslDttEnd" class="form-control" style="width:150px" type="date" />
+                            <span asp-validation-for="FilterIslDttEnd" class="text-danger"></span>
+                        </td>*@
+                    </tr>
+                </table>
+
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary" style="width:150px">Reload</button>
+
+        </div>
+    </form>
+</div>
+
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Attività in Sviluppo</h2>
+        </div>
+    </div>
+
+    <table class="table table-borderer table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th width="5%" align="left" style="color: rgba(51, 204, 255, 1)">
+                    Codice ISL
+                </th>
+                <th width="10%" align="left" style="color: rgba(51, 204, 255, 1)">
+                    Flag
+                </th>
+                <th width="10%" align="left" style="color: rgba(51, 204, 255, 1)">
+                    Stato
+                </th>
+                <th width="10%" align="left" style="color: rgba(51, 204, 255, 1)">
+                    Cambio stato
+                </th>
+                <th width="12%" align="left" style="color: rgba(51, 204, 255, 1)">
+                    CdL
+                </th>
+                <th width="10" align="left" style="color: rgba(51, 204, 255, 1)">
+                    Date Current Task
+                </th>
+                <th width="10" align="left" style="color: rgba(51, 204, 255, 1)">
+                    Commessa
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model.IslList.Where(x => x.Flag=="2-SVIL"))
+            {
+                //var duration = new Duration(@obj.CrrgTmRunIncr);
+                var com = string.Concat(@obj.TbcpTstComm, "/", @obj.TbcpPrfComm, "/", @obj.TbcpAComm, "/", @obj.TbcpNComm);
+                <tr >
+                    <td width="15%" align="left">
+                        @obj.RifCli
+                    </td>
+                    <td width="10%" align="left">
+                        @obj.Flag
+                    </td>
+                    <td width="10%" align="left">
+                        @obj.Stato
+                    </td>
+                    <td width="10%" align="left">
+                        @obj.CambioStato
+                    </td>
+                    <td width="5%" align="left">
+                        @obj.CurrCdl
+                    </td>
+                    <td width="10%" align="left">
+                        @obj.CurrDt
+                    </td>
+                    <td width="55%" align="left">
+                        @com
+                    </td>
+                    <td>
+                        <div class="w-75 btn-group" role="group">
+                            @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>*@
+                            <a asp-controller="Isl" asp-action="Index" asp-route-id="@Model.FilterIslCRis" onclick="alert('Consuntivo')"><i class="bi bi-clock-fill"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Attività in Delivery</h2>
+        </div>
+    </div>
+
+    <table class="table table-borderer table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th width="5%" align="left" style="color: rgba(102, 255, 51, 1)">
+                    Codice ISL
+                </th>
+                <th width="10%" align="left" style="color: rgba(102, 255, 51, 1)">
+                    Flag
+                </th>
+                <th width="10%" align="left" style="color: rgba(102, 255, 51, 1)">
+                    Stato
+                </th>
+                <th width="10%" align="left" style="color: rgba(102, 255, 51, 1)">
+                    Cambio stato
+                </th>
+                <th width="12%" align="left" style="color: rgba(102, 255, 51, 1)">
+                    CdL
+                </th>
+                <th width="10" align="left" style="color: rgba(102, 255, 51, 1)">
+                    Date Current Task
+                </th>
+                <th width="10" align="left" style="color: rgba(102, 255, 51, 1)">
+                    Commessa
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model.IslList.Where(x => x.Flag == "3-DELI"))
+            {
+                //var duration = new Duration(@obj.CrrgTmRunIncr);
+                var com = string.Concat(@obj.TbcpTstComm, "/", @obj.TbcpPrfComm, "/", @obj.TbcpAComm, "/", @obj.TbcpNComm);
+                <tr>
+                    <td width="15%" align="left">
+                        @obj.RifCli
+                    </td>
+                    <td width="10%" align="left">
+                        @obj.Flag
+                    </td>
+                    <td width="10%" align="left">
+                        @obj.Stato
+                    </td>
+                    <td width="10%" align="left">
+                        @obj.CambioStato
+                    </td>
+                    <td width="10%" align="left">
+                        @obj.CurrCdl
+                    </td>
+                    <td width="10%" align="left">
+                        @obj.CurrDt
+                    </td>
+                    <td width="55%" align="left">
+                        @com
+                    </td>
+                    <td>
+                        <div class="w-75 btn-group" role="group">
+                            @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>*@
+                            <a asp-controller="Isl" asp-action="Index" asp-route-id="@Model.FilterIslCRis" onclick="alert('Consuntivo')"><i class="bi bi-clock-fill"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<script src="~/js/Filter.js?v=1.1"></script>
