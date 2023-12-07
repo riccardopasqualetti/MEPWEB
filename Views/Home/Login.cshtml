@@ -1,9 +1,42 @@
-﻿@{
+﻿@using MepWeb.Type;
+@model MepWeb.DTO.Response.LoginResponse;
+@{
     ViewData["Title"] = "Login";
 }
 <h1>@ViewData["Login"]</h1>
 
-<p>Use this page to login.</p>
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <div id="login-container">
+                <h3>SC Web Platform</h3>
+                @if (Model != null && Model.StatusType == LoginStatus.Unauthorized)
+                {
+                    <p class="text-danger">Credenziali errate, riprova!</p>
+                }
+                else if (Model != null && Model.StatusType == LoginStatus.UnknownError)
+                {
+                    <p class="text-danger">Errore in fase di login:</p>
+                    <p class="text-danger">@Model.ResponseError</p>
+                }
+                <form id="login-form" method="post" name="Login">
+                    <div>
+                        <label for="email" class="form-label">Email:</label>
+                        <input required type="email" name="email" class="form-control" id="email" placeholder="name@company.com">
+                    </div>
+                    <div>
+                        <label for="password" class="form-label">Password:</label>
+                        <input required type="password" name="password" class="form-control" id="password" placeholder="*********">
+                    </div>
+                    <button class="btn btn-success mt-3" type="submit" id="btn-login">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* <p>Use this page to login.</p>
 
 <form method="post" name="Login">
     <div class="border p-3 mt-4">
@@ -17,3 +50,4 @@
         <button type="submit" class="btn btn-primary" style="width:150px">Login</button>
     </div>
 </form>
+ *@

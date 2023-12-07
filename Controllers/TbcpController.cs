@@ -6,9 +6,11 @@ using Mep01Web.Service.Impl;
 using Mep01Web.DTO.Request;
 using Mep01Web.DTO.Response;
 using Mep01Web.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Mep01Web.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
 	[ApiController]
 	public class TbcpController : ControllerBase

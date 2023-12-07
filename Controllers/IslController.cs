@@ -3,26 +3,30 @@ using Mep01Web.Infrastructure;
 using Mep01Web.Models;
 using Mep01Web.Models.Views;
 using Mep01Web.Service.Interface;
+using MepWeb.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mep01Web.Controllers
 {
+    [Authorize]
     public class IslController : Controller
     {
 
         private readonly SataconsultingContext _db;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly UserScope _userScope;
+		public IslController(SataconsultingContext sataconsulting, IHttpContextAccessor contextAccessor, UserScope userScope)
+		{
+			_db = sataconsulting;
+			_contextAccessor = contextAccessor;
+			_userScope = userScope;
+		}
 
-        public IslController(SataconsultingContext sataconsulting, IHttpContextAccessor contextAccessor)
-        {
-            _db = sataconsulting;
-            _contextAccessor = contextAccessor;
-        }
-
-        public IActionResult Index()
+		public IActionResult Index()
         {
             IslGetRequest obj = new IslGetRequest();
-            obj.FilterIslCRis = _contextAccessor.HttpContext.Session.GetString("User");
+            obj.FilterIslCRis = _userScope.SV_USR_SIGLA;
             obj.FilterHidden = "Y";
             IEnumerable<VsPpSprintConsComIsl> objIslList = _db.VsPpSprintConsComIsls
                 .Where(c => c.CurrCdl.Contains("_" + obj.FilterIslCRis) && c.Flag != "9-CLOSE")

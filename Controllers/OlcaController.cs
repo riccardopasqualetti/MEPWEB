@@ -2,11 +2,13 @@
 using Mep01Web.Infrastructure;
 using Mep01Web.Service.Impl;
 using Mep01Web.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mep01Web.Controllers
 {
-	[Route("api/[controller]")]
+    [Authorize]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class OlcaController : ControllerBase
 	{

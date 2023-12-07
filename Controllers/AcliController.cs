@@ -2,9 +2,11 @@
 using Mep01Web.Infrastructure;
 using Azure;
 using Mep01Web.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Mep01Web.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
 	[ApiController]
 	public class AcliController : ControllerBase

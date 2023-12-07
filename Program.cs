@@ -4,6 +4,10 @@ using Mep01Web.Service.Impl;
 using Mep01Web.Validators;
 using Mep01Web.Validators.Impl;
 using Mep01Web.Service.Interface;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using MepWeb.Service;
+using MepWeb.Service.Interface;
+using MepWeb.Service.Impl;
 
 namespace WebApplication2
 {
@@ -13,11 +17,28 @@ namespace WebApplication2
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+            {
+                options.Cookie.Name = "auth";
+                //options.Cookie.Path = "/Login";
+                options.LoginPath = "/home/login";
+                //options.AccessDeniedPath = "/Login";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
+                options.Cookie.SameSite = SameSiteMode.Strict;
+            });
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-			// [RP] for session variable.
-			builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            // [RP] for session variable.
+            builder.Services.AddScoped<UserScope>();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(option =>
             {
@@ -36,8 +57,10 @@ namespace WebApplication2
 			builder.Services.AddTransient<IOlcaService, OlcaService>();
 			builder.Services.AddTransient<IMvxpa01Service, Mvxpa01Service>();
 			builder.Services.AddTransient<ITbpnService, TbpnService>();
+            builder.Services.AddTransient<ILoginService, LoginService>();
 
-			var app = builder.Build();
+
+            var app = builder.Build();
 
             
             // Configure the HTTP request pipeline.
@@ -54,8 +77,10 @@ namespace WebApplication2
 
 			app.UseRouting();
             //app.UseAuthentication(); //[RP] 29:47 https://www.youtube.com/watch?v=hZ1DASYd9rk
+            app.UseAuthentication();
             app.UseAuthorization();
-            
+
+            app.MapRazorPages();
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

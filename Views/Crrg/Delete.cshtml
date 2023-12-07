@@ -1,5 +1,7 @@
 ﻿@using Mep01Web.DTO.Request;
+@using MepWeb.Service;
 @model CrrgCreateRequest
+@inject UserScope _userScope;
 @inject IHttpContextAccessor _contextAccessor
 
 <form method="post" name="CrrgDeleteForm">
@@ -11,7 +13,7 @@
 			<hr />
 		</div>
 		@*<div asp-validation-summary="All"></div>*@ @*Riporta qui gli stessi errori che mostra sotto i componenti che hanno asp-validation-for*@
-		<p>Utente : @_contextAccessor.HttpContext.Session.GetString("User")</p>
+		<p>Utente : @_userScope.SV_USR_SIGLA</p>
 
 		<input asp-for="CrrgCSrl" hidden />
 

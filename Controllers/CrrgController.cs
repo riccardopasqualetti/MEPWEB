@@ -4,20 +4,25 @@ using Mep01Web.Models;
 using Mep01Web.DTO.Request;
 using Mep01Web.Type;
 using Mep01Web.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
+using MepWeb.Service;
 
 namespace Mep01Web.Controllers
 {
+    [Authorize]
     public class CrrgController : Controller
     {
         private readonly SataconsultingContext _db;
         private readonly ICrrgService _crrgService;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly UserScope _userScope;
 
-        public CrrgController(SataconsultingContext sataconsulting, ICrrgService crrgService, IHttpContextAccessor contextAccessor)
+        public CrrgController(SataconsultingContext sataconsulting, ICrrgService crrgService, IHttpContextAccessor contextAccessor, UserScope userScope)
         {
             _db = sataconsulting;
             _crrgService = crrgService;
             _contextAccessor = contextAccessor;
+            _userScope = userScope;
         }
         public IActionResult Index()
         {            
@@ -25,7 +30,7 @@ namespace Mep01Web.Controllers
             DateTime dd1 = dd2.Subtract(TimeSpan.FromDays(90));
             
             CrrgGetRequest obj = new CrrgGetRequest();
-            obj.FilterCrrgCRis = _contextAccessor.HttpContext.Session.GetString("User");
+            obj.FilterCrrgCRis = _userScope.SV_USR_SIGLA;
             obj.FilterCrrgDttStart = dd1;
             obj.FilterCrrgDttEnd = dd2;
             obj.FilterHidden = "Y";
@@ -58,7 +63,7 @@ namespace Mep01Web.Controllers
 			await _crrgService.AddCrrgPrepareDataAsync(obj);
             obj.CrrgDtt = DateTime.Today;
             
-            var userId = _contextAccessor.HttpContext.Session.GetString("User");
+            var userId = _userScope.SV_USR_SIGLA;
             if (userId != null)
             {
                 obj.CrrgCRis = userId;
