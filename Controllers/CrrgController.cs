@@ -166,6 +166,30 @@ namespace Mep01Web.Controllers
 			
         }
 
+        [HttpGet]
+        public async Task<IActionResult> IndexConsuntivi()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> OreQualifica()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddettoQualifica()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RegistroRicariche()
+        {
+            return View();
+        }
+
     }
 }
 
