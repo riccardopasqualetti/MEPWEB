@@ -7,49 +7,52 @@
     ViewData["Title"] = "Isl";
 }
 
-<h1>Gestione ISL in corso</h1>
+<div class="container">
+    <h1>Gestione ISL in corso</h1>
 
-<div class="w-75 btn-group" role="group">
-    <a onclick="NascondiFiltro()"><i class="bi bi-filter"></i></a>
-</div>
+    <div class="w-75 btn-group" role="group">
+        <a onclick="NascondiFiltro()"><i class="bi bi-filter"></i></a>
+    </div>
 
-<div id="divGetFilterForm" @(Model.FilterHidden == "Y" ? "style=&#39;display:none;&#39;" : "style=&#39;display:block;&#39;")>
-    <form method="post" name="IslGetFilterForm">
-        <div class="border p-3 mt-4">
-            <div class="row pb-2">
-                <h2 class="text-primary">
-                    Filtri
-                </h2>
-                <hr />
-            </div>
+    <div id="divGetFilterForm" @(Model.FilterHidden == "Y" ? "style=&#39;display:none;&#39;" : "style=&#39;display:block;&#39;")>
+        <form method="post" name="IslGetFilterForm">
+            <div class="border p-3 mt-4">
+                <div class="row pb-2">
+                    <h2 class="text-primary">
+                        Filtri
+                    </h2>
+                    <hr />
+                </div>
 
-            <div class="mb-3">
-                <table>
-                    <tr>
-                        <td>
-                            <label asp-for="FilterIslCRis">Risorsa</label>
-                            <input asp-for="FilterIslCRis" class="form-control" style="width:50px" />                            
-                        </td>
-@*                        <td>
+                <div class="mb-3">
+                    <table>
+                        <tr>
+                            <td>
+                                <label asp-for="FilterIslCRis">Risorsa</label>
+                                <input asp-for="FilterIslCRis" class="form-control" style="width:50px" />
+                            </td>
+                            @*                        <td>
                             <label asp-for="FilterIslDttStart">Data ini.</label>
                             <input asp-for="FilterIslDttStart" class="form-control" style="width:150px" type="date" />
                             <span asp-validation-for="FilterIslDttStart" class="text-danger"></span>
-                        </td>
-                        <td>
+                            </td>
+                            <td>
                             <label asp-for="FilterIslDttEnd">Data fine</label>
                             <input asp-for="FilterIslDttEnd" class="form-control" style="width:150px" type="date" />
                             <span asp-validation-for="FilterIslDttEnd" class="text-danger"></span>
-                        </td>*@
-                    </tr>
-                </table>
+                            </td>*@
+                        </tr>
+                    </table>
+
+                </div>
+                <br />
+                <button type="submit" class="btn btn-primary" style="width:150px">Reload</button>
 
             </div>
-            <br />
-            <button type="submit" class="btn btn-primary" style="width:150px">Reload</button>
-
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
+
 
 
 <div class="container p-3">
