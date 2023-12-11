@@ -1,0 +1,104 @@
+USE [sataconsulting_test]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+/*Tabella PSC_CO01*/
+CREATE TABLE [dba].[PSC_CO01](
+    [C_DITTA]     [varchar](2)     NOT NULL,
+    [ID_DOC]      [numeric](12, 0) NOT NULL,
+    [GRPCDL]      [numeric](4, 0)  NOT NULL,
+    [HH_ACQ]      [numeric](6,2)   NULL,
+    [T_FATT]      [varchar](1)     NULL,
+    [NOTE]        [varchar](2000)  NULL,
+    [UTENTE_INS]  [varchar](5)     NULL,
+    [DT_INS]      [datetime]       NULL,
+    [UTENTE_UM]   [varchar](5)     NULL,
+    [DT_UM]       [datetime]       NULL,
+ CONSTRAINT [PSC_CO01_KEY]PRIMARY KEY CLUSTERED 
+(
+    [C_DITTA] ASC,
+    [ID_DOC] ASC,
+    [GRPCDL] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+/*Tabella PSC_CO02*/
+CREATE TABLE [dba].[PSC_CO02](
+    [C_DITTA]     [varchar](2)     NOT NULL,
+    [ID_DOC]      [numeric](12, 0) NOT NULL,
+    [C_RISORSA]   [varchar](10)    NOT NULL,
+    [GRPCDL]      [numeric](4, 0)  NOT NULL,
+    [UTENTE_INS]  [varchar](5)     NULL,
+    [DT_INS]      [datetime]       NULL,
+    [UTENTE_UM]   [varchar](5)     NULL,
+    [DT_UM]       [datetime]       NULL,
+ CONSTRAINT [PSC_CO02_KEY]PRIMARY KEY CLUSTERED 
+(
+    [C_DITTA] ASC,
+    [ID_DOC] ASC,
+    [C_RISORSA] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+/*Tabella PSC_CO03*/
+CREATE TABLE [dba].[PSC_CO03](
+	[ID]          [numeric](12, 0) IDENTITY(1,1) NOT NULL,
+	[C_DITTA]     [varchar](2)     NOT NULL,
+    [ID_DOC]      [numeric](12, 0) NOT NULL,
+    [GRPCDL]      [numeric](4, 0)  NOT NULL,
+    [RIF_OFFERTA] [varchar](120)   NULL,
+	[DT_RICARICA] [datetime]       NULL,
+	[HH_ACQ]      [numeric](6,2)   NULL,
+	[NOTE]        [varchar](2000)  NULL,
+    [UTENTE_INS]  [varchar](5)     NULL,
+    [DT_INS]      [datetime]       NULL,
+    [UTENTE_UM]   [varchar](5)     NULL,
+    [DT_UM]       [datetime]       NULL,
+ CONSTRAINT [PSC_CO03_KEY]PRIMARY KEY CLUSTERED 
+(
+    [ID] ASC,
+	[C_DITTA] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [PSC_CO03_KEY_ALT_2] ON [dba].[PSC_CO03]
+(
+	[C_DITTA] ASC,
+	[ID_DOC] ASC,
+	[GRPCDL] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+
+ALTER TABLE [dba].[PSC_CO03]  WITH NOCHECK ADD  CONSTRAINT [PSC_CO03_FK_01] FOREIGN KEY([C_DITTA], [ID_DOC], [GRPCDL])
+REFERENCES [dba].[PSC_CO01] ([C_DITTA], [ID_DOC], [GRPCDL])
+GO
+
+/*Nuovi campi Tabella flusso_crrg*/
+ALTER TABLE dba.flusso_crrg 
+ADD [crrg_grpcdl_prev] [numeric](4, 0) NULL, 
+    [crrg_grpcdl_eff]  [numeric](4, 0) NULL 
+GO
+
+ALTER TABLE [dba].[flusso_crrg] ADD  DEFAULT ((0)) FOR [crrg_grpcdl_prev]
+GO
+ALTER TABLE [dba].[flusso_crrg] ADD  DEFAULT ((0)) FOR [crrg_grpcdl_eff]
+GO
+
+
+SET ANSI_PADDING OFF
+GO
+

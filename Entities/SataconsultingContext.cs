@@ -45,10 +45,17 @@ public partial class SataconsultingContext : DbContext
 
     public virtual DbSet<FlussoUsr1> FlussoUsr1s { get; set; }
 
+    public virtual DbSet<PscCo01> PscCo01s { get; set; }
+
+    public virtual DbSet<PscCo02> PscCo02s { get; set; }
+
+    public virtual DbSet<PscCo03> PscCo03s { get; set; }
+
 
     // Views
     public virtual DbSet<Mvxpa01> Mvxpa01s { get; set; }
     public virtual DbSet<VsPpSprintConsComIsl> VsPpSprintConsComIsls { get; set; }
+    public virtual DbSet<Mvxzz12> Mvxzz12s { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:Main");
@@ -371,16 +378,36 @@ public partial class SataconsultingContext : DbContext
         {
             entity.HasKey(e => new { e.CrrgCSrl, e.CrrgCDitta }).HasName("crrg_chiave");
 
-            entity.ToTable("flusso_crrg");
+            entity.ToTable("flusso_crrg", "dba", tb =>
+            {
+                tb.HasTrigger("t_flusso_crrg_agg_residuo_delete");
+                tb.HasTrigger("t_flusso_crrg_agg_residuo_insert");
+                tb.HasTrigger("t_flusso_crrg_agg_residuo_update");
+                tb.HasTrigger("t_flusso_crrg_ai");
+                tb.HasTrigger("t_flusso_crrg_au");
+                tb.HasTrigger("trg_ss_crrg_del");
+                tb.HasTrigger("trg_ss_crrg_del_cdccom");
+                tb.HasTrigger("trg_ss_crrg_ins");
+                tb.HasTrigger("trg_ss_crrg_ins_cdccom");
+                tb.HasTrigger("trg_ss_crrg_mod");
+                tb.HasTrigger("trg_ss_crrg_mod_cdccom");
+            });
 
-            // RP 202300821 - begin
-            // Informazione a EF che la tabella ha questi trigger legati alla DELETE;
-            // in questo modo verrà ripristinata la tecnica precedente, meno efficiente.
-            // Evita l'errore: "Could not save changes because the target table has database triggers"
-            entity.ToTable(tb => tb.HasTrigger("t_flusso_crrg_agg_residuo_delete"));
-            entity.ToTable(tb => tb.HasTrigger("trg_ss_crrg_del"));
-            entity.ToTable(tb => tb.HasTrigger("trg_ss_crrg_del_cdccom"));
-            // RP 202300821 - end
+            entity.HasIndex(e => new { e.CrrgTstDoc, e.CrrgPrfDoc, e.CrrgADoc, e.CrrgNDoc, e.CrrgPosDoc, e.CrrgPrgDoc, e.CrrgNOper, e.CrrgTRis, e.CrrgCRis, e.CrrgDtt }, "crrg_chiave_alt_1").HasFillFactor(90);
+
+            entity.HasIndex(e => e.CrrgCSrlPadre, "crrg_chiave_alt_2").HasFillFactor(90);
+
+            entity.HasIndex(e => new { e.CrrgFlgElab, e.Crrg01Ac, e.CrrgCSrl }, "crrg_chiave_alt_3").HasFillFactor(90);
+
+            entity.HasIndex(e => e.CrrgN0dIdxolcm, "crrg_chiave_alt_4").HasFillFactor(90);
+
+            entity.HasIndex(e => new { e.CrrgTRis, e.CrrgCRis, e.CrrgCDitta }, "crrg_chiave_alt_5");
+
+            entity.HasIndex(e => new { e.CrrgFlgEsito, e.CrrgCDitta }, "crrg_chiave_alt_6");
+
+            entity.HasIndex(e => new { e.CrrgRifCliente, e.CrrgCDitta }, "crrg_chiave_alt_7");
+
+            entity.HasIndex(e => new { e.CrrgM1ObjtypeOdl, e.CrrgM1DocentryOdl, e.CrrgCDitta }, "crrg_chiave_alt_8");
 
             entity.Property(e => e.CrrgCSrl)
                 .HasColumnType("numeric(12, 0)")
@@ -536,6 +563,14 @@ public partial class SataconsultingContext : DbContext
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .HasColumnName("crrg_flg_qta_rilavora");
+            entity.Property(e => e.CrrgGrpcdlEff)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("crrg_grpcdl_eff");
+            entity.Property(e => e.CrrgGrpcdlPrev)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("crrg_grpcdl_prev");
             entity.Property(e => e.CrrgM1DocentryOdl)
                 .HasColumnType("numeric(12, 0)")
                 .HasColumnName("crrg_m1_docentry_odl");
@@ -4296,6 +4331,141 @@ public partial class SataconsultingContext : DbContext
         });
 
 
+        modelBuilder.Entity<PscCo01>(entity =>
+        {
+            entity.HasKey(e => new { e.CDitta, e.IdDoc, e.Grpcdl }).HasName("PSC_CO01_KEY");
+
+            entity.ToTable("PSC_CO01", "dba");
+
+            entity.Property(e => e.CDitta)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("C_DITTA");
+            entity.Property(e => e.IdDoc)
+                .HasColumnType("numeric(12, 0)")
+                .HasColumnName("ID_DOC");
+            entity.Property(e => e.Grpcdl)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("GRPCDL");
+            entity.Property(e => e.DtIns)
+                .HasColumnType("datetime")
+                .HasColumnName("DT_INS");
+            entity.Property(e => e.DtUm)
+                .HasColumnType("datetime")
+                .HasColumnName("DT_UM");
+            entity.Property(e => e.HhAcq)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HH_ACQ");
+            entity.Property(e => e.Note)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.TFatt)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("T_FATT");
+            entity.Property(e => e.UtenteIns)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("UTENTE_INS");
+            entity.Property(e => e.UtenteUm)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("UTENTE_UM");
+        });
+
+        modelBuilder.Entity<PscCo02>(entity =>
+        {
+            entity.HasKey(e => new { e.CDitta, e.IdDoc, e.CRisorsa }).HasName("PSC_CO02_KEY");
+
+            entity.ToTable("PSC_CO02", "dba");
+
+            entity.Property(e => e.CDitta)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("C_DITTA");
+            entity.Property(e => e.IdDoc)
+                .HasColumnType("numeric(12, 0)")
+                .HasColumnName("ID_DOC");
+            entity.Property(e => e.CRisorsa)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("C_RISORSA");
+            entity.Property(e => e.DtIns)
+                .HasColumnType("datetime")
+                .HasColumnName("DT_INS");
+            entity.Property(e => e.DtUm)
+                .HasColumnType("datetime")
+                .HasColumnName("DT_UM");
+            entity.Property(e => e.Grpcdl)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("GRPCDL");
+            entity.Property(e => e.UtenteIns)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("UTENTE_INS");
+            entity.Property(e => e.UtenteUm)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("UTENTE_UM");
+        });
+
+        modelBuilder.Entity<PscCo03>(entity =>
+        {
+            entity.HasKey(e => new { e.Id, e.CDitta }).HasName("PSC_CO03_KEY");
+
+            entity.ToTable("PSC_CO03", "dba");
+
+            entity.HasIndex(e => new { e.CDitta, e.IdDoc, e.Grpcdl }, "PSC_CO03_KEY_ALT_2");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnType("numeric(12, 0)")
+                .HasColumnName("ID");
+            entity.Property(e => e.CDitta)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("C_DITTA");
+            entity.Property(e => e.DtIns)
+                .HasColumnType("datetime")
+                .HasColumnName("DT_INS");
+            entity.Property(e => e.DtRicarica)
+                .HasColumnType("datetime")
+                .HasColumnName("DT_RICARICA");
+            entity.Property(e => e.DtUm)
+                .HasColumnType("datetime")
+                .HasColumnName("DT_UM");
+            entity.Property(e => e.Grpcdl)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("GRPCDL");
+            entity.Property(e => e.HhAcq)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HH_ACQ");
+            entity.Property(e => e.IdDoc)
+                .HasColumnType("numeric(12, 0)")
+                .HasColumnName("ID_DOC");
+            entity.Property(e => e.Note)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("NOTE");
+            entity.Property(e => e.RifOfferta)
+                .HasMaxLength(120)
+                .IsUnicode(false)
+                .HasColumnName("RIF_OFFERTA");
+            entity.Property(e => e.UtenteIns)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("UTENTE_INS");
+            entity.Property(e => e.UtenteUm)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("UTENTE_UM");
+
+            entity.HasOne(d => d.PscCo01).WithMany(p => p.PscCo03s)
+                .HasForeignKey(d => new { d.CDitta, d.IdDoc, d.Grpcdl })
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("PSC_CO03_FK_01");
+        });
 
 
         //VISTE
@@ -4505,6 +4675,61 @@ public partial class SataconsultingContext : DbContext
                 .HasColumnName("vinc");
         });
 
+
+        modelBuilder.Entity<Mvxzz12>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("mvxzz12");
+
+            entity.Property(e => e.Cditta)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("cditta");
+            entity.Property(e => e.Cod)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("cod");
+            entity.Property(e => e.Cprfc)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("cprfc");
+            entity.Property(e => e.CtabellaOr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("ctabella_or");
+            entity.Property(e => e.Descrizione)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("descrizione");
+            entity.Property(e => e.DescrizioneRidotta)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("descrizione_ridotta");
+            entity.Property(e => e.DtIns)
+                .HasColumnType("datetime")
+                .HasColumnName("dt_ins");
+            entity.Property(e => e.DtUm)
+                .HasColumnType("datetime")
+                .HasColumnName("dt_um");
+            entity.Property(e => e.Id)
+                .HasColumnType("numeric(12, 0)")
+                .HasColumnName("id");
+            entity.Property(e => e.Lingua)
+                .HasColumnType("numeric(12, 0)")
+                .HasColumnName("lingua");
+            entity.Property(e => e.Note)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("note");
+            entity.Property(e => e.UtenteIns)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("utente_ins");
+            entity.Property(e => e.UtenteUm)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("utente_um");
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }
