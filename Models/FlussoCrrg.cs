@@ -158,4 +158,8 @@ public partial class FlussoCrrg
     public string? CrrgApp { get; set; }
 
     public string? CrrgMod { get; set; }
+
+    public decimal? CrrgGrpcdlPrev { get; set; }
+
+    public decimal? CrrgGrpcdlEff { get; set; }
 }
