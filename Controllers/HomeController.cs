@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication;
 using Newtonsoft.Json.Linq;
 using MepWeb.Type;
 using MepWeb.DTO.Response;
+using MepWeb.DTO.Request;
 
 namespace Mep01Web.Controllers
 {
@@ -64,27 +65,9 @@ namespace Mep01Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var loginRequest = new { Email = email, Password = password };
+            var loginRequest = new LoginRequest{ Email = email, Password = password };
 
-            var handlerHttp = new HttpClientHandler()
-            {
-                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            var client = new HttpClient(handlerHttp);
-
-            var values = new Dictionary<string, string>
-                          {
-                              { "Email", email },
-                              { "Password", password }
-                          };
-
-            string platformUrl = "https://localhost:7182/";
-            client.BaseAddress = new Uri(platformUrl);
-            var conv = JsonConvert.SerializeObject(loginRequest);
-            var strcontent = new StringContent(conv, System.Text.Encoding.UTF8, "application/json");
-            var content = new FormUrlEncodedContent(values);
-            var resp = await client.PostAsync("api/VerifyCredentials", content);
+            var resp = await _loginService.LogInAsync(loginRequest);
             if (resp.IsSuccessStatusCode)
             {
                 var token = await resp.Content.ReadAsStringAsync();
