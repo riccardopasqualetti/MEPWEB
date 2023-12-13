@@ -344,6 +344,17 @@ namespace Mep01Web.Service.Impl
 			}			
 			return crrgCreateRequest;
 		}
+
+        //public async Task<decimal> CheckHoursAvailability(decimal idDoc, decimal hours, string qualifica)
+        //{
+        //    var crrg = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == idDoc);
+        //    if (crrg == null)
+        //    {
+        //        return -1;
+        //    }
+
+        //    var res = crrg.hh
+        //}
     }
 }
 

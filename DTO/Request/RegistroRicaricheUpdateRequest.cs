@@ -2,6 +2,7 @@
 {
     public class RegistroRicaricheUpdateRequest
     {
+        public decimal Id { get; set; }
         public decimal IdDocumento { get; set; }
 
         public decimal Qualifica { get; set; }
