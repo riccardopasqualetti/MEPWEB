@@ -172,7 +172,9 @@ namespace Mep01Web.Controllers
         [HttpGet]
         public async Task<IActionResult> IndexConsuntivi()
         {
-            return View();
+            var res = await _crrgService.GetAllConsAsync();
+            var bod = res.Body;
+            return View(res.Body);
         }
 
         [HttpGet]

@@ -22,3 +22,22 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+#cons-container {
+    margin-top: 2vh;
+    height: 85vh;
+    scrollbar-gutter: stable;
+    overflow: scroll;
+}
+
+.n-riga {
+    text-align:center;
+}
+
+.n-riga p {
+    margin-bottom: 50%;
+}
+
+.n-riga-value p {
+    
+}

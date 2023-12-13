@@ -51,6 +51,8 @@ public partial class SataconsultingContext : DbContext
 
     public virtual DbSet<PscCo03> PscCo03s { get; set; }
 
+    public virtual DbSet<VsConsXComm> VsConsXComms { get; set; }
+
 
     // Views
     public virtual DbSet<Mvxpa01> Mvxpa01s { get; set; }
@@ -66,6 +68,113 @@ public partial class SataconsultingContext : DbContext
               .HasDefaultSchema("dba")
               .UseCollation("Latin1_General_CI_AS");
 
+        modelBuilder.Entity<VsConsXComm>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vs_cons_x_comm");
+
+            entity.Property(e => e.AcliRagSoc1)
+                .HasMaxLength(120)
+                .IsUnicode(false)
+                .HasColumnName("acli_rag_soc_1");
+            entity.Property(e => e.CBuc8)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("C_BUC8");
+            entity.Property(e => e.CGen)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("C_GEN");
+            entity.Property(e => e.CPgm2)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("C_PGM2");
+            entity.Property(e => e.CPjm4)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("C_PJM4");
+            entity.Property(e => e.CSoa3)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("C_SOA3");
+            entity.Property(e => e.CSys7)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("C_SYS7");
+            entity.Property(e => e.CrrgBuc8)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("CRRG_BUC8");
+            entity.Property(e => e.CrrgGen)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("CRRG_GEN");
+            entity.Property(e => e.CrrgPgm2)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("CRRG_PGM2");
+            entity.Property(e => e.CrrgPjm4)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("CRRG_PJM4");
+            entity.Property(e => e.CrrgSoa3)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("CRRG_SOA3");
+            entity.Property(e => e.CrrgSys7)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("CRRG_SYS7");
+            entity.Property(e => e.Descrizione)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("descrizione");
+            entity.Property(e => e.DescrizioneRidotta)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("descrizione_ridotta");
+            entity.Property(e => e.TbcpAComm)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("tbcp_a_comm");
+            entity.Property(e => e.TbcpCCli)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_c_cli");
+            entity.Property(e => e.TbcpCarea)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("tbcp_carea");
+            entity.Property(e => e.TbcpDesc)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_desc");
+            entity.Property(e => e.TbcpId)
+                .HasColumnType("numeric(12, 0)")
+                .HasColumnName("tbcp_id");
+            entity.Property(e => e.TbcpM1Project)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_m1_project");
+            entity.Property(e => e.TbcpNComm)
+                .HasColumnType("numeric(8, 0)")
+                .HasColumnName("tbcp_n_comm");
+            entity.Property(e => e.TbcpOffPrev)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_off_prev");
+            entity.Property(e => e.TbcpPrfComm)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_prf_comm");
+            entity.Property(e => e.TbcpProjectManager)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_project_manager");
+            entity.Property(e => e.TbcpRifCliente)
+                .HasMaxLength(300)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_rif_cliente");
+            entity.Property(e => e.TbcpStatus)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_status");
+            entity.Property(e => e.TbcpTstComm)
+                .HasMaxLength(3)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_tst_comm");
+            entity.Property(e => e.Usr1Desc)
+                .HasMaxLength(160)
+                .IsUnicode(false)
+                .HasColumnName("usr1_desc");
+        });
 
         modelBuilder.Entity<FlussoAcli>(entity =>
         {

@@ -13,6 +13,7 @@ using Mep01Web.Validators.Impl;
 using Mep01Web.Service.Interface;
 using Mep01Web.Service.Impl;
 using Mep01Web.Type.Dropdown;
+using MepWeb.DTO.Response;
 
 namespace Mep01Web.Service.Impl
 {
@@ -53,6 +54,39 @@ namespace Mep01Web.Service.Impl
             return ResponseBase<CrrgResponse?>.Success(crrgResponse);
         }
 
+        public async Task<ResponseBase<List<ConsXCommResponse>>?> GetAllConsAsync()
+        {
+            var all = await _dbContext.VsConsXComms.ToListAsync();
+
+            var res = new List<ConsXCommResponse>();
+
+            foreach (var item in all)
+            {
+                res.Add(new ConsXCommResponse
+                {
+                    TBCP_TST_COMM = item.TbcpTstComm,
+                    TBCP_PRF_COMM = item.TbcpPrfComm,
+                    TBCP_A_COMM = item.TbcpAComm,
+                    TBCP_N_COMM = item.TbcpNComm,
+                    TBCP_C_CLI = item.TbcpCCli,
+                    ACLI_RAG_SOC_1 = item.AcliRagSoc1,
+                    TBCP_OFF_PREV = item.TbcpOffPrev,
+                    TBCP_RIF_CLIENTE = item.TbcpRifCliente,
+                    DESCRIZIONE_RIDOTTA = item.DescrizioneRidotta,
+                    TBCP_M1_PROJECT = item.TbcpM1Project,
+                    TBCP_DESC = item.TbcpDesc,
+                    USR1_DESC = item.Usr1Desc,
+                    C_PGM = item.CPgm2,
+                    C_SOA = item.CSoa3,
+                    C_PJM = item.CPjm4,
+                    C_BUC = item.CBuc8,
+                    C_SYD = item.CSys7,
+                    C_GEN = item.CGen
+                });
+            }
+
+            return res;
+        }
 
         public async Task<ResponseBase<CrrgResponse>?> AddCrrgAsync(CrrgCreateRequest crrgRequest)
         {
