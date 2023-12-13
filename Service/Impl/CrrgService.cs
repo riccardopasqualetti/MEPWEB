@@ -76,12 +76,19 @@ namespace Mep01Web.Service.Impl
                     TBCP_M1_PROJECT = item.TbcpM1Project,
                     TBCP_DESC = item.TbcpDesc,
                     USR1_DESC = item.Usr1Desc,
-                    C_PGM = item.CPgm2,
-                    C_SOA = item.CSoa3,
-                    C_PJM = item.CPjm4,
-                    C_BUC = item.CBuc8,
-                    C_SYD = item.CSys7,
-                    C_GEN = item.CGen
+                    TbcpId = item.TbcpId,
+                    HHACQPGM = item.HhacqPgm,
+                    HHACQSOA = item.HhacqSoa,
+                    HHACQPJM = item.HhacqPjm,
+                    HHACQBUC = item.HhacqBuc,
+                    HHACQSYD = item.HhacqSyd,
+                    HHACQGEN = item.HhacqGen,
+                    HHCRRGPGM = item.HhcrrgPgm,
+                    HHCRRGSOA = item.HhcrrgSoa,
+                    HHCRRGPJM = item.HhcrrgPjm,
+                    HHCRRGBUC = item.HhcrrgBuc,
+                    HHCRRGSYD = item.HhcrrgSyd,
+                    HHCRRGGEN = item.HhcrrgGen
                 });
             }
 

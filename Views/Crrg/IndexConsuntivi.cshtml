@@ -5,59 +5,137 @@
 @{
 }
 
-<div class="container-fluid" id="cons-container">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col" class="n-riga"><p>#</p></th>
-                <th scope="col">Tipo<br/>Commessa</th>
-                <th scope="col">Prefisso<br/>Commessa</th>
-                <th scope="col">Anno<br/>Commessa</th>
-                <th scope="col">Numero<br/>Commessa</th>
-                <th scope="col">Cliente</th>
-                <th scope="col">Ragione<br/>Sociale</th>
-                <th scope="col">Offerta/<br/>Ordine</th>
-                <th scope="col">Area</th>
-                <th scope="col">Progetto</th>
-                <th scope="col">Descrizione</th>
-                <th scope="col">Project<br/>Manager</th>
-                <th scope="col">Ore<br/>PGM</th>
-                <th scope="col">Ore<br/>SOA</th>
-                <th scope="col">Ore<br/>PJM</th>
-                <th scope="col">Ore<br/>BUC</th>
-                <th scope="col">Ore<br/>SYD</th>
-                <th scope="col">Ore<br/>GEN</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < Model.Count; i++)
-            {
-                <tr>
-                    <td class="n-riga-value"><p><strong>@(i + 1)</strong></p></td>
-                    <td>@Model[i].TBCP_TST_COMM</td>
-                    <td>@Model[i].TBCP_PRF_COMM</td>
-                    <td>@Model[i].TBCP_A_COMM</td>
-                    <td>@Model[i].TBCP_N_COMM</td>
-                    <td>@Model[i].TBCP_C_CLI</td>
-                    <td>@Model[i].ACLI_RAG_SOC_1<br/>@Model[i].TBCP_OFF_PREV</td>
-                    <td>@Model[i].TBCP_RIF_CLIENTE</td>
-                    <td>@Model[i].DESCRIZIONE_RIDOTTA</td>
-                    <td>@Model[i].TBCP_M1_PROJECT</td>
-                    <td>@Model[i].TBCP_DESC</td>
-                    <td>@Model[i].USR1_DESC</td>
-                    <td>@Model[i].C_PGM</td>
-                    <td>@Model[i].C_SOA</td>
-                    <td>@Model[i].C_PJM</td>
-                    <td>@Model[i].C_BUC</td>
-                    <td>@Model[i].C_SYD</td>
-                    <td>@Model[i].C_GEN</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <h1>Ciao</h1>
-    <a type="button" class="btn btn-primary" role="button" asp-area="" asp-controller="Crrg" asp-action="OreQualifica">Ore x Qualifica</a>
-    <a type="button" class="btn btn-primary" role="button" asp-area="" asp-controller="Crrg" asp-action="AddettoQualifica">Addetto / Qualifica</a>
-    <a type="button" class="btn btn-primary" role="button" asp-area="" asp-controller="Crrg" asp-action="RegistroRicariche">Registro Ricariche</a>
+<div class="d-flex flex-column">
 
+    <div id="filters" class="d-flex justify-content-between">
+        <div id="filter-btn">
+            <i class="bi bi-filter"></i>
+        </div>
+        <div id="filters-container">
+            <h2>Filtra per</h2>
+            <form id="search-form" method="get">
+                <label for="numeroCommessa">Numero Commessa:</label>
+                <input autocomplete="off" type="text" class="form-control" name="numeroCommessa" id="numeroCommessa">
+                <label for="cliente">Cliente:</label>
+                <input autocomplete="off" type="text" class="form-control" name="cliente" id="cliente">
+                <button type="submit" class="btn btn-success mt-2" id="confirm-research">Cerca</button>
+            </form>
+        </div>
+        <div id="menu-btns">
+            <button type="button" onClick="goToDoc('OreQualifica')" class="btn btn-primary" role="button">Ore x Qualifica</button>
+            <button type="button" onClick="goToDoc('AddettoQualifica')" class="btn btn-primary" role="button">Addetto / Qualifica</button>
+            <button type="button" onClick="goToDoc('RegistroRicariche')" class="btn btn-primary" role="button">Registro Ricariche</button>
+        </div>
+    </div>
+
+    <div class="container-fluid p-0" id="cons-container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col" class="n-riga"><div><p>#</p></div></th>
+                    <th scope="col"><div>Tipo<br/>Commessa</div></th>
+                    <th scope="col"><div>Prefisso<br/>Commessa</div></th>
+                    <th scope="col"><div>Anno<br/>Commessa</div></th>
+                    <th scope="col"><div>Numero<br/>Commessa</div></th>
+                    <th scope="col"><div>Cliente</div></th>
+                    <th scope="col"><div>Ragione<br/>Sociale</div></th>
+                    <th scope="col"><div>Offerta/<br/>Ordine</div></th>
+                    <th scope="col"><div>Area</div></th>
+                    <th scope="col"><div>Progetto</div></th>
+                    <th scope="col"><div>Descrizione</div></th>
+                    <th scope="col"><div>Project<br/>Manager</div></th>
+                    <th scope="col"><div>Ore<br/>PGM</div></th>
+                    <th scope="col"><div>Ore<br/>SOA</div></th>
+                    <th scope="col"><div>Ore<br/>PJM</div></th>
+                    <th scope="col"><div>Ore<br/>BUC</div></th>
+                    <th scope="col"><div>Ore<br/>SYD</div></th>
+                    <th scope="col"><div>Ore<br/>GEN</div></th>
+                </tr>
+            </thead>
+            <tbody id="cons-tbody">                
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr class="riga" id="row-@(i + 1)" idDoc="@Model[i].TbcpId">
+                            <td class="n-riga-value"><div><p><strong>@(i + 1)</strong></p></div></td>
+                            <td campo="TBCP_TST_COMM">@Model[i].TBCP_TST_COMM</td>
+                            <td campo="TBCP_PRF_COMM">@Model[i].TBCP_PRF_COMM</td>
+                            <td campo="TBCP_A_COMM">@Model[i].TBCP_A_COMM</td>
+                            <td campo="TBCP_N_COMM">@Model[i].TBCP_N_COMM</td>
+                            <td campo="TBCP_C_CLI">@Model[i].TBCP_C_CLI</td>
+                            <td campo="ACLI_RAG_SOC_1">@Model[i].ACLI_RAG_SOC_1<br/>@Model[i].TBCP_OFF_PREV</td>
+                            <td campo="TBCP_RIF_CLIENTE">@Model[i].TBCP_RIF_CLIENTE</td>
+                            <td campo="DESCRIZIONE_RIDOTTA">@Model[i].DESCRIZIONE_RIDOTTA</td>
+                            <td campo="TBCP_M1_PROJECT">@Model[i].TBCP_M1_PROJECT</td>
+                            <td campo="TBCP_DESC">@Model[i].TBCP_DESC</td>
+                            <td campo="USR1_DESC">@Model[i].USR1_DESC</td>
+                            <td>
+                                <div>
+                                    <p campo="HHACQPGM">@Model[i].HHACQPGM</p>
+                                    <p campo="HHCRRGPGM">@Model[i].HHCRRGPGM</p>
+                                    <p campo="HHACQPGM">@(Model[i].HHACQPGM - Model[i].HHCRRGPGM)</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <p campo="HHACQSOA">@Model[i].HHACQSOA</p>
+                                    <p campo="HHCRRGSOA">@Model[i].HHCRRGSOA</p>
+                                    <p campo="HHACQSOA">@(Model[i].HHACQSOA - Model[i].HHCRRGSOA)</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <p campo="HHACQPJM">@Model[i].HHACQPJM</p>
+                                    <p campo="HHCRRGPJM">@Model[i].HHCRRGPJM</p>
+                                    <p campo="HHACQPJM">@(Model[i].HHACQPJM - Model[i].HHCRRGPJM)</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <p campo="HHACQBUC">@Model[i].HHACQBUC</p>
+                                    <p campo="HHCRRGBUC">@Model[i].HHCRRGBUC</p>
+                                    <p campo="HHACQBUC">@(Model[i].HHACQBUC - Model[i].HHCRRGBUC)</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <p campo="HHACQSYD">@Model[i].HHACQSYD</p>
+                                    <p campo="HHCRRGSYD">@Model[i].HHCRRGSYD</p>
+                                    <p campo="HHACQSYD">@(Model[i].HHACQSYD - Model[i].HHCRRGSYD)</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <p campo="HHACQGEN">@Model[i].HHACQGEN</p>
+                                    <p campo="HHCRRGGEN">@Model[i].HHCRRGGEN</p>
+                                    <p campo="HHACQGEN">@(Model[i].HHACQGEN - Model[i].HHCRRGGEN)</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+            </tbody>
+        </table>
+
+    </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="err-modal" tabindex="-1" aria-labelledby="errModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+            </div>
+            <div class="modal-body">
+                <p>Selezionare un documento prima di continuare</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-discard" data-bs-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    <script src="~/js/ConsXComm.js"></script>
+
+}

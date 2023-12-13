@@ -19,17 +19,17 @@
         public string?   TbcpProjectManager { get; set; }
         public string?   USR1_DESC { get; set; }
         public decimal   TbcpId { get; set; }
-        public decimal?  C_PGM { get; set; }
-        public decimal?  C_SOA { get; set; }
-        public decimal?  C_PJM { get; set; }
-        public decimal?  C_BUC { get; set; }
-        public decimal?  C_SYD { get; set; }
-        public decimal?  C_GEN { get; set; }
-        public decimal?  CrrgPgm2 { get; set; }
-        public decimal?  CrrgSoa3 { get; set; }
-        public decimal?  CrrgPjm4 { get; set; }
-        public decimal?  CrrgBuc8 { get; set; }
-        public decimal?  CrrgSys7 { get; set; }
-        public decimal?  CrrgGen { get; set; }
+        public decimal?  HHACQPGM { get; set; }
+        public decimal?  HHACQSOA { get; set; }
+        public decimal?  HHACQPJM { get; set; }
+        public decimal?  HHACQBUC { get; set; }
+        public decimal?  HHACQSYD { get; set; }
+        public decimal?  HHACQGEN { get; set; }
+        public decimal?  HHCRRGPGM { get; set; }
+        public decimal?  HHCRRGSOA { get; set; }
+        public decimal?  HHCRRGPJM { get; set; }
+        public decimal?  HHCRRGBUC { get; set; }
+        public decimal?  HHCRRGSYD { get; set; }
+        public decimal?  HHCRRGGEN { get; set; }
     }
 }
