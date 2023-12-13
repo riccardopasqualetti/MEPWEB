@@ -6,6 +6,7 @@ using Mep01Web.Type;
 using Mep01Web.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using MepWeb.Service;
+using MepWeb.Service.Interface;
 
 namespace Mep01Web.Controllers
 {
@@ -16,13 +17,15 @@ namespace Mep01Web.Controllers
         private readonly ICrrgService _crrgService;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly UserScope _userScope;
+        private readonly IRegistroRicaricheService _registroRicaricheService;
 
-        public CrrgController(SataconsultingContext sataconsulting, ICrrgService crrgService, IHttpContextAccessor contextAccessor, UserScope userScope)
+        public CrrgController(SataconsultingContext sataconsulting, ICrrgService crrgService, IHttpContextAccessor contextAccessor, UserScope userScope, IRegistroRicaricheService registroRicaricheService)
         {
             _db = sataconsulting;
             _crrgService = crrgService;
             _contextAccessor = contextAccessor;
             _userScope = userScope;
+            _registroRicaricheService = registroRicaricheService;
         }
         public IActionResult Index()
         {            
@@ -187,6 +190,7 @@ namespace Mep01Web.Controllers
         [HttpGet]
         public async Task<IActionResult> RegistroRicariche()
         {
+            var res = await _registroRicaricheService.GetAllRecordsByIdDocAsync(8);
             return View();
         }
 
