@@ -78,42 +78,6 @@ public partial class SataconsultingContext : DbContext
                 .HasMaxLength(120)
                 .IsUnicode(false)
                 .HasColumnName("acli_rag_soc_1");
-            entity.Property(e => e.CBuc8)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("C_BUC8");
-            entity.Property(e => e.CGen)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("C_GEN");
-            entity.Property(e => e.CPgm2)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("C_PGM2");
-            entity.Property(e => e.CPjm4)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("C_PJM4");
-            entity.Property(e => e.CSoa3)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("C_SOA3");
-            entity.Property(e => e.CSys7)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("C_SYS7");
-            entity.Property(e => e.CrrgBuc8)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("CRRG_BUC8");
-            entity.Property(e => e.CrrgGen)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("CRRG_GEN");
-            entity.Property(e => e.CrrgPgm2)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("CRRG_PGM2");
-            entity.Property(e => e.CrrgPjm4)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("CRRG_PJM4");
-            entity.Property(e => e.CrrgSoa3)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("CRRG_SOA3");
-            entity.Property(e => e.CrrgSys7)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("CRRG_SYS7");
             entity.Property(e => e.Descrizione)
                 .HasMaxLength(2000)
                 .IsUnicode(false)
@@ -122,6 +86,42 @@ public partial class SataconsultingContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("descrizione_ridotta");
+            entity.Property(e => e.HhacqBuc)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_BUC");
+            entity.Property(e => e.HhacqGen)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_GEN");
+            entity.Property(e => e.HhacqPgm)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_PGM");
+            entity.Property(e => e.HhacqPjm)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_PJM");
+            entity.Property(e => e.HhacqSoa)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_SOA");
+            entity.Property(e => e.HhacqSyd)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_SYD");
+            entity.Property(e => e.HhcrrgBuc)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_BUC");
+            entity.Property(e => e.HhcrrgGen)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_GEN");
+            entity.Property(e => e.HhcrrgPgm)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_PGM");
+            entity.Property(e => e.HhcrrgPjm)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_PJM");
+            entity.Property(e => e.HhcrrgSoa)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_SOA");
+            entity.Property(e => e.HhcrrgSyd)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_SYD");
             entity.Property(e => e.TbcpAComm)
                 .HasColumnType("numeric(4, 0)")
                 .HasColumnName("tbcp_a_comm");

@@ -39,27 +39,27 @@ public partial class VsConsXComm
 
     public decimal TbcpId { get; set; }
 
-    public decimal? CPgm2 { get; set; }
+    public decimal HhacqPgm { get; set; }
 
-    public decimal? CSoa3 { get; set; }
+    public decimal HhacqSoa { get; set; }
 
-    public decimal? CPjm4 { get; set; }
+    public decimal HhacqPjm { get; set; }
 
-    public decimal? CBuc8 { get; set; }
+    public decimal HhacqBuc { get; set; }
 
-    public decimal? CSys7 { get; set; }
+    public decimal HhacqSyd { get; set; }
 
-    public decimal? CGen { get; set; }
+    public decimal HhacqGen { get; set; }
 
-    public decimal? CrrgPgm2 { get; set; }
+    public decimal HhcrrgPgm { get; set; }
 
-    public decimal? CrrgSoa3 { get; set; }
+    public decimal HhcrrgSoa { get; set; }
 
-    public decimal? CrrgPjm4 { get; set; }
+    public decimal HhcrrgPjm { get; set; }
 
-    public decimal? CrrgBuc8 { get; set; }
+    public decimal HhcrrgBuc { get; set; }
 
-    public decimal? CrrgSys7 { get; set; }
+    public decimal HhcrrgSyd { get; set; }
 
-    public decimal? CrrgGen { get; set; }
+    public decimal HhcrrgGen { get; set; }
 }
