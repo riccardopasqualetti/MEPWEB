@@ -352,16 +352,38 @@ namespace Mep01Web.Service.Impl
 			return crrgCreateRequest;
 		}
 
-        //public async Task<decimal> CheckHoursAvailability(decimal idDoc, decimal hours, string qualifica)
-        //{
-        //    var crrg = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == idDoc);
-        //    if (crrg == null)
-        //    {
-        //        return -1;
-        //    }
+        public async Task<decimal> CheckHoursAvailability(decimal idDoc, decimal hours, string qualifica)
+        {
+            var crrg = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == idDoc);
+            if (crrg == null)
+            {
+                return -1;
+            }
+            decimal res = 0;
+            switch(qualifica)
+            {
+                case "PGM":
+                    res = crrg.HhacqPgm - crrg.HhcrrgPgm - hours; 
+                    break;
+                case "SOA":
+                    res = crrg.HhacqSoa - crrg.HhcrrgSoa - hours;
+                    break;
+                case "PJM":
+                    res = crrg.HhacqPjm - crrg.HhcrrgPjm - hours;
+                    break;
+                case "BUC":
+                    res = crrg.HhacqBuc - crrg.HhcrrgBuc - hours;
+                    break;
+                case "SYD":
+                    res = crrg.HhacqSyd - crrg.HhcrrgSyd - hours;
+                    break;
+                case "GEN":
+                    res = crrg.HhacqGen - crrg.HhcrrgGen - hours;
+                    break;
+            }
 
-        //    var res = crrg.hh
-        //}
+            return res;
+        }
     }
 }
 
