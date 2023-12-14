@@ -58,6 +58,7 @@ namespace WebApplication2
 			builder.Services.AddTransient<IMvxpa01Service, Mvxpa01Service>();
 			builder.Services.AddTransient<ITbpnService, TbpnService>();
             builder.Services.AddTransient<ILoginService, LoginService>();
+            builder.Services.AddTransient<IOreQualificaService, OreQualificaService>();
             builder.Services.AddTransient<IRegistroRicaricheService, RegistroRicaricheService>();
 
 

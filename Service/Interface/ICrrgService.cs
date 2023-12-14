@@ -14,5 +14,6 @@ namespace Mep01Web.Service.Interface
         Task<ResponseBase<CrrgResponse>?> DeleteCrrgAsync(CrrgCreateRequest crrgRequest);
         Task<CrrgCreateRequest> AddCrrgPrepareDataAsync(CrrgCreateRequest crrgCreateRequest);
         Task<CrrgCreateRequest> DeleteCrrgPrepareDataAsync(CrrgCreateRequest crrgCreateRequest);
+        Task<decimal> CheckHoursAvailability(decimal idDoc, decimal hours, string qualifica);
     }
 }
