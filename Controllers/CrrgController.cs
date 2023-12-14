@@ -192,7 +192,7 @@ namespace Mep01Web.Controllers
         [HttpGet("Crrg/RegistroRicariche/{idDoc}")]
         public async Task<IActionResult> RegistroRicariche(string idDoc)
         {
-            var res = await _registroRicaricheService.GetAllRecordsByIdDocAsync(8);
+            var res = await _registroRicaricheService.GetAllRecordsByIdDocAsync(idDoc);
             return View();
         }
 
