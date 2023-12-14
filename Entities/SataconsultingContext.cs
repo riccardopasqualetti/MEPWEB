@@ -170,6 +170,30 @@ public partial class SataconsultingContext : DbContext
                 .HasMaxLength(3)
                 .IsUnicode(false)
                 .HasColumnName("tbcp_tst_comm");
+            entity.Property(e => e.TfattBuc)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_BUC");
+            entity.Property(e => e.TfattGen)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_GEN");
+            entity.Property(e => e.TfattPgm)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_PGM");
+            entity.Property(e => e.TfattPjm)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_PJM");
+            entity.Property(e => e.TfattSoa)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_SOA");
+            entity.Property(e => e.TfattSyd)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_SYD");
             entity.Property(e => e.Usr1Desc)
                 .HasMaxLength(160)
                 .IsUnicode(false)
