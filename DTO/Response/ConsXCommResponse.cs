@@ -25,6 +25,12 @@
         public decimal?  HHACQBUC { get; set; }
         public decimal?  HHACQSYD { get; set; }
         public decimal?  HHACQGEN { get; set; }
+        public string?   TFATTPGM { get; set; }
+        public string?   TFATTSOA { get; set; }
+        public string?   TFATTPJM { get; set; }
+        public string?   TFATTBUC { get; set; }
+        public string?   TFATTSYD { get; set; }
+        public string?   TFATTGEN { get; set; }
         public decimal?  HHCRRGPGM { get; set; }
         public decimal?  HHCRRGSOA { get; set; }
         public decimal?  HHCRRGPJM { get; set; }

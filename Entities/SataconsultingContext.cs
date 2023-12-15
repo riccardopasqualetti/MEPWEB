@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Mep01Web.Models;
 using Mep01Web.Models.Views;
+using MepWeb.Models;
 
 namespace Mep01Web.Infrastructure;
 
@@ -16,6 +17,7 @@ public partial class SataconsultingContext : DbContext
     }
 
     public virtual DbSet<FlussoAcli> FlussoAclis { get; set; }
+    public virtual DbSet<FlussoMacc> FlussoMaccs { get; set; }
 
     public virtual DbSet<FlussoCrrg> FlussoCrrgs { get; set; }
 
@@ -170,6 +172,30 @@ public partial class SataconsultingContext : DbContext
                 .HasMaxLength(3)
                 .IsUnicode(false)
                 .HasColumnName("tbcp_tst_comm");
+            entity.Property(e => e.TfattBuc)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_BUC");
+            entity.Property(e => e.TfattGen)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_GEN");
+            entity.Property(e => e.TfattPgm)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_PGM");
+            entity.Property(e => e.TfattPjm)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_PJM");
+            entity.Property(e => e.TfattSoa)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_SOA");
+            entity.Property(e => e.TfattSyd)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_SYD");
             entity.Property(e => e.Usr1Desc)
                 .HasMaxLength(160)
                 .IsUnicode(false)
@@ -4838,6 +4864,115 @@ public partial class SataconsultingContext : DbContext
                 .HasMaxLength(5)
                 .IsUnicode(false)
                 .HasColumnName("utente_um");
+        });
+        modelBuilder.Entity<FlussoMacc>(entity =>
+        {
+            entity.HasKey(e => new { e.MaccTipo, e.MaccCMatricola, e.MaccCDitta }).HasName("macc_chiave");
+
+            entity.ToTable("flusso_macc", "dba", tb =>
+            {
+                tb.HasTrigger("t_flusso_macc_tcdl_ad");
+                tb.HasTrigger("t_flusso_macc_tcdl_ai");
+                tb.HasTrigger("t_flusso_macc_tcdl_au");
+                tb.HasTrigger("trg_ss_macc_gdpr_del");
+                tb.HasTrigger("trg_ss_macc_gdpr_ins");
+                tb.HasTrigger("trg_ss_macc_gdpr_mod");
+            });
+
+            entity.HasIndex(e => new { e.MaccCCdl, e.MaccTipo, e.MaccCMatricola }, "macc_chiave_alt_1").HasFillFactor(90);
+
+            entity.HasIndex(e => new { e.MaccId, e.MaccCDitta }, "macc_chiave_alt_2");
+
+            entity.Property(e => e.MaccTipo)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("macc_tipo");
+            entity.Property(e => e.MaccCMatricola)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("macc_c_matricola");
+            entity.Property(e => e.MaccCDitta)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("macc_c_ditta");
+            entity.Property(e => e.MaccCCdl)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .HasColumnName("macc_c_cdl");
+            entity.Property(e => e.MaccDesc)
+                .HasMaxLength(120)
+                .IsUnicode(false)
+                .HasColumnName("macc_desc");
+            entity.Property(e => e.MaccDtIns)
+                .HasColumnType("datetime")
+                .HasColumnName("macc_dt_ins");
+            entity.Property(e => e.MaccDtUm)
+                .HasColumnType("datetime")
+                .HasColumnName("macc_dt_um");
+            entity.Property(e => e.MaccFlgAttivo)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("macc_flg_attivo");
+            entity.Property(e => e.MaccFlgComdir)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("macc_flg_comdir");
+            entity.Property(e => e.MaccFlgGrp)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("macc_flg_grp");
+            entity.Property(e => e.MaccFlgMag)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("macc_flg_mag");
+            entity.Property(e => e.MaccFlgPresidio)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("macc_flg_presidio");
+            entity.Property(e => e.MaccGrpCosto)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .HasColumnName("macc_grp_costo");
+            entity.Property(e => e.MaccId)
+                .ValueGeneratedOnAdd()
+                .HasColumnType("numeric(12, 0)")
+                .HasColumnName("macc_id");
+            entity.Property(e => e.MaccListaCaus)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("macc_lista_caus");
+            entity.Property(e => e.MaccNRis)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("macc_n_ris");
+            entity.Property(e => e.MaccPassw)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("macc_passw");
+            entity.Property(e => e.MaccPathParprogramDes)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("macc_path_parprogram_des");
+            entity.Property(e => e.MaccPathParprogramSrc)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("macc_path_parprogram_src");
+            entity.Property(e => e.MaccPortata)
+                .HasColumnType("numeric(13, 4)")
+                .HasColumnName("macc_portata");
+            entity.Property(e => e.MaccStris)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("macc_stris");
+            entity.Property(e => e.MaccTprocpers)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("macc_tprocpers");
+            entity.Property(e => e.MaccUtenteIns)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("macc_utente_ins");
+            entity.Property(e => e.MaccUtenteUm)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("macc_utente_um");
         });
 
         OnModelCreatingPartial(modelBuilder);
