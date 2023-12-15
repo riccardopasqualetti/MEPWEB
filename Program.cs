@@ -55,10 +55,12 @@ namespace WebApplication2
             builder.Services.AddTransient<ITbcpService, TbcpService>();
 			builder.Services.AddTransient<IAcliService, AcliService>();
 			builder.Services.AddTransient<IOlcaService, OlcaService>();
-			builder.Services.AddTransient<IMvxpa01Service, Mvxpa01Service>();
+            builder.Services.AddTransient<IPscCo02Service, PscCo02Service>();      
+            builder.Services.AddTransient<IMvxpa01Service, Mvxpa01Service>();
 			builder.Services.AddTransient<ITbpnService, TbpnService>();
             builder.Services.AddTransient<ILoginService, LoginService>();
             builder.Services.AddTransient<IRegistroRicaricheService, RegistroRicaricheService>();
+            builder.Services.AddTransient<IOreQualificaService, OreQualificaService>();
 
 
             var app = builder.Build();
