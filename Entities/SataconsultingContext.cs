@@ -2,6 +2,7 @@
 using Mep01Web.Models;
 using Mep01Web.Models.Views;
 using MepWeb.Models;
+using MepWeb.Models.Views;
 
 namespace Mep01Web.Infrastructure;
 
@@ -53,13 +54,14 @@ public partial class SataconsultingContext : DbContext
 
     public virtual DbSet<PscCo03> PscCo03s { get; set; }
 
-    public virtual DbSet<VsConsXComm> VsConsXComms { get; set; }
+    
 
 
     // Views
     public virtual DbSet<Mvxpa01> Mvxpa01s { get; set; }
-    public virtual DbSet<VsPpSprintConsComIsl> VsPpSprintConsComIsls { get; set; }
+    public virtual DbSet<VsPpMonitorIsl> VsPpMonitorIsl { get; set; }
     public virtual DbSet<Mvxzz12> Mvxzz12s { get; set; }
+    public virtual DbSet<VsConsXComm> VsConsXComms { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:Main");
@@ -70,137 +72,6 @@ public partial class SataconsultingContext : DbContext
               .HasDefaultSchema("dba")
               .UseCollation("Latin1_General_CI_AS");
 
-        modelBuilder.Entity<VsConsXComm>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("vs_cons_x_comm");
-
-            entity.Property(e => e.AcliRagSoc1)
-                .HasMaxLength(120)
-                .IsUnicode(false)
-                .HasColumnName("acli_rag_soc_1");
-            entity.Property(e => e.Descrizione)
-                .HasMaxLength(2000)
-                .IsUnicode(false)
-                .HasColumnName("descrizione");
-            entity.Property(e => e.DescrizioneRidotta)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("descrizione_ridotta");
-            entity.Property(e => e.HhacqBuc)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("HHACQ_BUC");
-            entity.Property(e => e.HhacqGen)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("HHACQ_GEN");
-            entity.Property(e => e.HhacqPgm)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("HHACQ_PGM");
-            entity.Property(e => e.HhacqPjm)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("HHACQ_PJM");
-            entity.Property(e => e.HhacqSoa)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("HHACQ_SOA");
-            entity.Property(e => e.HhacqSyd)
-                .HasColumnType("numeric(6, 2)")
-                .HasColumnName("HHACQ_SYD");
-            entity.Property(e => e.HhcrrgBuc)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_BUC");
-            entity.Property(e => e.HhcrrgGen)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_GEN");
-            entity.Property(e => e.HhcrrgPgm)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_PGM");
-            entity.Property(e => e.HhcrrgPjm)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_PJM");
-            entity.Property(e => e.HhcrrgSoa)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_SOA");
-            entity.Property(e => e.HhcrrgSyd)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_SYD");
-            entity.Property(e => e.TbcpAComm)
-                .HasColumnType("numeric(4, 0)")
-                .HasColumnName("tbcp_a_comm");
-            entity.Property(e => e.TbcpCCli)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .HasColumnName("tbcp_c_cli");
-            entity.Property(e => e.TbcpCarea)
-                .HasColumnType("numeric(4, 0)")
-                .HasColumnName("tbcp_carea");
-            entity.Property(e => e.TbcpDesc)
-                .HasMaxLength(2000)
-                .IsUnicode(false)
-                .HasColumnName("tbcp_desc");
-            entity.Property(e => e.TbcpId)
-                .HasColumnType("numeric(12, 0)")
-                .HasColumnName("tbcp_id");
-            entity.Property(e => e.TbcpM1Project)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("tbcp_m1_project");
-            entity.Property(e => e.TbcpNComm)
-                .HasColumnType("numeric(8, 0)")
-                .HasColumnName("tbcp_n_comm");
-            entity.Property(e => e.TbcpOffPrev)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("tbcp_off_prev");
-            entity.Property(e => e.TbcpPrfComm)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("tbcp_prf_comm");
-            entity.Property(e => e.TbcpProjectManager)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .HasColumnName("tbcp_project_manager");
-            entity.Property(e => e.TbcpRifCliente)
-                .HasMaxLength(300)
-                .IsUnicode(false)
-                .HasColumnName("tbcp_rif_cliente");
-            entity.Property(e => e.TbcpStatus)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("tbcp_status");
-            entity.Property(e => e.TbcpTstComm)
-                .HasMaxLength(3)
-                .IsUnicode(false)
-                .HasColumnName("tbcp_tst_comm");
-            entity.Property(e => e.TfattBuc)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("TFATT_BUC");
-            entity.Property(e => e.TfattGen)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("TFATT_GEN");
-            entity.Property(e => e.TfattPgm)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("TFATT_PGM");
-            entity.Property(e => e.TfattPjm)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("TFATT_PJM");
-            entity.Property(e => e.TfattSoa)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("TFATT_SOA");
-            entity.Property(e => e.TfattSyd)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .HasColumnName("TFATT_SYD");
-            entity.Property(e => e.Usr1Desc)
-                .HasMaxLength(160)
-                .IsUnicode(false)
-                .HasColumnName("usr1_desc");
-        });
 
         modelBuilder.Entity<FlussoAcli>(entity =>
         {
@@ -4655,11 +4526,11 @@ public partial class SataconsultingContext : DbContext
 		});
 
 
-        modelBuilder.Entity<VsPpSprintConsComIsl>(entity =>
+        modelBuilder.Entity<VsPpMonitorIsl>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToView("vs_pp_sprint_cons_COM_ISL");
+                .ToView("vs_pp_monitor_ISL");
 
             entity.Property(e => e.AcliRagSoc1)
                 .HasMaxLength(120)
@@ -4973,6 +4844,139 @@ public partial class SataconsultingContext : DbContext
                 .HasMaxLength(5)
                 .IsUnicode(false)
                 .HasColumnName("macc_utente_um");
+        });
+
+
+        modelBuilder.Entity<VsConsXComm>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vs_cons_x_comm");
+
+            entity.Property(e => e.AcliRagSoc1)
+                .HasMaxLength(120)
+                .IsUnicode(false)
+                .HasColumnName("acli_rag_soc_1");
+            entity.Property(e => e.Descrizione)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("descrizione");
+            entity.Property(e => e.DescrizioneRidotta)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("descrizione_ridotta");
+            entity.Property(e => e.HhacqBuc)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_BUC");
+            entity.Property(e => e.HhacqGen)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_GEN");
+            entity.Property(e => e.HhacqPgm)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_PGM");
+            entity.Property(e => e.HhacqPjm)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_PJM");
+            entity.Property(e => e.HhacqSoa)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_SOA");
+            entity.Property(e => e.HhacqSyd)
+                .HasColumnType("numeric(6, 2)")
+                .HasColumnName("HHACQ_SYD");
+            entity.Property(e => e.HhcrrgBuc)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_BUC");
+            entity.Property(e => e.HhcrrgGen)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_GEN");
+            entity.Property(e => e.HhcrrgPgm)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_PGM");
+            entity.Property(e => e.HhcrrgPjm)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_PJM");
+            entity.Property(e => e.HhcrrgSoa)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_SOA");
+            entity.Property(e => e.HhcrrgSyd)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_SYD");
+            entity.Property(e => e.TbcpAComm)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("tbcp_a_comm");
+            entity.Property(e => e.TbcpCCli)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_c_cli");
+            entity.Property(e => e.TbcpCarea)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("tbcp_carea");
+            entity.Property(e => e.TbcpDesc)
+                .HasMaxLength(2000)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_desc");
+            entity.Property(e => e.TbcpId)
+                .HasColumnType("numeric(12, 0)")
+                .HasColumnName("tbcp_id");
+            entity.Property(e => e.TbcpM1Project)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_m1_project");
+            entity.Property(e => e.TbcpNComm)
+                .HasColumnType("numeric(8, 0)")
+                .HasColumnName("tbcp_n_comm");
+            entity.Property(e => e.TbcpOffPrev)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_off_prev");
+            entity.Property(e => e.TbcpPrfComm)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_prf_comm");
+            entity.Property(e => e.TbcpProjectManager)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_project_manager");
+            entity.Property(e => e.TbcpRifCliente)
+                .HasMaxLength(300)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_rif_cliente");
+            entity.Property(e => e.TbcpStatus)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_status");
+            entity.Property(e => e.TbcpTstComm)
+                .HasMaxLength(3)
+                .IsUnicode(false)
+                .HasColumnName("tbcp_tst_comm");
+            entity.Property(e => e.TfattBuc)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_BUC");
+            entity.Property(e => e.TfattGen)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_GEN");
+            entity.Property(e => e.TfattPgm)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_PGM");
+            entity.Property(e => e.TfattPjm)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_PJM");
+            entity.Property(e => e.TfattSoa)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_SOA");
+            entity.Property(e => e.TfattSyd)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("TFATT_SYD");
+            entity.Property(e => e.Usr1Desc)
+                .HasMaxLength(160)
+                .IsUnicode(false)
+                .HasColumnName("usr1_desc");
         });
 
         OnModelCreatingPartial(modelBuilder);

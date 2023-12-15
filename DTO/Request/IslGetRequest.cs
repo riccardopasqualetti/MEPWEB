@@ -21,7 +21,7 @@ namespace Mep01Web.DTO.Request
         public DateTime FilterIslDttStart { get; set; }
         public DateTime FilterIslDttEnd { get; set; }
 
-        public IEnumerable<VsPpSprintConsComIsl> IslList { get; set; }
+        public IEnumerable<VsPpMonitorIsl> IslList { get; set; }
 
         public string FilterHidden { get; set; }
 

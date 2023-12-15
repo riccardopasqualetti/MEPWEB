@@ -28,7 +28,7 @@ namespace Mep01Web.Controllers
             IslGetRequest obj = new IslGetRequest();
             obj.FilterIslCRis = _userScope.SV_USR_SIGLA;
             obj.FilterHidden = "Y";
-            IEnumerable<VsPpSprintConsComIsl> objIslList = _db.VsPpSprintConsComIsls
+            IEnumerable<VsPpMonitorIsl> objIslList = _db.VsPpMonitorIsl
                 .Where(c => c.CurrCdl.Contains("_" + obj.FilterIslCRis) && c.Flag != "9-CLOSE")
                 .OrderBy(c => c.Flag).ThenBy(c => c.CurrDt).ThenBy(c => c.CurrCdl);
             obj.IslList = objIslList;
@@ -42,7 +42,7 @@ namespace Mep01Web.Controllers
         public async Task<ActionResult> Index(IslGetRequest obj)
         {
             obj.FilterHidden = "";
-            IEnumerable<VsPpSprintConsComIsl> objIslList = _db.VsPpSprintConsComIsls
+            IEnumerable<VsPpMonitorIsl> objIslList = _db.VsPpMonitorIsl
                 .Where(c => c.CurrCdl.Contains("_" + obj.FilterIslCRis) && c.Flag != "9-CLOSE")
                 .OrderBy(c => c.Flag).ThenBy(c => c.CurrDt).ThenBy(c => c.CurrCdl);
             obj.IslList = objIslList;

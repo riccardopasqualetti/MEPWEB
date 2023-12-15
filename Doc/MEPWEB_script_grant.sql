@@ -40,11 +40,13 @@ GRANT VIEW DEFINITION ON dba.PSC_CO03                   TO mepweb
 GRANT VIEW DEFINITION ON dba.flusso_macc                TO mepweb 
 
 GRANT SELECT ON dba.mvxpa01                             TO mepweb
-GRANT SELECT ON dba.vs_pp_sprint_cons_COM_ISL           TO mepweb
+GRANT SELECT ON dba.vs_pp_monitor_ISL                   TO mepweb
 GRANT SELECT ON dba.mvxzz12                             TO mepweb 
 GRANT SELECT ON dba.vs_cons_x_comm                      TO mepweb 
-GRANT VIEW DEFINITION ON dba.vs_pp_sprint_cons_COM_ISL  TO mepweb 
+GRANT SELECT ON dba.vs_pp_comm_aperte_x_cli             TO mepweb 
+GRANT VIEW DEFINITION ON dba.vs_pp_monitor_ISL          TO mepweb 
 GRANT VIEW DEFINITION ON dba.mvxpa01                    TO mepweb 
 GRANT VIEW DEFINITION ON dba.mvxzz12                    TO mepweb 
 GRANT VIEW DEFINITION ON dba.vs_cons_x_comm             TO mepweb
+GRANT VIEW DEFINITION ON dba.vs_pp_comm_aperte_x_cli    TO mepweb
 go
