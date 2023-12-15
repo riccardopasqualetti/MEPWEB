@@ -178,19 +178,19 @@ namespace Mep01Web.Controllers
         }
 
         [HttpGet("Crrg/OreQualifica/{idDoc}")]
-        public async Task<IActionResult> OreQualifica(string idDoc)
+        public async Task<IActionResult> OreQualifica(decimal idDoc)
         {
             return View();
         }
 
         [HttpGet("Crrg/AddettoQualifica/{idDoc}")]
-        public async Task<IActionResult> AddettoQualifica(string idDoc)
+        public async Task<IActionResult> AddettoQualifica(decimal idDoc)
         {
             return View();
         }
 
         [HttpGet("Crrg/RegistroRicariche/{idDoc}")]
-        public async Task<IActionResult> RegistroRicariche(string idDoc)
+        public async Task<IActionResult> RegistroRicariche(decimal idDoc)
         {
             var res = await _registroRicaricheService.GetAllRecordsByIdDocAsync(idDoc);
             return View();
