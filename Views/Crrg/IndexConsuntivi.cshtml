@@ -1,11 +1,34 @@
-﻿@model List<MepWeb.DTO.Response.ConsXCommResponse>;
+﻿@using MepWeb.DTO.Response;
+@model List<MepWeb.DTO.Response.ConsXCommResponse>;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@functions {
+    public string calcolaAllarme(string? tfatt, decimal? hhacq, decimal? hhacqcrrg)
+    {
+        if ((tfatt == "1" || tfatt == "2") && hhacq > 0) {
+            if ((((hhacq - hhacqcrrg) / hhacq) * 100) < 10) {
+                return "allarme-rosso";
+            }
+            else if ((((hhacq - hhacqcrrg) / hhacq) * 100) < 20)
+            {
+                return "allarme-arancione";
+            }
+            else
+            {
+                return "allarme-verde";
+            }
+        } 
+        else
+        {
+            return "";
+        }
+    }
+}
 @{
 }
 
-<div class="d-flex flex-column">
+<div id="consuntivi-main-container" class="d-flex flex-column main-mep-container">
 
     <div id="filters" class="d-flex justify-content-between">
         <div id="filter-btn">
@@ -19,6 +42,7 @@
                 <label for="cliente">Cliente:</label>
                 <input autocomplete="off" type="text" class="form-control" name="cliente" id="cliente">
                 <button type="submit" class="btn btn-success mt-2" id="confirm-research">Cerca</button>
+                <button type="button" class="btn btn-secondary mt-2" id="reset-research">Reset</button>
             </form>
         </div>
         <div id="menu-btns">
@@ -55,7 +79,8 @@
             <tbody id="cons-tbody">                
                     @for (int i = 0; i < Model.Count; i++)
                     {
-                        <tr class="riga" id="row-@(i + 1)" idDoc="@Model[i].TbcpId">
+                    
+                    <tr class="riga" id="row-@(i + 1)" idDoc="@Model[i].TbcpId">
                             <td class="n-riga-value"><div><p><strong>@(i + 1)</strong></p></div></td>
                             <td campo="TBCP_TST_COMM">@Model[i].TBCP_TST_COMM</td>
                             <td campo="TBCP_PRF_COMM">@Model[i].TBCP_PRF_COMM</td>
@@ -70,44 +95,44 @@
                             <td campo="USR1_DESC">@Model[i].USR1_DESC</td>
                             <td>
                                 <div>
-                                    <p campo="HHACQPGM">@Model[i].HHACQPGM</p>
-                                    <p campo="HHCRRGPGM">@Model[i].HHCRRGPGM</p>
-                                    <p campo="HHACQPGM">@(Model[i].HHACQPGM - Model[i].HHCRRGPGM)</p>
+                                    <p class="text-end" campo="HHACQPGM">@(String.Format("{0:0.00}", Model[i].HHACQPGM))</p>
+                                    <p class="text-end" campo="HHCRRGPGM">@(String.Format("{0:0.00}", Model[i].HHCRRGPGM))</p>
+                                    <p class="text-end @calcolaAllarme(Model[i].TFATTPGM, Model[i].HHACQPGM, Model[i].HHCRRGPGM)" campo="HHACQPGM">@(String.Format("{0:0.00}", (Model[i].HHACQPGM - Model[i].HHCRRGPGM)))</p>
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <p campo="HHACQSOA">@Model[i].HHACQSOA</p>
-                                    <p campo="HHCRRGSOA">@Model[i].HHCRRGSOA</p>
-                                    <p campo="HHACQSOA">@(Model[i].HHACQSOA - Model[i].HHCRRGSOA)</p>
+                                    <p class="text-end" campo="HHACQSOA">@(String.Format("{0:0.00}", Model[i].HHACQSOA))</p>
+                                    <p class="text-end" campo="HHCRRGSOA">@(String.Format("{0:0.00}", Model[i].HHCRRGSOA))</p>
+                                    <p class="text-end @calcolaAllarme(Model[i].TFATTSOA, Model[i].HHACQSOA, Model[i].HHCRRGSOA)" campo="HHACQSOA">@(String.Format("{0:0.00}", (Model[i].HHACQSOA - Model[i].HHCRRGSOA)))</p>
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <p campo="HHACQPJM">@Model[i].HHACQPJM</p>
-                                    <p campo="HHCRRGPJM">@Model[i].HHCRRGPJM</p>
-                                    <p campo="HHACQPJM">@(Model[i].HHACQPJM - Model[i].HHCRRGPJM)</p>
+                                    <p class="text-end" campo="HHACQPJM">@(String.Format("{0:0.00}", Model[i].HHACQPJM))</p>
+                                    <p class="text-end" campo="HHCRRGPJM">@(String.Format("{0:0.00}", Model[i].HHCRRGPJM))</p>
+                                    <p class="text-end @calcolaAllarme(Model[i].TFATTPJM, Model[i].HHACQPJM, Model[i].HHCRRGPJM)" campo="HHACQPJM">@(String.Format("{0:0.00}", (Model[i].HHACQPJM - Model[i].HHCRRGPJM)))</p>
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <p campo="HHACQBUC">@Model[i].HHACQBUC</p>
-                                    <p campo="HHCRRGBUC">@Model[i].HHCRRGBUC</p>
-                                    <p campo="HHACQBUC">@(Model[i].HHACQBUC - Model[i].HHCRRGBUC)</p>
+                                    <p class="text-end" campo="HHACQBUC">@(String.Format("{0:0.00}", Model[i].HHACQBUC))</p>
+                                    <p class="text-end" campo="HHCRRGBUC">@(String.Format("{0:0.00}", Model[i].HHCRRGBUC))</p>
+                                    <p class="text-end @calcolaAllarme(Model[i].TFATTBUC, Model[i].HHACQBUC, Model[i].HHCRRGBUC)" campo="HHACQBUC">@(String.Format("{0:0.00}", (Model[i].HHACQBUC - Model[i].HHCRRGBUC)))</p>
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <p campo="HHACQSYD">@Model[i].HHACQSYD</p>
-                                    <p campo="HHCRRGSYD">@Model[i].HHCRRGSYD</p>
-                                    <p campo="HHACQSYD">@(Model[i].HHACQSYD - Model[i].HHCRRGSYD)</p>
+                                    <p class="text-end" campo="HHACQSYD">@(String.Format("{0:0.00}", Model[i].HHACQSYD))</p>
+                                    <p class="text-end" campo="HHCRRGSYD">@(String.Format("{0:0.00}", Model[i].HHCRRGSYD))</p>
+                                    <p class="text-end @calcolaAllarme(Model[i].TFATTSYD, Model[i].HHACQSYD, Model[i].HHCRRGSYD)" campo="HHACQSYD">@(String.Format("{0:0.00}", (Model[i].HHACQSYD - Model[i].HHCRRGSYD)))</p>
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <p campo="HHACQGEN">@Model[i].HHACQGEN</p>
-                                    <p campo="HHCRRGGEN">@Model[i].HHCRRGGEN</p>
-                                    <p campo="HHACQGEN">@(Model[i].HHACQGEN - Model[i].HHCRRGGEN)</p>
+                                    <p class="text-end" campo="HHACQGEN">@(String.Format("{0:0.00}", Model[i].HHACQGEN))</p>
+                                    <p class="text-end" campo="HHCRRGGEN">@(String.Format("{0:0.00}", Model[i].HHCRRGGEN))</p>
+                                    <p class="text-end @calcolaAllarme(Model[i].TFATTGEN, Model[i].HHACQGEN, Model[i].HHCRRGGEN)" campo="HHACQGEN">@(String.Format("{0:0.00}", (Model[i].HHACQGEN - Model[i].HHCRRGGEN)))</p>
                                 </div>
                             </td>
                         </tr>

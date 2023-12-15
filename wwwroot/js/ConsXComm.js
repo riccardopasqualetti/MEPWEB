@@ -53,16 +53,29 @@ document.getElementById("search-form").addEventListener("submit", (e) => {
     search("TBCP_N_COMM","TBCP_C_CLI", inputNCommessa.value, inputCliente.value)
 });
 
+document.getElementById("reset-research").addEventListener("click", () => {
+    resetRows();
+});
+
 function search(nComm, cCli, value1, value2) {
+    value1 = value1.trim().toLowerCase()
+    value2 = value2.trim().toLowerCase()
     if (value1 != "" || value2 != "") {
         for (const row of tableRows) {
-                const field1 = row.querySelector(`[campo="${nComm}"]`)
-                const field2 = row.querySelector(`[campo="${cCli}"]`)
+                const field1 = row.querySelector(`[campo="${nComm}"]`).innerText.toLowerCase()
+                const field2 = row.querySelector(`[campo="${cCli}"]`).innerText.toLowerCase()
 
-                console.log("value1=" + value1 + "    value2=" + value2)
-            if ((value1 != "" && field1.innerText.includes(value1)) && (value2 != "" && field2.innerText.includes(value2))) {
+                
+            if (field1.includes(value1) && field2.includes(value2)) {
+                console.log("entrato doppio  " + value1 + " " + value2 + "             " + field1 + " " + field2)
                 row.classList.remove("d-none")
-            } else {
+            } /* else if (field1.includes(value1) && value1 != "") {
+                console.log("entrato")
+                row.classList.remove("d-none")
+            } else if (field2.includes(value2) && value2 != "") {
+                console.log("entrato2")
+                row.classList.remove("d-none")
+            } */ else {
                 row.classList.add("d-none")
             }
         };
@@ -75,6 +88,8 @@ function resetRows() {
     for (const row of tableRows) {
         row.classList.remove("d-none")
     };
+    inputNCommessa.value = "";
+    inputCliente.value = "";
 }
 
 function goToDoc(pageAction) {

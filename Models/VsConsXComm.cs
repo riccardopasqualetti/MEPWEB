@@ -39,6 +39,18 @@ public partial class VsConsXComm
 
     public decimal TbcpId { get; set; }
 
+    public string? TfattPgm { get; set; }
+
+    public string? TfattSoa { get; set; }
+
+    public string? TfattPjm { get; set; }
+
+    public string? TfattBuc { get; set; }
+
+    public string? TfattSyd { get; set; }
+
+    public string? TfattGen { get; set; }
+
     public decimal HhacqPgm { get; set; }
 
     public decimal HhacqSoa { get; set; }
