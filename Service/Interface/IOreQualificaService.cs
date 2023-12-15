@@ -6,6 +6,7 @@ namespace MepWeb.Service.Interface
 {
     public interface IOreQualificaService
     {
+        Task<ResponseBase<OreQualificaPagedResponse?>> GetAllRecordsByIdDocPagedAsync(decimal idDoc, BasePagedRequest pagedRequest);
         Task<ResponseBase<List<OreQualificaResponse?>>> GetAllRecordsByIdDocAsync(decimal idDoc);
         Task<ResponseBase<OreQualificaResponse?>> GetSingleRecordAsync(decimal idDoc, decimal grpcdl);
         Task<ResponseBase<OreQualificaResponse?>> CreateRecordAsync(OreQualificaCreateRequest createRequest);

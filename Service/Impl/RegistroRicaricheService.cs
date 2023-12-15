@@ -3,6 +3,7 @@ using Mep01Web.Infrastructure;
 using Mep01Web.Models;
 using Mep01Web.Service.Interface;
 using MepWeb.Costants;
+using MepWeb.DTO;
 using MepWeb.DTO.Request;
 using MepWeb.DTO.Response;
 using MepWeb.Exeptions;
@@ -26,7 +27,43 @@ namespace MepWeb.Service.Impl
             _crrgService = crrgService;
         }
 
-        public async Task<ResponseBase<List<RegistroRicaricheResponse?>>> GetAllRecordsByIdDocAsync(decimal idDoc)
+		public async Task<ResponseBase<RegistroRicarichePagedResponse?>> GetAllRecordsByIdDocPagedAsync(decimal idDoc, BasePagedRequest pagedRequest)
+		{
+			var count = await _dbContext.PscCo03s.Where(x => x.IdDoc == idDoc).CountAsync();
+
+			var pageRequest = new BasePageCriteria(pagedRequest.Page, pagedRequest.Limit);
+
+			var query = from c003 in _dbContext.PscCo03s
+						join zz12 in _dbContext.Mvxzz12s.DefaultIfEmpty() on new { v1 = c003.Grpcdl, v2 = "grpcdl" } equals new { v1 = zz12.Cod, v2 = zz12.Cprfc }
+						into c0zz
+						from zz12 in c0zz.DefaultIfEmpty()
+						where c003.IdDoc == idDoc
+						select new RegistroRicaricheResponse
+						{
+                            IdDocumento = idDoc,
+                            Id = c003.Id,
+							Qualifica = zz12.DescrizioneRidotta,
+							RiferimentoOfferta = c003.RifOfferta,
+							DataRicarica = c003.DtRicarica,
+							OreAcquistate = c003.HhAcq,
+							Note = c003.Note
+						};
+
+			var pagedQuery = query
+			.Skip(pagedRequest.Page)
+			.Take(pagedRequest.Limit);
+
+			var res = new RegistroRicarichePagedResponse
+			{
+				TotalPages = (int)Math.Ceiling((decimal)count / pageRequest.Limit),
+				TotalRecords = count,
+				response = await pagedQuery.ToListAsync()
+			};
+
+			return ResponseBase<RegistroRicarichePagedResponse?>.Success(res);
+		}
+
+		public async Task<ResponseBase<List<RegistroRicaricheResponse?>>> GetAllRecordsByIdDocAsync(decimal idDoc)
         {
             var query = await (from c003 in _dbContext.PscCo03s
                         join zz12 in _dbContext.Mvxzz12s.DefaultIfEmpty() on new { v1 = c003.Grpcdl, v2 = "grpcdl" } equals new { v1 = zz12.Cod, v2 = zz12.Cprfc }
@@ -34,8 +71,9 @@ namespace MepWeb.Service.Impl
                         from zz12 in c0zz.DefaultIfEmpty()
                         where c003.IdDoc == idDoc
                         select new RegistroRicaricheResponse
-                        {
-                            Qualifica = zz12.DescrizioneRidotta,
+						{
+							Id = c003.Id,
+							Qualifica = zz12.DescrizioneRidotta,
                             RiferimentoOfferta = c003.RifOfferta,
                             DataRicarica = c003.DtRicarica,
                             OreAcquistate = c003.HhAcq,
@@ -53,8 +91,9 @@ namespace MepWeb.Service.Impl
                         from zz12 in c0zz.DefaultIfEmpty()
                         where c003.Id == id
                         select new RegistroRicaricheResponse
-                        {
-                            Qualifica = zz12.DescrizioneRidotta,
+						{
+							Id = c003.Id,
+							Qualifica = zz12.DescrizioneRidotta,
                             RiferimentoOfferta = c003.RifOfferta,
                             DataRicarica = c003.DtRicarica,
                             OreAcquistate = c003.HhAcq,

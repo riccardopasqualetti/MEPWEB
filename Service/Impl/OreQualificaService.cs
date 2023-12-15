@@ -1,7 +1,10 @@
-﻿using Mep01Web.DTO;
+﻿using Azure.Core;
+using Humanizer.Localisation;
+using Mep01Web.DTO;
 using Mep01Web.Infrastructure;
 using Mep01Web.Models;
 using MepWeb.Costants;
+using MepWeb.DTO;
 using MepWeb.DTO.Request;
 using MepWeb.DTO.Response;
 using MepWeb.Exeptions;
@@ -21,6 +24,40 @@ namespace MepWeb.Service.Impl
             _scope = scope;
         }
 
+        public async Task<ResponseBase<OreQualificaPagedResponse?>> GetAllRecordsByIdDocPagedAsync(decimal idDoc, BasePagedRequest pagedRequest)
+        {
+            var count = await _dbContext.PscCo01s.Where(x => x.IdDoc == idDoc).CountAsync();
+
+            var pageRequest = new BasePageCriteria(pagedRequest.Page, pagedRequest.Limit);
+
+            var query = from c001 in _dbContext.PscCo01s
+                        join zz12 in _dbContext.Mvxzz12s.DefaultIfEmpty() on new { v1 = c001.Grpcdl, v2 = "grpcdl" } equals new { v1 = zz12.Cod, v2 = zz12.Cprfc }
+                        into c0zz
+                        from zz12 in c0zz.DefaultIfEmpty()
+                        where c001.IdDoc == idDoc
+                        select new OreQualificaResponse
+                        {
+                            IdDocumento = idDoc,
+                            Qualifica = zz12.DescrizioneRidotta,
+                            TipoFatturazione = c001.TFatt,
+                            OreAcquistate = c001.HhAcq,
+                            Note = c001.Note
+                        };
+
+            var pagedQuery = query
+            .Skip(pagedRequest.Page)
+            .Take(pagedRequest.Limit);
+
+            var res = new OreQualificaPagedResponse
+            {
+                TotalPages = (int)Math.Ceiling((decimal)count / pageRequest.Limit),
+                TotalRecords = count,
+                response = await pagedQuery.ToListAsync()
+            };
+
+            return ResponseBase<OreQualificaPagedResponse?>.Success(res);
+        }
+
         public async Task<ResponseBase<List<OreQualificaResponse?>>> GetAllRecordsByIdDocAsync(decimal idDoc)
         {
             var query = await (from c001 in _dbContext.PscCo01s
@@ -30,6 +67,7 @@ namespace MepWeb.Service.Impl
                               where c001.IdDoc == idDoc
                               select new OreQualificaResponse
                               {
+                                  IdDocumento = idDoc,
                                   Qualifica = zz12.DescrizioneRidotta,
                                   TipoFatturazione = c001.TFatt,
                                   OreAcquistate = c001.HhAcq,
@@ -49,6 +87,7 @@ namespace MepWeb.Service.Impl
                               where c001.IdDoc == idDoc && c001.Grpcdl == grpcdl && c001.CDitta == cDitta
                               select new OreQualificaResponse
                               {
+                                  IdDocumento = idDoc,
                                   Qualifica = zz12.DescrizioneRidotta,
                                   TipoFatturazione = c001.TFatt,
                                   OreAcquistate = c001.HhAcq,
