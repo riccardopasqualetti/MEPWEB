@@ -178,13 +178,13 @@ namespace Mep01Web.Controllers
         }
 
         [HttpGet("Crrg/OreQualifica/{idDoc}")]
-        public async Task<IActionResult> OreQualifica(string idDoc)
+        public async Task<IActionResult> OreQualifica(decimal idDoc)
         {
             return View();
         }
 
         [HttpGet("Crrg/AddettoQualifica/{idDoc}")]
-        public async Task<IActionResult> AddettoQualifica(string idDoc)
+        public async Task<IActionResult> AddettoQualifica(decimal idDoc)
         {
             return View();
         }
