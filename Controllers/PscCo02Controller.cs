@@ -2,6 +2,7 @@
 using Mep01Web.Service.Impl;
 using Mep01Web.Service.Interface;
 using MepWeb.DTO.Request;
+using MepWeb.Service.Impl;
 using MepWeb.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -88,6 +89,63 @@ namespace MepWeb.Controllers
                     return Problem(
                           detail: response.Errors[response.Errors.Count - 1].Code + " | " + response.Errors[response.Errors.Count - 1].Message,
                         statusCode: response.Errors[response.Errors.Count - 1].Code == "-2" ? StatusCodes.Status404NotFound : StatusCodes.Status400BadRequest
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
+            }
+        }
+        [HttpGet("{idDocumento}")]
+        public async Task<IActionResult> GetAllPscCo02sAsync(decimal idDoc)
+        {
+            
+
+            try
+            {
+                var getResponse = await _pscCo02Service.GetAllFromPscCo02Async(idDoc);
+
+                if (getResponse.Succeeded)
+                {
+                    return Ok(getResponse.Body);
+                }
+                else
+                {
+                    return Problem(
+                          detail: getResponse.Errors[getResponse.Errors.Count - 1].Code + " | " + getResponse.Errors[getResponse.Errors.Count - 1].Message,
+                        statusCode: getResponse.Errors[getResponse.Errors.Count - 1].Code == "-2" ? StatusCodes.Status404NotFound : StatusCodes.Status400BadRequest
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
+            }
+        }
+        [HttpGet("{cRisorsa}/{idDocumento}")]
+        public async Task<IActionResult> GetSinglePscCo02Async(string cRisorsa, decimal idDoc)
+        {
+
+            try
+            {
+                var getResponse = await _pscCo02Service.GetSingleRecordAsync(cRisorsa, idDoc);
+
+                if (getResponse.Succeeded)
+                {
+                    return Ok(getResponse.Body);
+                }
+                else
+                {
+                    return Problem(
+                          detail: getResponse.Errors[getResponse.Errors.Count - 1].Code + " | " + getResponse.Errors[getResponse.Errors.Count - 1].Message,
+                        statusCode: getResponse.Errors[getResponse.Errors.Count - 1].Code == "-2" ? StatusCodes.Status404NotFound : StatusCodes.Status400BadRequest
                     );
                 }
             }
