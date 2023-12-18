@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MepWeb.Controllers
 {
     [Authorize]
-    [Route("api/Mep_Web_[controller]")]
+    [Route("api/MepWeb_[controller]")]
     [ApiController]
     public class OreQualificaController : ControllerBase
     {
@@ -20,6 +20,36 @@ namespace MepWeb.Controllers
         {
             _oreQualificaService = oreQualificaService;
             _logger = logger;
+        }
+
+        [HttpGet("GetAllPaged/{idDocumento}")]
+        public async Task<IActionResult> GetAllPscCo01sPagedAsync(decimal idDoc, [FromQuery] BasePagedRequest request)
+        {
+            _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllPscCo01sPagedAsync");
+
+            try
+            {
+                var getResponse = await _oreQualificaService.GetAllRecordsByIdDocPagedAsync(idDoc, request);
+
+                if (getResponse.Succeeded)
+                {
+                    return Ok(getResponse.Body);
+                }
+                else
+                {
+                    return Problem(
+                          detail: getResponse.Errors[getResponse.Errors.Count - 1].Code + " | " + getResponse.Errors[getResponse.Errors.Count - 1].Message,
+                        statusCode: getResponse.Errors[getResponse.Errors.Count - 1].Code == "-2" ? StatusCodes.Status404NotFound : StatusCodes.Status400BadRequest
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
+            }
         }
 
         [HttpGet("{idDocumento}")]

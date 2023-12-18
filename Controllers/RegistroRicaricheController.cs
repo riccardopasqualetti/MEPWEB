@@ -1,4 +1,5 @@
 ﻿using MepWeb.DTO.Request;
+using MepWeb.Service.Impl;
 using MepWeb.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MepWeb.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/MepWeb_[controller]")]
     [ApiController]
     public class RegistroRicaricheController : ControllerBase
     {
@@ -20,7 +21,37 @@ namespace MepWeb.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{idDocumento}")]
+		[HttpGet("GetAllPaged/{idDocumento}")]
+		public async Task<IActionResult> GetAllPscCo01sPagedAsync(decimal idDoc, [FromQuery] BasePagedRequest request)
+		{
+			_logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllPscCo03sPagedAsync");
+
+			try
+			{
+				var getResponse = await _registroRicaricheService.GetAllRecordsByIdDocPagedAsync(idDoc, request);
+
+				if (getResponse.Succeeded)
+				{
+					return Ok(getResponse.Body);
+				}
+				else
+				{
+					return Problem(
+						  detail: getResponse.Errors[getResponse.Errors.Count - 1].Code + " | " + getResponse.Errors[getResponse.Errors.Count - 1].Message,
+						statusCode: getResponse.Errors[getResponse.Errors.Count - 1].Code == "-2" ? StatusCodes.Status404NotFound : StatusCodes.Status400BadRequest
+					);
+				}
+			}
+			catch (Exception ex)
+			{
+				return Problem(
+					detail: ex.Message,
+					statusCode: StatusCodes.Status500InternalServerError
+				);
+			}
+		}
+
+		[HttpGet("{idDocumento}")]
         public async Task<IActionResult> GetAllPscCo01sAsync(decimal idDoc)
         {
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllRecordsByIdDocAsync");

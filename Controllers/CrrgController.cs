@@ -18,16 +18,18 @@ namespace Mep01Web.Controllers
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly UserScope _userScope;
         private readonly IRegistroRicaricheService _registroRicaricheService;
+		private readonly IOreQualificaService _oreQualificaService;
 
-        public CrrgController(SataconsultingContext sataconsulting, ICrrgService crrgService, IHttpContextAccessor contextAccessor, UserScope userScope, IRegistroRicaricheService registroRicaricheService)
-        {
-            _db = sataconsulting;
-            _crrgService = crrgService;
-            _contextAccessor = contextAccessor;
-            _userScope = userScope;
-            _registroRicaricheService = registroRicaricheService;
-        }
-        public IActionResult Index()
+		public CrrgController(SataconsultingContext sataconsulting, ICrrgService crrgService, IHttpContextAccessor contextAccessor, UserScope userScope, IRegistroRicaricheService registroRicaricheService, IOreQualificaService oreQualificaService)
+		{
+			_db = sataconsulting;
+			_crrgService = crrgService;
+			_contextAccessor = contextAccessor;
+			_userScope = userScope;
+			_registroRicaricheService = registroRicaricheService;
+			_oreQualificaService = oreQualificaService;
+		}
+		public IActionResult Index()
         {            
             DateTime dd2 = DateTime.Now;
             DateTime dd1 = dd2.Subtract(TimeSpan.FromDays(90));
@@ -178,19 +180,19 @@ namespace Mep01Web.Controllers
         }
 
         [HttpGet("Crrg/OreQualifica/{idDoc}")]
-        public async Task<IActionResult> OreQualifica(string idDoc)
+        public async Task<IActionResult> OreQualifica(decimal idDoc)
         {
             return View();
         }
 
         [HttpGet("Crrg/AddettoQualifica/{idDoc}")]
-        public async Task<IActionResult> AddettoQualifica(string idDoc)
+        public async Task<IActionResult> AddettoQualifica(decimal idDoc)
         {
             return View();
         }
 
         [HttpGet("Crrg/RegistroRicariche/{idDoc}")]
-        public async Task<IActionResult> RegistroRicariche(string idDoc)
+        public async Task<IActionResult> RegistroRicariche(decimal idDoc)
         {
             var res = await _registroRicaricheService.GetAllRecordsByIdDocAsync(idDoc);
             return View();

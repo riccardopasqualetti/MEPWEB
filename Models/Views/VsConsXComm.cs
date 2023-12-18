@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Mep01Web.Models;
+namespace MepWeb.Models.Views;
 
 public partial class VsConsXComm
 {

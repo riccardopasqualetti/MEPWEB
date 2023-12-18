@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Mep01Web.Models.Views;
 
-public partial class VsPpSprintConsComIsl
+public partial class VsPpMonitorIsl
 {
     public string? RifCli { get; set; }
 
