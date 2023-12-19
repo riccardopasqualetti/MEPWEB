@@ -54,16 +54,19 @@ public partial class SataconsultingContext : DbContext
 
     public virtual DbSet<PscCo03> PscCo03s { get; set; }
 
-    
+	public virtual DbSet<FlussoTcdl> FlussoTcdls { get; set; }
+
+	public virtual DbSet<PscQual> PscQuals { get; set; }
 
 
-    // Views
-    public virtual DbSet<Mvxpa01> Mvxpa01s { get; set; }
+	// Views
+	public virtual DbSet<Mvxpa01> Mvxpa01s { get; set; }
     public virtual DbSet<VsPpMonitorIsl> VsPpMonitorIsl { get; set; }
     public virtual DbSet<Mvxzz12> Mvxzz12s { get; set; }
     public virtual DbSet<VsConsXComm> VsConsXComms { get; set; }
+	public virtual DbSet<VsPpCommAperteXCli> VsPpCommAperteXClis { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:Main");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -4979,7 +4982,242 @@ public partial class SataconsultingContext : DbContext
                 .HasColumnName("usr1_desc");
         });
 
-        OnModelCreatingPartial(modelBuilder);
+		modelBuilder.Entity<FlussoTcdl>(entity =>
+		{
+			entity.HasKey(e => new { e.TcdlCCdl, e.TcdlCDitta }).HasName("tcdl_chiave");
+
+			entity.ToTable("flusso_tcdl", tb =>
+			{
+				tb.HasTrigger("t_flusso_tcdl_macc_ad");
+				tb.HasTrigger("t_flusso_tcdl_macc_ai");
+				tb.HasTrigger("t_flusso_tcdl_macc_au");
+			});
+
+			entity.Property(e => e.TcdlCCdl)
+				.HasMaxLength(12)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_c_cdl");
+			entity.Property(e => e.TcdlCDitta)
+				.HasMaxLength(2)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_c_ditta");
+			entity.Property(e => e.TcdlCCale)
+				.HasMaxLength(10)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_c_cale");
+			entity.Property(e => e.TcdlCCdc)
+				.HasMaxLength(12)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_c_cdc");
+			entity.Property(e => e.TcdlCGruppoSched)
+				.HasMaxLength(4)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_c_gruppo_sched");
+			entity.Property(e => e.TcdlCLivP)
+				.HasMaxLength(12)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_c_liv_p");
+			entity.Property(e => e.TcdlCMagPrel)
+				.HasColumnType("numeric(4, 0)")
+				.HasColumnName("tcdl_c_mag_prel");
+			entity.Property(e => e.TcdlCMagVers)
+				.HasColumnType("numeric(4, 0)")
+				.HasColumnName("tcdl_c_mag_vers");
+			entity.Property(e => e.TcdlCProp)
+				.HasMaxLength(8)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_c_prop");
+			entity.Property(e => e.TcdlCalgassris)
+				.HasColumnType("numeric(4, 0)")
+				.HasColumnName("tcdl_calgassris");
+			entity.Property(e => e.TcdlCalgschris)
+				.HasColumnType("numeric(4, 0)")
+				.HasColumnName("tcdl_calgschris");
+			entity.Property(e => e.TcdlColor)
+				.HasColumnType("numeric(8, 0)")
+				.HasColumnName("tcdl_color");
+			entity.Property(e => e.TcdlDesc)
+				.HasMaxLength(120)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_desc");
+			entity.Property(e => e.TcdlDtIns)
+				.HasColumnType("datetime")
+				.HasColumnName("tcdl_dt_ins");
+			entity.Property(e => e.TcdlDtUltimaSched)
+				.HasColumnType("datetime")
+				.HasColumnName("tcdl_dt_ultima_sched");
+			entity.Property(e => e.TcdlDtUm)
+				.HasColumnType("datetime")
+				.HasColumnName("tcdl_dt_um");
+			entity.Property(e => e.TcdlFlgDett)
+				.HasMaxLength(1)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_flg_dett");
+			entity.Property(e => e.TcdlFlgIe)
+				.HasMaxLength(1)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_flg_ie");
+			entity.Property(e => e.TcdlFlgSched)
+				.HasMaxLength(1)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_flg_sched");
+			entity.Property(e => e.TcdlFlgSchedMano)
+				.HasMaxLength(1)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_flg_sched_mano");
+			entity.Property(e => e.TcdlGrpcdl)
+				.HasColumnType("numeric(4, 0)")
+				.HasColumnName("tcdl_grpcdl");
+			entity.Property(e => e.TcdlHhMedMese)
+				.HasColumnType("numeric(10, 2)")
+				.HasColumnName("tcdl_hh_med_mese");
+			entity.Property(e => e.TcdlHhPrevMese)
+				.HasColumnType("numeric(10, 2)")
+				.HasColumnName("tcdl_hh_prev_mese");
+			entity.Property(e => e.TcdlHhTurno)
+				.HasColumnType("numeric(4, 2)")
+				.HasColumnName("tcdl_hh_turno");
+			entity.Property(e => e.TcdlId)
+				.ValueGeneratedOnAdd()
+				.HasColumnType("numeric(12, 0)")
+				.HasColumnName("tcdl_id");
+			entity.Property(e => e.TcdlNEntProd)
+				.HasColumnType("numeric(4, 0)")
+				.HasColumnName("tcdl_n_ent_prod");
+			entity.Property(e => e.TcdlPercEff)
+				.HasColumnType("numeric(5, 2)")
+				.HasColumnName("tcdl_perc_eff");
+			entity.Property(e => e.TcdlTDomina)
+				.HasMaxLength(1)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_t_domina");
+			entity.Property(e => e.TcdlTProp)
+				.HasMaxLength(1)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_t_prop");
+			entity.Property(e => e.TcdlTmAggSec)
+				.HasColumnType("numeric(10, 0)")
+				.HasColumnName("tcdl_tm_agg_sec");
+			entity.Property(e => e.TcdlUtenteIns)
+				.HasMaxLength(5)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_utente_ins");
+			entity.Property(e => e.TcdlUtenteUm)
+				.HasMaxLength(5)
+				.IsUnicode(false)
+				.HasColumnName("tcdl_utente_um");
+		});
+
+		modelBuilder.Entity<PscQual>(entity =>
+		{
+			entity.HasKey(e => new { e.TSoggetto, e.CSoggetto, e.TindProgressivo, e.CRisorsa, e.CDitta }).HasName("PSC_QUAL_chiave");
+
+			entity.ToTable("PSC_QUAL");
+
+			entity.Property(e => e.TSoggetto)
+				.HasMaxLength(1)
+				.IsUnicode(false)
+				.HasColumnName("T_SOGGETTO");
+			entity.Property(e => e.CSoggetto)
+				.HasMaxLength(8)
+				.IsUnicode(false)
+				.HasColumnName("C_SOGGETTO");
+			entity.Property(e => e.TindProgressivo)
+				.HasColumnType("numeric(4, 0)")
+				.HasColumnName("TIND_PROGRESSIVO");
+			entity.Property(e => e.CRisorsa)
+				.HasMaxLength(10)
+				.IsUnicode(false)
+				.HasColumnName("C_RISORSA");
+			entity.Property(e => e.CDitta)
+				.HasMaxLength(2)
+				.IsUnicode(false)
+				.HasColumnName("C_DITTA");
+			entity.Property(e => e.DtIns)
+				.HasColumnType("datetime")
+				.HasColumnName("DT_INS");
+			entity.Property(e => e.DtUm)
+				.HasColumnType("datetime")
+				.HasColumnName("DT_UM");
+			entity.Property(e => e.Grpcdl)
+				.HasColumnType("numeric(4, 0)")
+				.HasColumnName("GRPCDL");
+			entity.Property(e => e.UtenteIns)
+				.HasMaxLength(5)
+				.IsUnicode(false)
+				.HasColumnName("UTENTE_INS");
+			entity.Property(e => e.UtenteUm)
+				.HasMaxLength(5)
+				.IsUnicode(false)
+				.HasColumnName("UTENTE_UM");
+		});
+
+		modelBuilder.Entity<VsPpCommAperteXCli>(entity =>
+		{
+			entity
+				.HasNoKey()
+				.ToView("vs_pp_comm_aperte_x_cli");
+
+			entity.Property(e => e.AcliRagSoc1)
+				.HasMaxLength(120)
+				.IsUnicode(false)
+				.HasColumnName("ACLI_RAG_SOC_1");
+			entity.Property(e => e.CCliRag)
+				.HasMaxLength(131)
+				.IsUnicode(false)
+				.HasColumnName("C_CLI_RAG");
+			entity.Property(e => e.CommDescDd)
+				.HasMaxLength(2093)
+				.IsUnicode(false)
+				.HasColumnName("COMM_DESC_DD");
+			entity.Property(e => e.DescrizioneRidotta)
+				.HasMaxLength(20)
+				.IsUnicode(false)
+				.HasColumnName("DESCRIZIONE_RIDOTTA");
+			entity.Property(e => e.OrpbADoc)
+				.HasColumnType("numeric(4, 0)")
+				.HasColumnName("ORPB_A_DOC");
+			entity.Property(e => e.OrpbNDoc)
+				.HasColumnType("numeric(8, 0)")
+				.HasColumnName("ORPB_N_DOC");
+			entity.Property(e => e.OrpbPrfDoc)
+				.HasMaxLength(1)
+				.IsUnicode(false)
+				.HasColumnName("ORPB_PRF_DOC");
+			entity.Property(e => e.OrpbTstDoc)
+				.HasMaxLength(3)
+				.IsUnicode(false)
+				.HasColumnName("ORPB_TST_DOC");
+			entity.Property(e => e.TbcpCCli)
+				.HasMaxLength(8)
+				.IsUnicode(false)
+				.HasColumnName("TBCP_C_CLI");
+			entity.Property(e => e.TbcpId)
+				.HasColumnType("numeric(12, 0)")
+				.HasColumnName("TBCP_ID");
+			entity.Property(e => e.TbcpM1Project)
+				.HasMaxLength(20)
+				.IsUnicode(false)
+				.HasColumnName("TBCP_M1_PROJECT");
+			entity.Property(e => e.TbcpOffPrev)
+				.HasMaxLength(20)
+				.IsUnicode(false)
+				.HasColumnName("TBCP_OFF_PREV");
+			entity.Property(e => e.TbcpProjectManager)
+				.HasMaxLength(5)
+				.IsUnicode(false)
+				.HasColumnName("TBCP_PROJECT_MANAGER");
+			entity.Property(e => e.TbcpRifCliente)
+				.HasMaxLength(300)
+				.IsUnicode(false)
+				.HasColumnName("TBCP_RIF_CLIENTE");
+			entity.Property(e => e.Usr1Desc)
+				.HasMaxLength(160)
+				.IsUnicode(false)
+				.HasColumnName("USR1_DESC");
+		});
+
+		OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

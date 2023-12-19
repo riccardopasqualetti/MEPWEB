@@ -123,6 +123,7 @@
 				<div class="form-group" style="margin-top:5px;">
 					<label asp-for="CrrgCCaus">Causale</label>
 					<select asp-for="CrrgCCaus" asp-items="@Model.CrrgCCausList.Lista" class="form-select" style="width:100px"></select>
+					<span asp-validation-for="CrrgCCaus" class="text-danger"></span>
 				</div>
 
 				@* Applicativo *@

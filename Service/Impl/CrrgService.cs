@@ -14,6 +14,9 @@ using Mep01Web.Service.Interface;
 using Mep01Web.Service.Impl;
 using Mep01Web.Type.Dropdown;
 using MepWeb.DTO.Response;
+using MepWeb.DTO.Request;
+using MepWeb.Costants;
+using MepWeb.Service.Interface;
 
 namespace Mep01Web.Service.Impl
 {
@@ -28,20 +31,22 @@ namespace Mep01Web.Service.Impl
 		private readonly IMvxpa01Service _mvxpa01Service;		
 		private readonly ITbpnService _tbpnService;
 		private readonly ITatvService _tatvService;
+        private readonly IVsCommAperteXCliService _vsCommAperteXCliService;
 
-		public CrrgService(SataconsultingContext dbContext, ICrrgValidator crrgValidator, IAcliService acliService, ITbcpService tbcpService, IOlcaService olcaService, IMvxpa01Service mvxpa01Service, ITbpnService tbpnService, ITatvService tatvService)
-        {
-            _dbContext = dbContext;
-            _crrgValidator = crrgValidator;
-            _acliService = acliService;
-            _tbcpService = tbcpService;
+		public CrrgService(SataconsultingContext dbContext, ICrrgValidator crrgValidator, IAcliService acliService, ITbcpService tbcpService, IOlcaService olcaService, IMvxpa01Service mvxpa01Service, ITbpnService tbpnService, ITatvService tatvService, IVsCommAperteXCliService vsCommAperteXCliService)
+		{
+			_dbContext = dbContext;
+			_crrgValidator = crrgValidator;
+			_acliService = acliService;
+			_tbcpService = tbcpService;
 			_olcaService = olcaService;
 			_mvxpa01Service = mvxpa01Service;
-            _tbpnService = tbpnService;
-            _tatvService = tatvService;
+			_tbpnService = tbpnService;
+			_tatvService = tatvService;
+			_vsCommAperteXCliService = vsCommAperteXCliService;
 		}
 
-        public async Task<ResponseBase<CrrgResponse>?> GetCrrgAsync(CrrgCreateRequest crrgRequest)
+		public async Task<ResponseBase<CrrgResponse>?> GetCrrgAsync(CrrgCreateRequest crrgRequest)
         {
             FlussoCrrg flussoCrrg = await _dbContext.FlussoCrrgs.SingleOrDefaultAsync(e => e.CrrgCSrl == crrgRequest.CrrgCSrl && e.CrrgCDitta == "01");
 
@@ -109,6 +114,18 @@ namespace Mep01Web.Service.Impl
             {
                 return ResponseBase<CrrgResponse?>.Failed(crrgValidate.Errors);
             }
+
+            var grpCdlRequest = new CrrgGrpCdlsRequest
+            {
+                CrrgCdl = crrgRequest.CrrgCdl,
+                CrrgCRis = crrgRequest.CrrgCRis,
+                CrrgTstDoc = crrgRequest.CrrgTstDoc,
+                CrrgPrfDoc = crrgRequest.CrrgPrfDoc,
+                CrrgADoc = crrgRequest.CrrgADoc,
+                CrrgNDoc = crrgRequest.CrrgNDoc
+            };
+
+            var grpRes = await GetGrpCdlsAsync(grpCdlRequest);
 
             var m = _dbContext.FlussoCrrgs.Max(c => c.CrrgCSrl) + 1;
             var crrgTmRunIncr = new Duration(crrgRequest.CrrgTmRunIncrHMS);
@@ -193,7 +210,10 @@ namespace Mep01Web.Service.Impl
                 //CrrgM1DocentryOdl = 0
                 //CrrgNumVerbale = NULL
                 CrrgApp = crrgRequest.CrrgApp,
-                CrrgMod = crrgRequest.CrrgMod
+                CrrgMod = crrgRequest.CrrgMod,
+                CrrgGrpcdlEff = grpRes.Body.CrrgGrpcdlEff,
+                CrrgGrpcdlPrev = grpRes.Body.CrrgGrpcdlPrev
+                
 			};
             _dbContext.FlussoCrrgs.Add(flussoCrrg);
             var affected = await _dbContext.SaveChangesAsync();
@@ -203,8 +223,7 @@ namespace Mep01Web.Service.Impl
             return ResponseBase<CrrgResponse?>.Success(crrgResponse);
         }
 
-
-        public async Task<ResponseBase<CrrgResponse>?> DeleteCrrgAsync(CrrgCreateRequest crrgRequest)
+		public async Task<ResponseBase<CrrgResponse>?> DeleteCrrgAsync(CrrgCreateRequest crrgRequest)
         {
 			FlussoCrrg flussoCrrg = await _dbContext.FlussoCrrgs.SingleOrDefaultAsync(e => e.CrrgCSrl == crrgRequest.CrrgCSrl && e.CrrgCDitta == "01");
             if (flussoCrrg == null)
@@ -260,13 +279,13 @@ namespace Mep01Web.Service.Impl
 
             // Preparazione dropdown con codice e ragione sociale clienti
 			AcliList acliList = new AcliList();
-            var getAcliAllResponse = await _acliService.GetAcliAllAsync();
-            foreach (var acli in getAcliAllResponse.Body)
+            var getAcliAllResponse = await _vsCommAperteXCliService.GetCustOfOpenCommAsync();
+            foreach (var cli in getAcliAllResponse.Body)
             {
                 var item = new SelectListItem
                 {
-                    Text = acli.FlussoAcli.AcliRagSoc1 + " - " + acli.FlussoAcli.AcliCCliente,
-                    Value = acli.FlussoAcli.AcliCCliente
+                    Text = cli.CCliRag,
+                    Value = cli.TbcpCCli
                 };
 
                 acliList.Clienti.Add(item);
@@ -390,6 +409,73 @@ namespace Mep01Web.Service.Impl
 
             return res;
         }
-    }
+
+		public async Task<ResponseBase<CrrgGrpCdlsResponse>?> GetGrpCdlsAsync(CrrgGrpCdlsRequest crrgGrpCdlsRequest)
+        {
+
+			if (string.IsNullOrWhiteSpace(crrgGrpCdlsRequest.CrrgCdl))
+			{
+				crrgGrpCdlsRequest.CrrgCdl = (await _dbContext.FlussoMaccs.FirstOrDefaultAsync(x => x.MaccCMatricola == crrgGrpCdlsRequest.CrrgCRis)).MaccCCdl;
+			}
+
+			decimal? GrpCdlEff;
+			decimal? GrpCdlPrev = null;
+
+			var comm = await _dbContext.VsPpCommAperteXClis.FirstOrDefaultAsync(x => x.OrpbTstDoc == crrgGrpCdlsRequest.CrrgTstDoc && x.OrpbPrfDoc == crrgGrpCdlsRequest.CrrgPrfDoc && x.OrpbADoc == crrgGrpCdlsRequest.CrrgADoc && x.OrpbNDoc == crrgGrpCdlsRequest.CrrgNDoc);
+			var pscCo02 = await _dbContext.PscCo02s.FirstOrDefaultAsync(x => x.CRisorsa == crrgGrpCdlsRequest.CrrgCRis && x.IdDoc == comm.TbcpId);
+			if (pscCo02 != null)
+			{
+				GrpCdlEff = pscCo02.Grpcdl;
+			}
+			else
+			{
+				var pscQual = await _dbContext.PscQuals.FirstOrDefaultAsync(x => x.CRisorsa == crrgGrpCdlsRequest.CrrgCRis && x.TSoggetto == "C" && x.CSoggetto == comm.TbcpCCli && x.CDitta == CommonCostants.CDitta);
+
+				if (pscQual != null)
+				{
+					GrpCdlEff = pscQual.Grpcdl;
+				}
+				else
+				{
+					GrpCdlEff = (await _dbContext.FlussoTcdls.FirstOrDefaultAsync(x => x.TcdlCCdl == crrgGrpCdlsRequest.CrrgCdl && x.TcdlCDitta == CommonCostants.CDitta)).TcdlGrpcdl;
+				}
+			}
+
+            var pscCo01 = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.IdDoc == comm.TbcpId && x.Grpcdl == GrpCdlEff && x.CDitta == CommonCostants.CDitta);
+
+            if (pscCo01 != null)
+            {
+                GrpCdlPrev = GrpCdlEff;
+            }
+            else
+            {
+                var comm1 = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == comm.TbcpId);
+
+                if (comm1 != null)
+                {
+                    if (comm1.TfattGen != null)
+                    {
+                        var mvx = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == "***");
+
+                        if (mvx != null)
+                        {
+                            GrpCdlPrev = mvx.Cod;
+                        }
+                    }
+
+
+                }
+            }
+
+            var res = new CrrgGrpCdlsResponse
+            {
+                CrrgGrpcdlEff = GrpCdlEff,
+                CrrgGrpcdlPrev = GrpCdlPrev
+            };
+
+			return ResponseBase<CrrgGrpCdlsResponse>.Success(res);
+		}
+
+	}
 }
 

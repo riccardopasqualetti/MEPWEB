@@ -114,6 +114,10 @@ namespace Mep01Web.Controllers
 				{
 					ModelState.AddModelError("NTOper", addCrrgResponse.Errors[0].Message);
 				}
+				if (addCrrgResponse.Errors[0].Code == "-11")
+				{
+					ModelState.AddModelError("CrrgCCaus", addCrrgResponse.Errors[0].Message);
+				}
 				await _crrgService.AddCrrgPrepareDataAsync(obj);
 				return View(obj);
             }

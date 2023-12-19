@@ -138,7 +138,7 @@ async function ISLChanged() {
 async function CliListChanged() {
     //document.getElementById("divComCliBarra").innerHTML = divComCliBarra;
     var cli = document.getElementById("ComCCli").value
-    var url = "/api/Tbcp/GetCommAllByCliAsync/" + cli
+    var url = "/api/VsCommAperteXCli/GetCommAllByCliAsync/" + cli
     //alert(url);
     try {
         const response = await fetch(url, {
@@ -152,14 +152,14 @@ async function CliListChanged() {
             },
         })
 
+
         if (response.status == 200) {
             let cliData = await response.json();
             let cliNumber = cliData.length;
             document.getElementById("CommCodeDesc").empty;
             options = '<option value=""></option>';
             for (var i = 0; i < cliNumber; i++) {
-                console.log(cliData[i].commCompCode + " - " + cliData[i].commDesc);                
-                options += '<option value="' + cliData[i].commCompCode + '">' + cliData[i].commCompCode + ' - ' + cliData[i].commDesc + '</option>';
+                options += `<option value="${cliData[i].OrpbTstDoc}/${cliData[i].OrpbPrfDoc}/${cliData[i].OrpbADoc}/${cliData[i].OrpbNDoc}">${cliData[i].CommDescDd}</option>`;
             };
             document.getElementById("CommCodeDesc").innerHTML = options;
         }
