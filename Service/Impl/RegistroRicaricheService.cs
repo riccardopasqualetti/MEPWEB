@@ -42,7 +42,8 @@ namespace MepWeb.Service.Impl
 						{
                             IdDocumento = idDoc,
                             Id = c003.Id,
-							Qualifica = zz12.DescrizioneRidotta,
+							Qualifica = c003.Grpcdl,
+							DescrizioneQualifica = zz12.DescrizioneRidotta,
 							RiferimentoOfferta = c003.RifOfferta,
 							DataRicarica = c003.DtRicarica,
 							OreAcquistate = c003.HhAcq,
@@ -72,13 +73,15 @@ namespace MepWeb.Service.Impl
                         where c003.IdDoc == idDoc
                         select new RegistroRicaricheResponse
 						{
+							IdDocumento = idDoc,
 							Id = c003.Id,
-							Qualifica = zz12.DescrizioneRidotta,
-                            RiferimentoOfferta = c003.RifOfferta,
-                            DataRicarica = c003.DtRicarica,
-                            OreAcquistate = c003.HhAcq,
-                            Note = c003.Note
-                        }).ToListAsync();
+							Qualifica = c003.Grpcdl,
+							DescrizioneQualifica = zz12.DescrizioneRidotta,
+							RiferimentoOfferta = c003.RifOfferta,
+							DataRicarica = c003.DtRicarica,
+							OreAcquistate = c003.HhAcq,
+							Note = c003.Note
+						}).ToListAsync();
 
             return ResponseBase<List<RegistroRicaricheResponse?>>.Success(query);
         }
@@ -92,13 +95,15 @@ namespace MepWeb.Service.Impl
                         where c003.Id == id
                         select new RegistroRicaricheResponse
 						{
+							IdDocumento = c003.IdDoc,
 							Id = c003.Id,
-							Qualifica = zz12.DescrizioneRidotta,
-                            RiferimentoOfferta = c003.RifOfferta,
-                            DataRicarica = c003.DtRicarica,
-                            OreAcquistate = c003.HhAcq,
-                            Note = c003.Note
-                        }).ToListAsync();
+							Qualifica = c003.Grpcdl,
+							DescrizioneQualifica = zz12.DescrizioneRidotta,
+							RiferimentoOfferta = c003.RifOfferta,
+							DataRicarica = c003.DtRicarica,
+							OreAcquistate = c003.HhAcq,
+							Note = c003.Note
+						}).ToListAsync();
             if(query.Count == 0)
             {
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Il record che si sta cercando di aggiornare non è presente all'interno della tabella");
@@ -116,12 +121,19 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Id Documento non passato, questo campo è obbligatorio");
             }
 
-            if (createRequest.Qualifica == 0)
-            {
-                return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
-            }
+			if (string.IsNullOrEmpty(createRequest.DescrizioneQualifica))
+			{
+				return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
+			}
 
-            var c001 = await _oreQualificaService.GetSingleRecordAsync(createRequest.IdDocumento, createRequest.Qualifica);
+			var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == createRequest.DescrizioneQualifica);
+			if (mvxzz12 == null)
+			{
+				return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
+			}
+			createRequest.Qualifica = mvxzz12.Cod;
+
+			var c001 = await _oreQualificaService.GetSingleRecordAsync(createRequest.IdDocumento, (decimal)createRequest.Qualifica);
             if (!c001.Succeeded)
             {
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Il record appartenente alla tabella PSC_C001 da cui deriva il record che si vuole creare non esiste");
@@ -136,7 +148,7 @@ namespace MepWeb.Service.Impl
             PscCo03 c003 = new PscCo03();
             c003.CDitta = cDitta;
             c003.IdDoc = createRequest.IdDocumento;
-            c003.Grpcdl = createRequest.Qualifica;
+            c003.Grpcdl = (decimal)createRequest.Qualifica;
             c003.RifOfferta = createRequest.RiferimentoOfferta;
             c003.DtRicarica = createRequest.DataRicarica;
             c003.HhAcq = createRequest.OreAcquistate;
@@ -157,6 +169,7 @@ namespace MepWeb.Service.Impl
 
             OreQualificaUpdateRequest c001Update = new OreQualificaUpdateRequest();
             c001Update.IdDocumento = createRequest.IdDocumento;
+            c001Update.DescrizioneQualifica = createRequest.DescrizioneQualifica;
             c001Update.Qualifica = createRequest.Qualifica;
             c001Update.OreAcquistate = c001.Body.OreAcquistate + createRequest.OreAcquistate;
 
@@ -185,7 +198,19 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Id Documento non passato, questo campo è obbligatorio");
             }
 
-            var c003 = await _dbContext.PscCo03s.FirstOrDefaultAsync(x => x.Id == updateRequest.Id);
+			if (string.IsNullOrEmpty(updateRequest.DescrizioneQualifica))
+			{
+				return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
+			}
+
+			var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == updateRequest.DescrizioneQualifica);
+			if (mvxzz12 == null)
+			{
+				return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
+			}
+			updateRequest.Qualifica = mvxzz12.Cod;
+
+			var c003 = await _dbContext.PscCo03s.FirstOrDefaultAsync(x => x.Id == updateRequest.Id);
             if (c003 == null)
             {
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Il record che si sta cercando di aggiornare non è presente all'interno della tabella");
@@ -197,9 +222,15 @@ namespace MepWeb.Service.Impl
             decimal? diff = 0;
             decimal availableHours = 0;
 
-            if (updateRequest.Qualifica != 0)
+            c001Update1.IdDocumento = updateRequest.IdDocumento;
+            c001Update1.DescrizioneQualifica = updateRequest.DescrizioneQualifica;
+
+            if (updateRequest.Qualifica != c003.Grpcdl)
             {
-                var c001N1 = await _oreQualificaService.GetSingleRecordAsync(updateRequest.IdDocumento, updateRequest.Qualifica);
+
+				c001Update2.IdDocumento = updateRequest.IdDocumento;
+				c001Update2.DescrizioneQualifica = updateRequest.DescrizioneQualifica;
+				var c001N1 = await _oreQualificaService.GetSingleRecordAsync(updateRequest.IdDocumento, (decimal)updateRequest.Qualifica);
                 if (!c001N1.Succeeded)
                 {
                     return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Il record appartenente alla tabella PSC_C001 da cui deriva il record che si vuole aggiornare non esiste");
@@ -229,7 +260,7 @@ namespace MepWeb.Service.Impl
                     c001Update2.OreAcquistate = c001N2.Body.OreAcquistate - c003.HhAcq;
                 }
 
-                c003.Grpcdl = updateRequest.Qualifica;
+                c003.Grpcdl = (decimal)updateRequest.Qualifica;
             }
 
             var c001 = await _oreQualificaService.GetSingleRecordAsync(updateRequest.IdDocumento, c003.Grpcdl);
@@ -240,23 +271,24 @@ namespace MepWeb.Service.Impl
 
             //Se modifico le ore ma non la qualifica devo solo verficare che nel caso le ore siano diminuite, il totale in testata non diventi negativi
             //in caso sia maggiore del valore precedente sommo solo la differenza al totale.
-            if (updateRequest.OreAcquistate != 0 && updateRequest.Qualifica == 0)
+            if (updateRequest.OreAcquistate != 0 && updateRequest.Qualifica == c003.Grpcdl)
             {
-                if (updateRequest.OreAcquistate > c003.HhAcq)
+                if (updateRequest.OreAcquistate < c003.HhAcq)
                 {
-                    diff =  updateRequest.OreAcquistate - c003.HhAcq;
+                    diff = c003.HhAcq - updateRequest.OreAcquistate;
                     availableHours = await _crrgService.CheckHoursAvailability(c003.IdDoc, (decimal)diff, c001.Body.DescrizioneQualifica);
                     if (availableHours < 0)
                     {
                         return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonEliminato, "Non è possibile eliminare il secord desiderato, in quanto le ore acquistate andrebbero in negativo");
                     }
+                    c001Update1.OreAcquistate = c001.Body.OreAcquistate - diff;
+                }
+                else
+                {
+                    diff = updateRequest.OreAcquistate - c003.HhAcq;
                     c001Update1.OreAcquistate = c001.Body.OreAcquistate + diff;
                 }
-
-                diff = updateRequest.OreAcquistate - c003.HhAcq;
-                c001Update1.OreAcquistate = c001.Body.OreAcquistate - diff;
-
-                c003.HhAcq = updateRequest.OreAcquistate;
+                    c003.HhAcq = updateRequest.OreAcquistate;
 
             }
 
@@ -280,8 +312,22 @@ namespace MepWeb.Service.Impl
 
             try
             {
+                
+				var update = await _oreQualificaService.UpdateRecordAsync(c001Update1);
+				if (!update.Succeeded)
+				{
+					return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonAggiornato, "Non è stato possibile aggiornare il record nella tabella di testata PSC_C001");
+				}
+                if (c001Update2.IdDocumento != 0)
+                {
+					update = await _oreQualificaService.UpdateRecordAsync(c001Update2);
+					if (!update.Succeeded)
+					{
+						return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonAggiornato, "Non è stato possibile aggiornare il record nella tabella di testata PSC_C001");
+					}
+				}
                 var res = await _dbContext.SaveChangesAsync();
-            }
+			}
             catch (Exception ex)
             {
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonAggiornato, "Non è stato possibile aggiornare il record");
@@ -311,28 +357,26 @@ namespace MepWeb.Service.Impl
 
             OreQualificaUpdateRequest c001Update = new OreQualificaUpdateRequest();
             c001Update.IdDocumento = c003.IdDoc;
-            c001Update.Qualifica = c003.Grpcdl;
+            c001Update.DescrizioneQualifica = c001.Body.DescrizioneQualifica;
             c001Update.OreAcquistate = c001.Body.OreAcquistate - c003.HhAcq;
             var availableHours = await _crrgService.CheckHoursAvailability(c003.IdDoc, (decimal)c003.HhAcq, c001.Body.DescrizioneQualifica);
             if(availableHours < 0 )
             {
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonEliminato, "Non è possibile eliminare il secord desiderato, in quanto le ore acquistate andrebbero in negativo");
             }
-
             try
             {
                 _dbContext.PscCo03s.Remove(c003);
                 var res = await _dbContext.SaveChangesAsync();
-            }
+				var update = await _oreQualificaService.UpdateRecordAsync(c001Update);
+				if (!update.Succeeded)
+				{
+					return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonAggiornato, "Non è stato possibile aggiornare il record nella tabella di testata PSC_C001");
+				}
+			}
             catch (Exception ex)
             {
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonEliminato, "Non è stato possibile eliminare il record su PSC_C003");
-            }
-
-            var update = await _oreQualificaService.UpdateRecordAsync(c001Update);
-            if (!update.Succeeded)
-            {
-                return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonAggiornato, "Non è stato possibile aggiornare il record nulla tabella di testata PSC_C001");
             }
 
             return ResponseBase<RegistroRicaricheResponse?>.Success();

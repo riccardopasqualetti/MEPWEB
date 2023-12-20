@@ -1815,7 +1815,9 @@ export class TableGenerator {
             addBtnWrap.addEventListener("click", () => {
                 this.paramObject.apiUrl.post.param.forEach(c => {
                     console.log(c)
-                    const createValue = document.querySelector(`td[fieldname="${c}"]`).getAttribute("valore")
+                    //const createValue = document.querySelector(`td[fieldname="${c}"]`).getAttribute("valore")
+                    const allValues = window.location.pathname.split("/")
+                    const createValue = allValues[allValues.length - 1]
                     console.log(createValue)
                     const inputCreate = document.querySelector("#create-input-" + c)
                     inputCreate.value = createValue
@@ -1826,7 +1828,7 @@ export class TableGenerator {
 
             let addButton = document.createElement("div")
             addButton.className = "me-3 add-record-button d-flex align-items-center justify-content-center"
-            addButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>`
+            addButton.innerHTML = `<svg viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>`
             addButton.style.display = "inline"
             addBtnWrap.appendChild(addButton)
 

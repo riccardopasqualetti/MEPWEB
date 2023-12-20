@@ -3,16 +3,8 @@
 @{
 }
 
-<h1>Addetto / Qualifica</h1>
 <div id="tgen"></div>
 
 @section scripts{
-	<script src="~/js/Consuntivi.js"></script>
-	<script>
-		let idDocumento = getBaseUrl("ID_Documento")
-		console.log("cshtml: " + idDocumento)
-		@*let idDocumento = "@Model.idDocumento"
-		const inizializza = async () => getDocumento(idDocumento)
-		inizializza()*@
-	</script>
+	<script type="module" src="~/js/AddettoQualifica.js"></script>
 }

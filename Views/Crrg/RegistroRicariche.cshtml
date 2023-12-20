@@ -4,15 +4,12 @@
 @{
 }
 
-<h1>Registro Ricariche</h1>
 <div id="tgen"></div>
 
 @section scripts{
-	<script type="module" src="~/js/Consuntivi.js"></script>
-	<script>
-		let idDocumento = () => getBaseUrl("ID_Documento")
-		@*let idDocumento = "@Model.idDocumento"
-		const inizializza = async () => getDocumento(idDocumento)
-		inizializza()*@
-	</script>
+	<script type="module" src="~/js/RegistroRicariche.js"></script>
+@* 	<script>
+		let idDocumento = getBaseUrl("ID_Documento")
+		console.log("cshtml" + idDocumento)
+	</script> *@
 }

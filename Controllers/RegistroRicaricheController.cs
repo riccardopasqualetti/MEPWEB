@@ -21,14 +21,14 @@ namespace MepWeb.Controllers
             _logger = logger;
         }
 
-		[HttpGet("GetAllPaged/{idDocumento}")]
-		public async Task<IActionResult> GetAllPscCo01sPagedAsync(decimal idDoc, [FromQuery] BasePagedRequest request)
+		[HttpGet("{idDocumento}/GetAllPaged")]
+		public async Task<IActionResult> GetAllPscCo03sPagedAsync(decimal idDocumento, [FromQuery] BasePagedRequest request)
 		{
 			_logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllPscCo03sPagedAsync");
 
 			try
 			{
-				var getResponse = await _registroRicaricheService.GetAllRecordsByIdDocPagedAsync(idDoc, request);
+				var getResponse = await _registroRicaricheService.GetAllRecordsByIdDocPagedAsync(idDocumento, request);
 
 				if (getResponse.Succeeded)
 				{
@@ -52,13 +52,13 @@ namespace MepWeb.Controllers
 		}
 
 		[HttpGet("{idDocumento}")]
-        public async Task<IActionResult> GetAllPscCo01sAsync(decimal idDoc)
+        public async Task<IActionResult> GetAllPscCo03sAsync(decimal idDocumento)
         {
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllRecordsByIdDocAsync");
 
             try
             {
-                var getResponse = await _registroRicaricheService.GetAllRecordsByIdDocAsync(idDoc);
+                var getResponse = await _registroRicaricheService.GetAllRecordsByIdDocAsync(idDocumento);
 
                 if (getResponse.Succeeded)
                 {
@@ -82,7 +82,7 @@ namespace MepWeb.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSinglePscCo01Async(decimal id)
+        public async Task<IActionResult> GetSinglePscCo03Async(decimal id)
         {
 
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetSingleRecordAsync");
@@ -113,7 +113,7 @@ namespace MepWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePscCo01Async(RegistroRicaricheCreateRequest createRequest)
+        public async Task<IActionResult> CreatePscCo03Async(RegistroRicaricheCreateRequest createRequest)
         {
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta CreateRecordAsync");
 
@@ -123,7 +123,7 @@ namespace MepWeb.Controllers
 
                 if (getResponse.Succeeded)
                 {
-                    return Ok();
+                    return Ok(new { Response = "Operazione completata con successo" });
                 }
                 else
                 {
@@ -143,7 +143,7 @@ namespace MepWeb.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateTimeSchedule(RegistroRicaricheUpdateRequest updateRequest)
+        public async Task<IActionResult> UpdatePscCo03Async(RegistroRicaricheUpdateRequest updateRequest)
         {
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta UpdateRecordAsync");
 
@@ -153,7 +153,7 @@ namespace MepWeb.Controllers
 
                 if (getResponse.Succeeded)
                 {
-                    return Ok();
+                    return Ok(new { Response = "Operazione completata con successo" });
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace MepWeb.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTimeSchedule(decimal id)
+        public async Task<IActionResult> DeletePscCo03Async(decimal id)
         {
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta DeleteRecordAsync");
 
@@ -183,7 +183,7 @@ namespace MepWeb.Controllers
 
                 if (getResponse.Succeeded)
                 {
-                    return Ok();
+                    return Ok(new { Response = "Operazione completata con successo" });
                 }
                 else
                 {

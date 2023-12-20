@@ -1,4 +1,4 @@
-﻿
+
 import * as types from "./types.js"
 import { TableGenerator } from './TableGenerator.js'
 
@@ -93,134 +93,6 @@ console.log("Id doc= " + idDocumento)
         ]
     }
 
-    /** 
-     * Oggetto con i parametri per la generazione della tabella con API: MasterCompanyLayout.
-     * @type {types.ParamObject} 
-     * */
-    const addettoQualificaObj = {
-        //credentials: login,
-        authToken: tempToken,
-        apiUrl: {
-            get: {
-                param: ["idDocumento"],
-                url: [baseURL, `api/MepWeb_AddettoQualifica/GetAllPaged/${idDocumento}`]
-            },
-            post: {
-                url: [baseURL, "api/MepWeb_AddettoQualifica"]
-            },
-            put: {
-                url: [baseURL, "api/MepWeb_AddettoQualifica"]
-            },
-            delete: {
-                param: ["id"],
-                url: [baseURL, "api/MepWeb_AddettoQualifica"]
-            }
-        },
-        paginationOptions: [20, 2, 5, 10, 50],
-        modals: {
-            create: { col: 1, maxFields: 3 }
-        },
-        fields: [
-            {
-                apiName: "idDoc",
-                displayedName: "Id Documento",
-                type: "hidden"
-            },
-            {
-                apiName: "cRisorsa",
-                displayedName: "Codice Risorsa"
-            },
-            {
-                apiName: "grpcdl",
-                displayedName: "Qualifica",
-                searchUrls: [
-                    {
-                        url: "api/MepWeb_Qualifiche",
-                        searchFieldNames: ["codiceQualifica", "nomeQualifica"]
-                    }
-                ]
-            }
-        ]
-    }
-
-    /** 
-     * Oggetto con i parametri per la generazione della tabella con API: MasterWorkCenter.
-     * @type {types.ParamObject}
-     *  */
-    const registroRicaricheObj = {
-        //credentials: login,
-        authToken: tempToken,
-        apiUrl: {
-            get: {
-                url: [baseURL, `api/MepWeb_RegistroRicariche/${idDocumento}/GetAllPaged`]
-            },
-            post: {
-                param: ["idDocumento"],
-                url: [baseURL, "api/MepWeb_RegistroRicariche"]
-            },
-            put: {
-                param: ["id", "idDocumento", "qualifica"],
-                url: [baseURL, "api/MepWeb_RegistroRicariche"]
-            },
-            delete: {
-                param: ["id"],
-                url: [baseURL, "api/MepWeb_RegistroRicariche"]
-            }
-        },
-        paginationOptions: [20, 50, 100, 200, 400, 800],
-        modals: {
-            create: { col: 2, maxFields: 4 }
-        },
-        fields: [
-            {
-                apiName: "idDocumento",
-                displayedName: "Id Documento",
-                type: "hidden",
-                modals:false
-            },
-            {
-                apiName: "id",
-                displayedName: "Id",
-                type: "hidden",
-                modals: false
-            },
-            {
-                apiName: "descrizioneQualifica",
-                displayedName: "Descrizione Qualifica",
-                /* searchUrls: [
-                    {
-                        url: "api/MepWeb_Qualifiche",
-                        searchFieldNames: ["codiceQualifica", "nomeQualifica"]
-                    }
-                ] */
-            },
-            {
-                apiName: "qualifica",
-                displayedName: "Qualifica",
-                type: "hidden",
-                modals: false
-            },
-            {
-                apiName: "riferimentoOfferta",
-                displayedName: "Riferimento Offerta",
-            },
-            {
-                apiName: "dataRicarica",
-                displayedName: "Data Ricarica",
-                type: "datenormal"
-            },
-            {
-                apiName: "oreAcquistate",
-                displayedName: "Ore Acquistate",
-                type: "number"
-            },
-            {
-                apiName: "note",
-                displayedName: "Note"
-            }
-        ]
-    }
-
     /* const optionsObj = {
         cily: ["Cily", cilyObj],
         workCenter: ["WorkCenter", workCenterObj],
@@ -231,7 +103,7 @@ console.log("Id doc= " + idDocumento)
      * Un'istanza di TableGenerator utilizzata per eseguire azioni specifiche.
      * @type {types.TableGenerator}
      */
-    let tableGeneratorInstance = new TableGenerator(registroRicaricheObj);
+    let tableGeneratorInstance = new TableGenerator(oreQualificaObj);
 
     await tableGeneratorInstance.createModals()
     await tableGeneratorInstance.createTable()

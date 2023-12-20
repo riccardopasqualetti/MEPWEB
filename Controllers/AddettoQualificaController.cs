@@ -20,13 +20,13 @@ namespace MepWeb.Controllers
             _pscCo02Service = pscCo02Service;
         }
 
-		[HttpGet("GetAllPaged/{idDocumento}")]
-		public async Task<IActionResult> GetAllPscCo01sPagedAsync(decimal idDoc, [FromQuery] BasePagedRequest request)
+		[HttpGet("{idDocumento}/GetAllPaged")]
+		public async Task<IActionResult> GetAllPscCo01sPagedAsync(decimal idDocumento, [FromQuery] BasePagedRequest request)
 		{
 
 			try
 			{
-				var getResponse = await _pscCo02Service.GetAllFromPscCo02PagedAsync(idDoc, request);
+				var getResponse = await _pscCo02Service.GetAllFromPscCo02PagedAsync(idDocumento, request);
 
 				if (getResponse.Succeeded)
 				{
@@ -58,7 +58,7 @@ namespace MepWeb.Controllers
 
                 if (response.Succeeded)
                 {
-                    return Ok();
+                    return Ok(new { Response = "Operazione completata con successo" });
                 }
                 else
                 {
@@ -85,7 +85,7 @@ namespace MepWeb.Controllers
 
                 if (response.Succeeded)
                 {
-                    return Ok();
+                    return Ok(new { Response = "Operazione completata con successo" });
                 }
                 else
                 {
@@ -113,7 +113,7 @@ namespace MepWeb.Controllers
 
                 if (response.Succeeded)
                 {
-                    return Ok();
+                    return Ok(new { Response = "Operazione completata con successo" });
                 }
                 else
                 {
@@ -132,13 +132,13 @@ namespace MepWeb.Controllers
             }
         }
         [HttpGet("{idDocumento}")]
-        public async Task<IActionResult> GetAllPscCo02sAsync(decimal idDoc)
+        public async Task<IActionResult> GetAllPscCo02sAsync(decimal idDocumento)
         {
             
 
             try
             {
-                var getResponse = await _pscCo02Service.GetAllFromPscCo02Async(idDoc);
+                var getResponse = await _pscCo02Service.GetAllFromPscCo02Async(idDocumento);
 
                 if (getResponse.Succeeded)
                 {
@@ -161,12 +161,12 @@ namespace MepWeb.Controllers
             }
         }
         [HttpGet("{cRisorsa}/{idDocumento}")]
-        public async Task<IActionResult> GetSinglePscCo02Async(string cRisorsa, decimal idDoc)
+        public async Task<IActionResult> GetSinglePscCo02Async(string cRisorsa, decimal idDocumento)
         {
 
             try
             {
-                var getResponse = await _pscCo02Service.GetSingleRecordAsync(cRisorsa, idDoc);
+                var getResponse = await _pscCo02Service.GetSingleRecordAsync(cRisorsa, idDocumento);
 
                 if (getResponse.Succeeded)
                 {
