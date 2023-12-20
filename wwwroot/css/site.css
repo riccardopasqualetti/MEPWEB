@@ -470,13 +470,13 @@ footer {
     background-color: #ebeff7;
 }
 
-    #containerLayoutAziendale thead th > div {
-        width: max-content;
-    }
+#containerLayoutAziendale thead th > div {
+    width: max-content;
+}
 
-        #containerLayoutAziendale thead th > div > svg {
-            margin-left: .3rem;
-        }
+#containerLayoutAziendale thead th > div > svg {
+    margin-left: .3rem;
+}
 
 #containerLayoutAziendale table {
     overflow-y: auto;
@@ -491,7 +491,6 @@ footer {
     position: sticky;
     left: 0;
     z-index: 1;
-    background-color: #ebeff7;
     width: 3rem;
 }
 
@@ -499,16 +498,27 @@ footer {
     position: sticky;
     left: 3rem;
     z-index: 1;
-    background-color: #ebeff7;
     width: 3rem;
+    border-radius: 0;
+    text-align: center;
 }
 
 #containerLayoutAziendale td:nth-child(3), #containerLayoutAziendale thead th:nth-child(3) {
     position: sticky;
-    left: 3rem;
+    left: 8.5rem;
     z-index: 1;
-    background-color: #ebeff7;
-    width: 6rem;
+    width: 4rem;
+    border-radius: 0;
+    text-align: center;
+}
+
+.btn-general-table{
+    background-color: transparent;
+    border: none;
+}
+
+.btn-general-table svg{
+    fill: #839496
 }
 
 @keyframes menu-animate {

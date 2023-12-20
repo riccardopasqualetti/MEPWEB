@@ -211,7 +211,7 @@ namespace MepWeb.Service.Impl
                     return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Il record appartenente alla tabella PSC_C001 da cui deriva il record che si vuole aggiornare non esiste");
                 }
 
-                availableHours = await _crrgService.CheckHoursAvailability(c003.IdDoc, (decimal)c003.HhAcq, c001N2.Body.Qualifica);
+                availableHours = await _crrgService.CheckHoursAvailability(c003.IdDoc, (decimal)c003.HhAcq, c001N2.Body.DescrizioneQualifica);
                 if (availableHours < 0)
                 {
                     return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonEliminato, "Non è possibile eliminare il secord desiderato, in quanto le ore acquistate andrebbero in negativo");
@@ -245,7 +245,7 @@ namespace MepWeb.Service.Impl
                 if (updateRequest.OreAcquistate > c003.HhAcq)
                 {
                     diff =  updateRequest.OreAcquistate - c003.HhAcq;
-                    availableHours = await _crrgService.CheckHoursAvailability(c003.IdDoc, (decimal)diff, c001.Body.Qualifica);
+                    availableHours = await _crrgService.CheckHoursAvailability(c003.IdDoc, (decimal)diff, c001.Body.DescrizioneQualifica);
                     if (availableHours < 0)
                     {
                         return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonEliminato, "Non è possibile eliminare il secord desiderato, in quanto le ore acquistate andrebbero in negativo");
@@ -313,7 +313,7 @@ namespace MepWeb.Service.Impl
             c001Update.IdDocumento = c003.IdDoc;
             c001Update.Qualifica = c003.Grpcdl;
             c001Update.OreAcquistate = c001.Body.OreAcquistate - c003.HhAcq;
-            var availableHours = await _crrgService.CheckHoursAvailability(c003.IdDoc, (decimal)c003.HhAcq, c001.Body.Qualifica);
+            var availableHours = await _crrgService.CheckHoursAvailability(c003.IdDoc, (decimal)c003.HhAcq, c001.Body.DescrizioneQualifica);
             if(availableHours < 0 )
             {
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordNonEliminato, "Non è possibile eliminare il secord desiderato, in quanto le ore acquistate andrebbero in negativo");

@@ -1,11 +1,18 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using MepWeb.DTO.Request;
+@model MepWeb.DTO.Request.IdDocumentoRequest;
 @{
 }
 
 <h1>Addetto / Qualifica</h1>
+<div id="tgen"></div>
 
 @section scripts{
-	<script type="module" src="~/js/Consuntivi.js"></script>
+	<script src="~/js/Consuntivi.js"></script>
+	<script>
+		let idDocumento = getBaseUrl("ID_Documento")
+		console.log("cshtml: " + idDocumento)
+		@*let idDocumento = "@Model.idDocumento"
+		const inizializza = async () => getDocumento(idDocumento)
+		inizializza()*@
+	</script>
 }

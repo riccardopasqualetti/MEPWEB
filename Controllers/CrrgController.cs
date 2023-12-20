@@ -7,6 +7,7 @@ using Mep01Web.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using MepWeb.Service;
 using MepWeb.Service.Interface;
+using MepWeb.DTO.Request;
 
 namespace Mep01Web.Controllers
 {
@@ -185,22 +186,36 @@ namespace Mep01Web.Controllers
 
         [HttpGet("Crrg/OreQualifica/{idDoc}")]
         public async Task<IActionResult> OreQualifica(decimal idDoc)
-        {
-            return View();
-        }
+		{
+			Response.Cookies.Append("ID_Documento", idDoc.ToString());
+			var request = new IdDocumentoRequest()
+			{
+				idDocumento = idDoc
+			};
+			return View(request);
+		}
 
         [HttpGet("Crrg/AddettoQualifica/{idDoc}")]
         public async Task<IActionResult> AddettoQualifica(decimal idDoc)
-        {
-            return View();
-        }
+		{
+			Response.Cookies.Append("ID_Documento", idDoc.ToString());
+			var request = new IdDocumentoRequest()
+			{
+				idDocumento = idDoc
+			};
+			return View(request);
+		}
 
         [HttpGet("Crrg/RegistroRicariche/{idDoc}")]
         public async Task<IActionResult> RegistroRicariche(decimal idDoc)
-        {
-            var res = await _registroRicaricheService.GetAllRecordsByIdDocAsync(idDoc);
-            return View();
-        }
+		{
+			Response.Cookies.Append("ID_Documento", idDoc.ToString());
+			var request = new IdDocumentoRequest()
+			{
+				idDocumento = idDoc
+			};
+			return View(request);
+		}
 
     }
 }
