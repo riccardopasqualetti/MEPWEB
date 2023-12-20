@@ -44,18 +44,19 @@
 				<input asp-for="MemoModalita" id="MemoModalita" type="hidden" />
 				<div>
 					<input type="radio" class="btn-check" id="modIsl" name="modalita" value="modIsl" onchange="Modalita()">
-					<label for="modIsl" class="btn btn-outline-primary">x ISL</label>
+					<label for="modIsl" class="btn btn-medio btn-outline-primary">x ISL</label>
 					<input type="radio" class="btn-check" id="modCli" name="modalita" value="modCli" onchange="Modalita()" checked="checked">
-					<label for="modCli" class="btn btn-outline-primary">x Cliente</label>
+					<label for="modCli" class="btn btn-medio btn-outline-primary">x Cliente</label>
 					<input type="radio" class="btn-check" id="modCom" name="modalita" value="modCom" onchange="Modalita()">
-					<label for="modCom" class="btn btn-outline-primary">x Commessa</label>
+					<label for="modCom" class="btn btn-medio btn-outline-primary">x Commessa</label>
 				</div>
 
 				@* ISL *@
 				<div id="divCrrgRifCliente">
-					<div class="form-group" style="margin-top:5px;">
+					<div class="form-group" id="crrg-rif-cliente" style="margin-top:5px;">
 						<label asp-for="CrrgRifCliente">Codice ISL</label>
 						<input asp-for="CrrgRifCliente" class="form-control" style="width:150px" id="CrrgRifCliente" onchange="ISLChanged()" />
+						<button type="button" onclick="setupSearchIsl('CrrgRifCliente')" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
 						<span asp-validation-for="CrrgRifCliente" class="text-danger"></span>
 					</div>
 					<div class="form-group" style="margin-top:5px;">
@@ -157,12 +158,81 @@
 	</div>
 </div>
 
-@section Scripts{
-	@{
-		<partial name="_ValidationScriptsPartial" />
-	}
+<div class="modal fade" id="searchIslModal" tabindex="-1" aria-labelledby="searchIslModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="searchIslModalLabel">Ricerca ISL</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+			<div class="modal-body" id="search-isl-body">
+				<div id="isl-filters">
+					<div>
+						<input type="text" placeholder="ISL-0000-0000" id="isl-search-input" class="form-control">
+						<button type="submit" id="submit-research" class="btn btn-primary ms-2">Ricerca</button>
+					</div>
+					<div class="mt-2">
+						<div class="form-check p-0">
+							<label class="form-check-label" for="isl-checkbox-close">CLOSE</label>
+							<input class="form-check-input ms-2" type="checkbox" name="isl-checkbox-close" id="isl-checkbox-close">
+						</div>
+						<div class="form-check p-0">
+							<label class="form-check-label" for="isl-checkbox-sosp">SOSP</label>
+							<input class="form-check-input ms-2" type="checkbox" name="isl-checkbox-sosp" id="isl-checkbox-sosp">
+						</div>
+						<div class="form-check p-0">
+							<label class="form-check-label" for="isl-checkbox-svil">SVIL</label>
+							<input class="form-check-input ms-2" type="checkbox" name="isl-checkbox-svil" id="isl-checkbox-svil" checked="true">
+						</div>
+						<div class="form-check p-0">
+							<label class="form-check-label" for="isl-checkbox-deli">DELI</label>
+							<input class="form-check-input ms-2" type="checkbox" name="isl-checkbox-deli" id="isl-checkbox-deli">
+						</div>
+						<div class="form-check p-0">
+							<label class="form-check-label" for="isl-checkbox-anfu">ANFU</label>
+							<input class="form-check-input ms-2" type="checkbox" name="isl-checkbox-anfu" id="isl-checkbox-anfu" checked="true">
+						</div>
+						<div class="form-check p-0">
+							<label class="form-check-label" for="isl-checkbox-new">NEW</label>
+							<input class="form-check-input ms-2" type="checkbox" name="isl-checkbox-new" id="isl-checkbox-new">
+						</div>
+					</div>
+				</div>
+				<div id="search-table-container">
+					<table class="table table-striped" id="search-isl-table">
+						<thead>
+							<tr>
+								<th scope="col"><div>ISL</div></th>
+								<th scope="col"><div>Stato</div></th>
+								<th scope="col"><div>Ragione Sociale</div></th>
+								<th scope="col"><div>Descrizione</div></th>
+							</tr>
+						</thead>
+						<tbody id="isl-tbody">                
+								
+							<tr class="search-isl-riga">
+								<td id="rifCli">ISL-0108-0341</td>
+								<td id="stato">1010 - Anal.Funz</td>
+								<td id="acliRagSoc1">Sata Consulting S.r.l.</td>
+								<td id="tatvDesc"><p>Censita casistica per valutare se e come intervenire:le start/end manodopera vengono consentite su una fase ciclo con CdL tipo macchina solo se è stata effettuata una start su una risorsa macchina. La registrazione manodopera è agganciata a quella della risorsa macchina (principale) impostando c_addetto (manodopera) = c_ris (macchina). c_addetto non risulta tuttavia corretto se la fase ciclo ha si un CdL di tipo macchina ma ha come ris.dominate (sulla fase ciclo) la manodopera. (L'esistenza di un tipo risorsa dominante sulla fase ciclo non allineato a quello del CdL/operazione ha genera criticità; visto anche quanto sopra, si potrebbe valutare una soluzione per gestire correttamente l'allineamento dei dati sulle fasi-ciclo)</p></td>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+				<button type="submit" class="btn btn-primary">Seleziona</button>
+			</div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+	<script src="~/js/Crrg.js"></script>
+	<script src="~/js/isl.js"></script>
 }
 
 
-<script src="~/js/Crrg.js?v=1.186"></script>
 
