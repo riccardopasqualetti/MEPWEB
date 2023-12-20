@@ -47,8 +47,8 @@ namespace MepWeb.Service.Impl
                         };
 
             var pagedQuery = query
-            .Skip(pagedRequest.Page)
-            .Take(pagedRequest.Limit);
+            .Skip(pageRequest.Offset)
+            .Take(pageRequest.Limit);
 
             var res = new OreQualificaPagedResponse
             {
