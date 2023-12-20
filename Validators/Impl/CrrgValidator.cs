@@ -30,10 +30,10 @@ namespace Mep01Web.Validators.Impl
             DateTime dd1 = new(2023, 01, 01, 0, 0, 0);
             DateTime dd2 = DateTime.Now.AddDays(3);
 
-			if (string.IsNullOrWhiteSpace(crrgRequest.CrrgCdl)) 
-			{ 
-			    crrgRequest.CrrgCdl = "_" + crrgRequest.CrrgCRis;
-            }
+			if (string.IsNullOrWhiteSpace(crrgRequest.CrrgCdl))
+			{
+				crrgRequest.CrrgCdl = (await _dbContext.FlussoMaccs.FirstOrDefaultAsync(x => x.MaccCMatricola == crrgRequest.CrrgCRis)).MaccCCdl;
+			}
 
             if (crrgRequest.CrrgDtt < dd1 || crrgRequest.CrrgDtt > dd2)
             {   
@@ -62,6 +62,11 @@ namespace Mep01Web.Validators.Impl
 				crrgRequest.CrrgApp = ISL.TatvCPartApp;
 				crrgRequest.CrrgMod = ISL.TatvCPart;
 				flgcom = "-5";
+
+				if (crrgRequest.CrrgCCaus == "CORI")
+				{
+					return ResponseBase<CrrgResponse?>.Failed("-11", $"Causale non ammessa");
+				}
 			}
 			// Se la ISL non è valorizzata, ma è valorizzato il campo CommCodeDesc con il codice in formato compatto,
             // la commessa è presa da quest'ultimo campo.
@@ -95,7 +100,11 @@ namespace Mep01Web.Validators.Impl
 					crrgRequest.CrrgADoc = 0;
 					crrgRequest.CrrgNDoc = 0;
 				}
-            }
+				if (crrgRequest.CrrgCCaus != "CORI")
+				{
+					return ResponseBase<CrrgResponse?>.Failed("-11", $"Causale non ammessa");
+				}
+			}
 
 
 			// Validazione Commessa
@@ -110,9 +119,15 @@ namespace Mep01Web.Validators.Impl
 			var commessa = await _dbContext.FlussoTbcps.SingleOrDefaultAsync(x => x.TbcpTstComm == crrgRequest.CrrgTstDoc && x.TbcpPrfComm == crrgRequest.CrrgPrfDoc && x.TbcpAComm == crrgRequest.CrrgADoc && x.TbcpNComm == crrgRequest.CrrgNDoc);
 			if (commessa == null)
 			{				
-				return ResponseBase<CrrgResponse?>.Failed(flgcom, $"Commessa inesistente (s)");
+				return ResponseBase<CrrgResponse?>.Failed(flgcom, $"Commessa inesistente");
 			}
 
+			var testCommessa = await _dbContext.VsPpCommAperteXClis.FirstOrDefaultAsync(x => x.OrpbTstDoc == crrgRequest.CrrgTstDoc && x.OrpbPrfDoc == crrgRequest.CrrgPrfDoc && x.OrpbADoc == crrgRequest.CrrgADoc && x.OrpbNDoc == crrgRequest.CrrgNDoc);
+
+			if (testCommessa == null)
+			{
+				return ResponseBase<CrrgResponse?>.Failed(flgcom, "Commessa chiusa");
+			}
 
 			// Validazione Numero Operazione e Tipo Operazione 
 			// Se il campo NTOper è valorizzato, i campi CrrgNOper e CrrgTOper vengono valorizzati con i valori 
@@ -157,6 +172,8 @@ namespace Mep01Web.Validators.Impl
 					return ResponseBase<CrrgResponse?>.Failed("-10", $"Modulo inesistente (s)");
 				}
 			}
+
+
 
 			return ResponseBase<CrrgResponse?>.Success();
 		}

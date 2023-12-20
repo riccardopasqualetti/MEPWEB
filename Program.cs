@@ -62,9 +62,12 @@ namespace WebApplication2
             builder.Services.AddTransient<IOreQualificaService, OreQualificaService>();
             builder.Services.AddTransient<IRegistroRicaricheService, RegistroRicaricheService>();
             builder.Services.AddTransient<IOreQualificaService, OreQualificaService>();
+            builder.Services.AddTransient<ITcdlService, TcdlService>();
+            builder.Services.AddTransient<IPscQualService, PscQualService>(); 
+            builder.Services.AddTransient<IVsCommAperteXCliService, VsCommAperteXCliService>(); 
 
 
-            var app = builder.Build();
+			var app = builder.Build();
 
             
             // Configure the HTTP request pipeline.
