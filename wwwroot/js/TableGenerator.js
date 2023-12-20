@@ -83,7 +83,7 @@ export class TableGenerator {
         for (const key in editObject) {
             const input = modal._dialog.querySelector(`*[name="${key}"]`)
             const field = this.paramObject.fields.find(field => field.apiName == key && field.modals != false)
-            console.log(key)
+            console.log("key: " + key)
             if (field.type == "checkbox") {
                 input.checked = editObject[key] == "S"
             }
@@ -118,7 +118,7 @@ export class TableGenerator {
         const nome = name ? name : ""
         let modal = new bootstrap.Modal("#deleteRecord");
         modal.show();
-        modal._dialog.querySelector("#deleteText").innerText = "Confermare l'eliminazione del record " + nome
+        modal._dialog.querySelector("#deleteText").innerText = "Confermare l'eliminazione del record"
         for (const key of this.paramObject.apiUrl.delete.param) {
             const input = modal._dialog.querySelector(`*[name="${key}"]`)
             input.value = deleteObj[key]
@@ -168,6 +168,8 @@ export class TableGenerator {
             }
             let url = `${this.paramObject.apiUrl.put.url[0] + this.paramObject.apiUrl.put.url[1]}`
             let res = await this.fetchApi(url, settings)
+            console.log(url)
+            console.log(res)
 
             return res
         }
@@ -184,6 +186,8 @@ export class TableGenerator {
             }
             let url = `${this.paramObject.apiUrl.post.url[0]}${this.paramObject.apiUrl.post.url[1]}`
             let res = await this.fetchApi(url, settings)
+            console.log(url)
+            console.log(res)
 
             return res
         }
@@ -218,10 +222,12 @@ export class TableGenerator {
                     }
                 }
             }
-            console.log(params)
+            console.log("params: " + params)
 
             let url = `${this.paramObject.apiUrl.delete.url[0] + this.paramObject.apiUrl.delete.url[1]}${params}`
+            console.log(url)
             let res = await this.fetchApi(url, settings)
+            console.log(res)
 
             return res
         }
@@ -237,12 +243,12 @@ export class TableGenerator {
             
             for (const srcParam of field.searchUrls) {
                 const refInputs = document.querySelectorAll(`.modal *[name="${srcParam.field}"]`)
-                for (const input of refInputs) {
+                /* for (const input of refInputs) {
 
                     const livello = srcParam.ref(document.querySelector(`select[name="${srcParam.field}"]`).value)
                     const url = srcParam.url
                     researchResponses[field.apiName] = await fetchGetResearchApi(url + "/" + livello)
-                }
+                } */
                 if (refInputs.length == 0) {
                     if (researchResponses[field.apiName]) return
                     researchResponses[field.apiName] = await fetchGetResearchApi(srcParam.url)
@@ -361,10 +367,8 @@ export class TableGenerator {
                     researchLoader.classList.remove("d-block")
                     tbody.innerHTML = ""
                     populateResearchWindow(field, tbody, inputField)
-
                 }
             })
-
             inputField.classList.add("research-input")
         }
 
@@ -386,7 +390,6 @@ export class TableGenerator {
                     td.innerText = x[f]
                     tr.appendChild(td)
                 })
-
             })
         }
 
@@ -406,7 +409,6 @@ export class TableGenerator {
             const max = (colIndex * this.paramObject.modals.create.maxFields) + this.paramObject.modals.create.maxFields
             const fields = this.paramObject.fields.filter(x => x.modals != false)
 
-
             for (let i = index; i < max; i++) {
 
                 const field = fields[i]
@@ -420,7 +422,6 @@ export class TableGenerator {
                 label.classNames = "fs-14"
                 label.for = dialogId + "-input" + i
                 inputContainer.appendChild(label)
-
                 var inputField;
 
                 switch (field.type) {
@@ -519,7 +520,6 @@ export class TableGenerator {
                 inputField.id = dialogId + "input" + i
                 inputField.name = field.apiName
                 inputField.classList.add(dialogId + "-input")
-
             }
         }
 
@@ -570,8 +570,7 @@ export class TableGenerator {
         main.appendChild(modal)
 
         modal.innerHTML =
-            `
-            <div class="modal-dialog" id="createDialog">
+            `<div class="modal-dialog" id="createDialog">
                 <div class="modal-content">
                 <form id="create-form">
                     <div class="modal-header">
@@ -593,23 +592,25 @@ export class TableGenerator {
                     </div>
                     </form>
                 </div>
-            </div>
-        `
+            </div>`
 
         await generateFields("createDialog", modal.id)
 
-        //let submitButton = document.querySelector('#submit-form-create')
         let form = document.querySelector('#create-form')
-        /* submitButton.addEventListener('click', (e) => {
-            form.submit()
-        }) */
+        //let submitButton = document.querySelector('#submit-form-create')
+        this.paramObject.apiUrl.post.param.forEach(e => {
+            let inputCreate = document.createElement("input")
+            inputCreate.type = "hidden"
+            inputCreate.id = "create-input-" + e
+            inputCreate.name = e
+            form.appendChild(inputCreate)
+        })
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const data = new FormData(e.target);
-
             const value = Object.fromEntries(data.entries());
+            console.log(value)
 
             for (let field of Object.keys(value)) {
                 if (value[field] == "null") value[field] = null
@@ -622,16 +623,12 @@ export class TableGenerator {
                         value[field] = "N"
                     }
                 }
-
             }
 
             value.codiceDitta = "01"
-
             let res = await fetchPostApi(value)
-
-
+            console.log(res)
             const statusResponse = generateResponseMessage(res, "create")
-
             if (statusResponse == "success") await this.changePage(this.currentPage)
         })
 
@@ -650,12 +647,10 @@ export class TableGenerator {
         main.appendChild(deleteModal)
         //<div class="modal fade" id="deleteRecord" tabindex="-1" aria-labelledby="deleteRecordLabel" aria-hidden="true">
         deleteModal.innerHTML =
-            `
-            
-                <div class="modal-dialog">
+            `<div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header bg-blue">
-                            <h1 class="modal-title fs-5 text-white" id="deleteRecordLabel"><b>Elimina Record</b></h1>
+                            <h1 class="modal-title fs-5 text-white" id="deleteRecordLabel"><b>Delete Record</b></h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -666,15 +661,13 @@ export class TableGenerator {
                         <form id="delete-record-form" action="" method="">
                             <div class="modal-footer justify-content-between">
                                 <div>
-                                    <button type="button" id="delete-btn-revert" class="btn btn-danger" data-bs-dismiss="modal">Annulla</button>
-                                    <button type="submit" id="delete-btn-yes" class="btn btn-success">Conferma</button>
+                                    <button type="button" id="delete-btn-revert" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" id="delete-btn-yes" class="btn btn-success">Confirm</button>
                                 </div>
                             </div>
                         </form>
                     </div>
-                </div>
-            
-            `
+                </div>`
         
         const deleteForm = document.querySelector('#delete-record-form')
         this.paramObject.apiUrl.delete.param.forEach(x => {
@@ -682,7 +675,6 @@ export class TableGenerator {
             inputDelete.type = "hidden"
             inputDelete.id = "delete-input-" + x
             inputDelete.name = x
-            
             deleteForm.appendChild(inputDelete)
         })
         
@@ -711,8 +703,7 @@ export class TableGenerator {
         main.appendChild(updateModal)
 
         updateModal.innerHTML =
-            `
-            <div class="modal-dialog" id="updateDialog">
+            `<div class="modal-dialog" id="updateDialog">
                 <div class="modal-content">
                     <form id="update-form">
                         <div class="modal-header">
@@ -734,8 +725,7 @@ export class TableGenerator {
                         </div>
                     </form>
                 </div>
-            </div>
-        `
+            </div>`
 
         document.querySelector("#updateDialog")
 
@@ -745,12 +735,10 @@ export class TableGenerator {
                 let messageContainer = document.querySelectorAll('.response-message-container');
                 messageContainer.forEach(x => x.innerHTML = "")
             })
-
             //imposto l'attributo shown a true al completamento del caricamento della modale in modo da poterlo controllare in seguito
             x.addEventListener("shown.bs.modal", () => {
                 x.setAttribute("shown", true)
             })
-
             //imposto l'attributo shown a false quando viene nascosta
             x.addEventListener("hidden.bs.modal", () => {
                 x.setAttribute("shown", false)
@@ -759,26 +747,24 @@ export class TableGenerator {
 
         await generateFields("updateDialog", updateModal.id)
 
-        let inputUpdate = document.createElement("input")
-        inputUpdate.type = "hidden"
-        inputUpdate.id = "update-input"
-        inputUpdate.name = this.paramObject.apiUrl.put.param
         let updateForm = document.querySelector('#update-form')
-        updateForm.appendChild(inputUpdate)
+        this.paramObject.apiUrl.put.param.forEach(e => {
+            let inputUpdate = document.createElement("input")
+            inputUpdate.type = "hidden"
+            inputUpdate.id = "update-input-" + e
+            inputUpdate.name = e
+            updateForm.appendChild(inputUpdate)
+        })
 
         updateForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const data = new FormData(e.target);
-
             const value = Object.fromEntries(data.entries());
-
-            console.log(value);
+            console.log("data entries value: " + value);
 
             for (let field of Object.keys(value)) {
 
                 if (value[field] == "null" || this.paramObject.fields.find(x => (x.type == "datelong" || x.type == "datenormal") && x.apiName == field)) value[field] = null
-
                 let fi = this.paramObject.fields.find(x => x.apiName == field)
                 if (fi.type == "checkbox") {
                     if (value[field] == "on") {
@@ -787,14 +773,11 @@ export class TableGenerator {
                         value[field] = "N"
                     }
                 }
-
             }
 
             value.codiceDitta = "01"
-            console.log(value
-                );
+            console.log("value2: " + value);
             let res = await fetchPutApi(value)
-
 
             const statusResponse = generateResponseMessage(res, "update")
 
@@ -831,7 +814,6 @@ export class TableGenerator {
             messageContainer.appendChild(message)
             return stato
         }
-
     }
 
     /**
@@ -843,6 +825,106 @@ export class TableGenerator {
      */
 
     bodyGenerator(apiRes, tbody) {
+        /**
+         * @function createRow         
+         * @description Funzione dedicata alla creazione di una row della tabella.
+         * @param {number} index - Indice del ciclo di creazione delle row.
+         * @returns {HTMLTableRowElement} - Row creata.
+         * @memberof bodyGenerator
+         */
+        const createRow = (index) => {
+            let row = document.createElement("tr")
+            row.tabIndex = index
+            let rowNumber = document.createElement("td")
+            rowNumber.style.fontWeight = "bold"
+            rowNumber.innerText = index + 1
+            row.appendChild(rowNumber)
+
+            const editTd = document.createElement("td") 
+            row.appendChild(editTd)
+
+            const editBtn = document.createElement("button")
+            editBtn.id = "editRecordBtn"
+            editBtn.className = "btn-general-table"
+            editBtn.type = 'button'
+            editBtn.innerHTML = `<svg height="16" width="16" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"/></svg>`
+            editBtn.setAttribute("data-bs-toggle", "modal")
+            editBtn.setAttribute("data-bs-target", "#updateRecord")
+            editBtn.addEventListener("click", () => {
+                this.paramObject.apiUrl.put.param.forEach(v => {
+                    let updateValue = editBtn.parentElement.parentElement.querySelector(`td[fieldname="${v}"]`).getAttribute("valore")
+                    console.log(updateValue)
+                    let updateInput = document.querySelector(`#update-input-` + v)
+                    updateInput.value = updateValue
+                    updateInput.type = "hidden"
+                })
+
+                let updateModalTitle = document.querySelector("#updateModalTitle")
+                updateModalTitle.innerText = "Update the following record"
+
+                const fields = this.paramObject.fields.filter(x => x.modals != false)
+
+                const values = Array.from(editBtn.parentElement.parentElement.children).filter(x => x.getAttribute("fieldname") && x != null)
+
+                for (let i = 0; i < fields.length; i++) {
+                    const td = values.find(v => v.getAttribute("fieldname") == fields[i].apiName)
+                    const input = document.querySelector(`#updateDialog *[name="${fields[i].apiName}"]`)
+                    const valore = td.getAttribute("valore")
+
+                    if (td.getAttribute("fieldname") == this.paramObject.apiUrl.put.param) {
+                        input.disabled = true
+                    }
+                    if (fields[i].type == "checkbox") {
+
+                        input.checked = valore == "S"
+                    }
+                    else if (fields[i].type == "decimalColor") {
+                        const color = this.getRGBFromNumber(valore)
+                        input.style.backgroundColor = `rgb(${color.red},${color.green},${color.blue})`
+                        input.addEventListener("change", (e) => {
+                            const color = this.getRGBFromNumber(e.target.value)
+                            e.target.style.backgroundColor = `rgb(${color.red},${color.green},${color.blue})`
+                        })
+                    }
+                    else if (fields[i].type == "datenormal") {
+
+                        let date = valore.split("/").reverse().join("-")
+                        input.valueAsDate = new Date(date)
+
+                    } else {
+                        input.value = valore == "null" ? "" : valore
+                    }
+                }
+            })
+            editTd.appendChild(editBtn)
+
+            const deleteTd = document.createElement("td")
+            row.appendChild(deleteTd)
+            
+            const deleteBtn = document.createElement("button")
+            deleteBtn.id = "deleteRecordBtn"
+            deleteBtn.className = "btn-general-table"
+            deleteBtn.type = "button"
+            deleteBtn.innerHTML = `<svg height="16" width="14" viewBox="0 0 448 512"><path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg>`
+            deleteBtn.setAttribute("data-bs-toggle", "modal")
+            deleteBtn.setAttribute("data-bs-target", "#deleteRecord")
+            deleteBtn.addEventListener("click", () => {
+                this.paramObject.apiUrl.delete.param.forEach(x => {
+                    console.log(x)
+                    console.log(deleteBtn.parentElement)
+                    const deleteValue = deleteBtn.parentElement.parentElement.querySelector(`td[fieldname="${x}"]`).getAttribute("valore")
+                    console.log(deleteValue)
+                    const inputDelete = document.querySelector("#delete-input-" + x)
+                    inputDelete.value = deleteValue
+                    inputDelete.type = "hidden"
+                })
+
+                document.querySelector("#deleteText").innerText = "Confermare l'eliminazione del record?"
+            })
+            deleteTd.appendChild(deleteBtn)
+
+            return row
+        }
         let getRGBFromNumber = this.getRGBFromNumber
 
         for (let i = 0; i < apiRes.length; i++) {
@@ -861,36 +943,7 @@ export class TableGenerator {
             document.querySelector("#lateral-scroll").scrollLeft = 0;
         }
 
-        this.addMenuListenersToRows()
-
-        /**
-         * @function createRow         
-         * @description Funzione dedicata alla creazione di una row della tabella.
-         * @param {number} index - Indice del ciclo di creazione delle row.
-         * @returns {HTMLTableRowElement} - Row creata.
-         * @memberof bodyGenerator
-         */
-
-        function createRow(index) {
-            let row = document.createElement("tr")
-            row.tabIndex = index
-            let rowNumber = document.createElement("td")
-            rowNumber.style.fontWeight = "bold"
-            rowNumber.innerText = index + 1
-            row.appendChild(rowNumber)
-
-            const editBtn = document.createElement("td")
-            editBtn.className = "btn btn-general-table"
-            editBtn.innerHTML = `<svg height="16" width="16" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"/></svg>`
-            row.appendChild(editBtn)
-
-            const deleteBtn = document.createElement("td")
-            deleteBtn.className = "btn btn-general-table"
-            deleteBtn.innerHTML = `<svg height="16" width="14" viewBox="0 0 448 512"><path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg>`
-            row.appendChild(deleteBtn)
-
-            return row
-        }
+        //this.addMenuListenersToRows()
 
         /**
          * @function createCell         
@@ -1023,7 +1076,7 @@ export class TableGenerator {
             }
         })
 
-        this.addMenuListenersToRows()
+        //this.addMenuListenersToRows()
     }
 
     /**
@@ -1060,14 +1113,16 @@ export class TableGenerator {
                 btn1.setAttribute("data-bs-toggle", "modal")
                 btn1.setAttribute("data-bs-target", "#updateRecord")
                 btn1.addEventListener("click", () => {
-                    let updateValue = e.target.parentElement.querySelector(`td[fieldname="${this.paramObject.apiUrl.put.param}"]`).innerText
-                    let updateTitle = document.querySelector("#updateModalTitle")
+                    this.paramObject.apiUrl.put.param.forEach(v => {
+                        let updateValue = e.target.parentElement.querySelector(`td[fieldname="${v}"]`).getAttribute("valore")
+                        console.log(updateValue)
+                        let updateInput = document.querySelector(`#update-input-` + v)
+                        updateInput.value = updateValue
+                        updateInput.type = "hidden"
+                    })
 
-                    updateTitle.innerText = "Aggiorna il record: " + updateValue
-
-                    let updateInput = document.querySelector(`#update-input`)
-                    updateInput.value = updateValue
-                    updateInput.type = "hidden"
+                    let updateModalTitle = document.querySelector("#updateModalTitle")
+                    updateModalTitle.innerText = "Update the following record"
 
                     const fields = this.paramObject.fields.filter(x => x.modals != false)
 
@@ -1109,13 +1164,13 @@ export class TableGenerator {
                 })
                 menu.appendChild(btn1)
 
-                let btn2 = document.createElement("button")
+                /* let btn2 = document.createElement("button")
                 btn2.type = "button"
                 btn2.className = "btn bg-blue rounded-5 m-1"
                 btn2.innerHTML = `<svg height="1em" viewBox="0 0 448 512"><<path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg>`
                 btn2.setAttribute("data-bs-toggle", "modal")
                 btn2.setAttribute("data-bs-target", "#deleteRecord")
-                menu.appendChild(btn2)
+                
                 btn2.addEventListener("click", () => {
                     this.paramObject.apiUrl.delete.param.forEach(x => {
                         console.log(x)
@@ -1123,11 +1178,12 @@ export class TableGenerator {
                         console.log(deleteValue)
                         const inputDelete = document.querySelector("#delete-input-" + x)
                         inputDelete.value = deleteValue
+                        inputDelete.type = "hidden"
                     })
 
-                    document.querySelector("#deleteText").innerText = "Confermare l'eliminazione del record "
+                    document.querySelector("#deleteText").innerText = "Confermare l'eliminazione del record?"
                 })
-
+                menu.appendChild(btn2) */
             })
         })
     }
@@ -1344,11 +1400,14 @@ export class TableGenerator {
                 const errorData = await response.json();
                 return errorData
             }
-
         } catch (e) {
-            console.log(e)
+            console.log("e: " + e)
         }
-        return await response.json()
+
+        const res = await response.json()
+        console.log(res)
+        return res
+        
     }
 
     /**
@@ -1380,6 +1439,7 @@ export class TableGenerator {
         }
 
         let url = `${this.paramObject.apiUrl.get.url[0] + this.paramObject.apiUrl.get.url[1]}?Page=${pageNum}&Limit=${pageLimit}${stringParams}`
+        console.log("get url: " + url)
 
         return await this.fetchApi(url, settings)
     }
@@ -1752,11 +1812,21 @@ export class TableGenerator {
             addBtnWrap.className = "add-btn-wrapper pointer-pointer d-flex align-items-center border"
             addBtnWrap.setAttribute("data-bs-toggle", "modal")
             addBtnWrap.setAttribute("data-bs-target", "#createRecord")
+            addBtnWrap.addEventListener("click", () => {
+                this.paramObject.apiUrl.post.param.forEach(c => {
+                    console.log(c)
+                    const createValue = document.querySelector(`td[fieldname="${c}"]`).getAttribute("valore")
+                    console.log(createValue)
+                    const inputCreate = document.querySelector("#create-input-" + c)
+                    inputCreate.value = createValue
+                    inputCreate.type = "hidden"
+                })
+            })
             colAddBtn.appendChild(addBtnWrap)
 
             let addButton = document.createElement("div")
             addButton.className = "me-3 add-record-button d-flex align-items-center justify-content-center"
-            addButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>`
+            addButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>`
             addButton.style.display = "inline"
             addBtnWrap.appendChild(addButton)
 

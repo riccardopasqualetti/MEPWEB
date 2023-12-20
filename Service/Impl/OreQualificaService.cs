@@ -26,7 +26,8 @@ namespace MepWeb.Service.Impl
 
         public async Task<ResponseBase<OreQualificaPagedResponse?>> GetAllRecordsByIdDocPagedAsync(decimal idDoc, BasePagedRequest pagedRequest)
         {
-            var count = await _dbContext.PscCo01s.Where(x => x.IdDoc == idDoc).CountAsync();
+            var queryCount = _dbContext.PscCo01s.Where(x => x.IdDoc == idDoc).ToList();
+            var count = queryCount.Count;
 
             var pageRequest = new BasePageCriteria(pagedRequest.Page, pagedRequest.Limit);
 
@@ -38,8 +39,9 @@ namespace MepWeb.Service.Impl
                         select new OreQualificaResponse
                         {
                             IdDocumento = idDoc,
-                            Qualifica = zz12.DescrizioneRidotta,
-                            TipoFatturazione = c001.TFatt,
+							Qualifica = c001.Grpcdl,
+							DescrizioneQualifica = zz12.DescrizioneRidotta,
+							TipoFatturazione = c001.TFatt,
                             OreAcquistate = c001.HhAcq,
                             Note = c001.Note
                         };
@@ -68,7 +70,8 @@ namespace MepWeb.Service.Impl
                               select new OreQualificaResponse
                               {
                                   IdDocumento = idDoc,
-                                  Qualifica = zz12.DescrizioneRidotta,
+                                  Qualifica = c001.Grpcdl,
+                                  DescrizioneQualifica = zz12.DescrizioneRidotta,
                                   TipoFatturazione = c001.TFatt,
                                   OreAcquistate = c001.HhAcq,
                                   Note = c001.Note
@@ -88,8 +91,9 @@ namespace MepWeb.Service.Impl
                               select new OreQualificaResponse
                               {
                                   IdDocumento = idDoc,
-                                  Qualifica = zz12.DescrizioneRidotta,
-                                  TipoFatturazione = c001.TFatt,
+								  Qualifica = c001.Grpcdl,
+								  DescrizioneQualifica = zz12.DescrizioneRidotta,
+								  TipoFatturazione = c001.TFatt,
                                   OreAcquistate = c001.HhAcq,
                                   Note = c001.Note
                               }).ToListAsync();
@@ -110,12 +114,19 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio , "Id Documento non passato, questo campo è obbligatorio");
             }
 
-            if (createRequest.Qualifica == 0)
-            {
-                return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
-            }
+			if (string.IsNullOrEmpty(createRequest.DescrizioneQualifica))
+			{
+				return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
+			}
 
-            var checkExistence = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.CDitta == cDitta && x.IdDoc == createRequest.IdDocumento && x.Grpcdl == createRequest.Qualifica);
+			var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == createRequest.DescrizioneQualifica);
+            if(mvxzz12 == null)
+            {
+                return ResponseBase<OreQualificaResponse?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
+            }
+            createRequest.Qualifica = mvxzz12.Cod;
+
+			var checkExistence = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.CDitta == cDitta && x.IdDoc == createRequest.IdDocumento && x.Grpcdl == createRequest.Qualifica);
             if (checkExistence != null)
             {
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.RecordGiaEsistente, "Il record che si sta cercando di creare è già presente");
@@ -124,8 +135,9 @@ namespace MepWeb.Service.Impl
             PscCo01 c001 = new PscCo01();
             c001.CDitta = cDitta;
             c001.IdDoc = createRequest.IdDocumento;
-            c001.Grpcdl = createRequest.Qualifica;
+            c001.Grpcdl = (decimal)createRequest.Qualifica;
             c001.HhAcq = createRequest.OreAcquistate;
+            c001.TFatt = createRequest.TipoFatturazione;
             c001.DtIns = DateTime.Now;
             c001.UtenteIns = _scope.SV_USR_SIGLA;
             c001.DtUm = DateTime.Now;
@@ -152,12 +164,15 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Id Documento non passato, questo campo è obbligatorio");
             }
 
-            if (updateRequest.Qualifica == 0)
+            if (string.IsNullOrEmpty(updateRequest.DescrizioneQualifica))
             {
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
             }
 
-            var c001 = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.CDitta == cDitta && x.IdDoc == updateRequest.IdDocumento && x.Grpcdl == updateRequest.Qualifica);
+			var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == updateRequest.DescrizioneQualifica);
+			updateRequest.Qualifica = mvxzz12.Cod;
+
+			var c001 = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.CDitta == cDitta && x.IdDoc == updateRequest.IdDocumento && x.Grpcdl == updateRequest.Qualifica);
             if (c001 == null)
             {
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.RecordGiaEsistente, "Il record che si sta cercando di aggiornare non è presente all'interno della tabella");

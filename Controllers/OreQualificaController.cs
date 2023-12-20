@@ -1,10 +1,13 @@
 ﻿using Mep01Web.Controllers;
 using Mep01Web.DTO.Request;
+using Mep01Web.Infrastructure;
 using MepWeb.DTO.Request;
+using MepWeb.Service;
 using MepWeb.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MepWeb.Controllers
 {
@@ -15,21 +18,24 @@ namespace MepWeb.Controllers
     {
         private readonly IOreQualificaService _oreQualificaService;
         private readonly ILogger<OreQualificaController> _logger;
+		private readonly SataconsultingContext _dbContext;
 
-        public OreQualificaController(IOreQualificaService oreQualificaService, ILogger<OreQualificaController> logger)
+
+		public OreQualificaController(IOreQualificaService oreQualificaService, ILogger<OreQualificaController> logger, SataconsultingContext dbContext)
         {
             _oreQualificaService = oreQualificaService;
             _logger = logger;
+            _dbContext = dbContext;
         }
 
-        [HttpGet("GetAllPaged/{idDocumento}")]
-        public async Task<IActionResult> GetAllPscCo01sPagedAsync(decimal idDoc, [FromQuery] BasePagedRequest request)
+        [HttpGet("{idDocumento}/GetAllPaged")]
+        public async Task<IActionResult> GetAllPscCo01sPagedAsync(decimal idDocumento, [FromQuery] BasePagedRequest request)
         {
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllPscCo01sPagedAsync");
 
             try
             {
-                var getResponse = await _oreQualificaService.GetAllRecordsByIdDocPagedAsync(idDoc, request);
+                var getResponse = await _oreQualificaService.GetAllRecordsByIdDocPagedAsync(idDocumento, request);
 
                 if (getResponse.Succeeded)
                 {
@@ -53,13 +59,13 @@ namespace MepWeb.Controllers
         }
 
         [HttpGet("{idDocumento}")]
-        public async Task<IActionResult> GetAllPscCo01sAsync(decimal idDoc)
+        public async Task<IActionResult> GetAllPscCo01sAsync(decimal idDocumento)
         {
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllRecordsByIdDocAsync");
 
             try
             {
-                var getResponse = await _oreQualificaService.GetAllRecordsByIdDocAsync(idDoc);
+                var getResponse = await _oreQualificaService.GetAllRecordsByIdDocAsync(idDocumento);
 
                 if (getResponse.Succeeded)
                 {
@@ -83,14 +89,14 @@ namespace MepWeb.Controllers
         }
 
         [HttpGet("{idDocumento}/{qualifica}")]
-        public async Task<IActionResult> GetSinglePscCo01Async(decimal idDoc, decimal qualifica)
+        public async Task<IActionResult> GetSinglePscCo01Async(decimal idDocumento, decimal qualifica)
         {
 
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetSingleRecordAsync");
 
             try
             {
-                var getResponse = await _oreQualificaService.GetSingleRecordAsync(idDoc, qualifica);
+                var getResponse = await _oreQualificaService.GetSingleRecordAsync(idDocumento, qualifica);
 
                 if (getResponse.Succeeded)
                 {
@@ -124,7 +130,7 @@ namespace MepWeb.Controllers
 
                 if (getResponse.Succeeded)
                 {
-                    return Ok();
+                    return Ok(new { Response = "Operazione completata con successo"});
                 }
                 else
                 {
@@ -144,17 +150,17 @@ namespace MepWeb.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateTimeSchedule(OreQualificaUpdateRequest updateRequest)
+        public async Task<IActionResult> UpdatePsCo01Async(OreQualificaUpdateRequest updateRequest)
         {
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta UpdateRecordAsync");
 
-            try
+			try
             {
                 var getResponse = await _oreQualificaService.UpdateRecordAsync(updateRequest);
 
                 if (getResponse.Succeeded)
                 {
-                    return Ok();
+                    return Ok(new { Response = "Operazione completata con successo" });
                 }
                 else
                 {
@@ -174,17 +180,17 @@ namespace MepWeb.Controllers
         }
 
         [HttpDelete("{idDocumento}/{qualifica}")]
-        public async Task<IActionResult> DeleteTimeSchedule(decimal idDoc, decimal qualifica)
+        public async Task<IActionResult> DeleteTimeSchedule(decimal idDocumento, decimal qualifica)
         {
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta DeleteRecordAsync");
 
             try
             {
-                var getResponse = await _oreQualificaService.DeleteRecordAsync(idDoc, qualifica);
+                var getResponse = await _oreQualificaService.DeleteRecordAsync(idDocumento, qualifica);
 
                 if (getResponse.Succeeded)
                 {
-                    return Ok();
+                    return Ok(new { Response = "Operazione completata con successo" });
                 }
                 else
                 {
