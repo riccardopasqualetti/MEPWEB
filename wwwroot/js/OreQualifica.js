@@ -17,7 +17,7 @@ function getBaseUrl(cookieName) {
         
     }
 }
-const baseURL = "https://localhost:7125/"
+const baseURL = "/"
 console.log(baseURL)
 
 console.log("Id doc= " + idDocumento)

@@ -159,7 +159,7 @@ async function CliListChanged() {
             document.getElementById("CommCodeDesc").empty;
             options = '<option value=""></option>';
             for (var i = 0; i < cliNumber; i++) {
-                options += `<option value="${cliData[i].OrpbTstDoc}/${cliData[i].OrpbPrfDoc}/${cliData[i].OrpbADoc}/${cliData[i].OrpbNDoc}">${cliData[i].CommDescDd}</option>`;
+                options += `<option value="${cliData[i].orpbTstDoc}/${cliData[i].orpbPrfDoc}/${cliData[i].orpbADoc}/${cliData[i].orpbNDoc}">${cliData[i].commDescDd}</option>`;
             };
             document.getElementById("CommCodeDesc").innerHTML = options;
         }

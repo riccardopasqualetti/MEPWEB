@@ -10,6 +10,7 @@ using MepWeb.DTO.Response;
 using MepWeb.Exeptions;
 using MepWeb.Service.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace MepWeb.Service.Impl
 {
@@ -46,7 +47,7 @@ namespace MepWeb.Service.Impl
                             Note = c001.Note
                         };
 
-            var pagedQuery = query
+			var pagedQuery = query
             .Skip(pageRequest.Offset)
             .Take(pageRequest.Limit);
 

@@ -4,13 +4,21 @@
 async function setupSearchIsl(elementId) {
     const searchInput = document.getElementById("isl-search-input");
     const bsModal = new bootstrap.Modal("#searchIslModal");
+    const rows = document.getElementsByClassName("search-isl-riga")
 
     await executeSearch(elementId, bsModal)
 
     bsModal.show()
 
     searchInput.addEventListener("input", (e) => {
-        console.log(e.target.value)
+        for (const row of rows) {
+            value = row.querySelector((`*[field="rifCli"]`)).innerText
+            if (!value.toLowerCase().includes(e.target.value.toLowerCase())) {
+                row.classList.add("d-none")
+            } else {
+                row.classList.remove("d-none")
+            }
+        }
     })
     
     document.getElementById("searchIslModal").addEventListener('hidden.bs.modal', () => {
@@ -91,6 +99,7 @@ function createRow(isl, elementId, bsModal) {
 
     const tdRifcli = document.createElement("td")
     tdRifcli.innerText = isl.rifCli
+    tdRifcli.setAttribute("field", "rifCli")
     row.appendChild(tdRifcli)
     const tdStato = document.createElement("td")
     tdStato.innerText = isl.stato
