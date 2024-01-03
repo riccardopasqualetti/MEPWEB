@@ -118,6 +118,7 @@
 				<div class="form-group" style="margin-top:5px;">
 					<label asp-for="CrrgCmaatt">Macroattività</label>
 					<select asp-for="CrrgCmaatt" asp-items="@Model.CrrgCmaattList.Lista" class="form-select" style="width:120px"></select>
+					<span asp-validation-for="CrrgCmaatt" class="text-danger"></span>
 				</div>
 
 				@* Causale *@

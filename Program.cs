@@ -64,10 +64,11 @@ namespace WebApplication2
             builder.Services.AddTransient<IOreQualificaService, OreQualificaService>();
             builder.Services.AddTransient<ITcdlService, TcdlService>();
             builder.Services.AddTransient<IPscQualService, PscQualService>(); 
-            builder.Services.AddTransient<IVsCommAperteXCliService, VsCommAperteXCliService>(); 
+            builder.Services.AddTransient<IVsCommAperteXCliService, VsCommAperteXCliService>();
+            builder.Services.AddTransient<IQualificheService, QualificheService>();
 
 
-			var app = builder.Build();
+            var app = builder.Build();
 
             
             // Configure the HTTP request pipeline.
