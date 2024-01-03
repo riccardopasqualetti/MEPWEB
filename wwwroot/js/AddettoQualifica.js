@@ -39,11 +39,11 @@ console.log("Id doc= " + idDocumento)
                 url: [baseURL, "api/MepWeb_AddettoQualifica"]
             },
             put: {
-                param: ["id", "idDocumento"],
+                param: ["idDocumento","cRisorsa"],
                 url: [baseURL, "api/MepWeb_AddettoQualifica"]
             },
             delete: {
-                param: ["id"],
+                param: ["idDocumento","cRisorsa"],
                 url: [baseURL, "api/MepWeb_AddettoQualifica"]
             }
         },
@@ -53,7 +53,7 @@ console.log("Id doc= " + idDocumento)
         },
         fields: [
             {
-                apiName: "idDoc",
+                apiName: "idDocumento",
                 displayedName: "Id Documento",
                 type: "hidden",
                 modals:false
@@ -63,14 +63,20 @@ console.log("Id doc= " + idDocumento)
                 displayedName: "Codice Risorsa"
             },
             {
-                apiName: "grpcdl",
-                displayedName: "Qualifica",
+                apiName: "descrizioneQualifica",
+                displayedName: "Descrizione Qualifica",
                 /* searchUrls: [
                     {
                         url: "api/MepWeb_Qualifiche",
                         searchFieldNames: ["codiceQualifica", "nomeQualifica"]
                     }
                 ] */
+            },
+            {
+                apiName: "qualifica",
+                displayedName: "Qualifica",
+                type: "hidden",
+                modals: false
             }
         ]
     }

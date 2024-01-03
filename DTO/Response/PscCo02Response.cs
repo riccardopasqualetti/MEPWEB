@@ -4,13 +4,13 @@
     {
         public string CDitta { get; set; } 
 
-        public decimal IdDoc { get; set; }
+        public decimal IdDocumento { get; set; }
 
-        public string CRisorsa { get; set; } 
+        public string CRisorsa { get; set; }
+		public decimal Qualifica { get; set; }
+		public string DescrizioneQualifica { get; set; }
 
-        public string Grpcdl { get; set; }
-
-        public string? UtenteIns { get; set; }
+		public string? UtenteIns { get; set; }
 
         public DateTime? DtIns { get; set; }
 

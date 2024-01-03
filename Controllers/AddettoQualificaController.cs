@@ -104,12 +104,12 @@ namespace MepWeb.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteRecordAsync(decimal idDoc, string cRisorsa)
+        [HttpDelete("{idDocumento}/{cRisorsa}")]
+        public async Task<IActionResult> DeleteRecordAsync(decimal idDocumento, string cRisorsa)
         {
             try
             {
-                var response = await _pscCo02Service.DeleteRecordAsync(idDoc, cRisorsa);
+                var response = await _pscCo02Service.DeleteRecordAsync(idDocumento, cRisorsa);
 
                 if (response.Succeeded)
                 {

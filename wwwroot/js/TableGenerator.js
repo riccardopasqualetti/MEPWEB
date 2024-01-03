@@ -122,7 +122,7 @@ export class TableGenerator {
         for (const key of this.paramObject.apiUrl.delete.param) {
             const input = modal._dialog.querySelector(`*[name="${key}"]`)
             input.value = deleteObj[key]
-            
+
         }
     }
 
@@ -240,7 +240,7 @@ export class TableGenerator {
 
         const populateResearchObject = async (fieldName) => {
             const field = this.paramObject.fields.filter(field => field.searchUrls && field.apiName == fieldName)[0]
-            
+
             for (const srcParam of field.searchUrls) {
                 const refInputs = document.querySelectorAll(`.modal *[name="${srcParam.field}"]`)
                 /* for (const input of refInputs) {
@@ -254,7 +254,7 @@ export class TableGenerator {
                     researchResponses[field.apiName] = await fetchGetResearchApi(srcParam.url)
                 }
             }
-            
+
         }
 
         //da rivedere in un futuro
@@ -615,6 +615,7 @@ export class TableGenerator {
             for (let field of Object.keys(value)) {
                 if (value[field] == "null") value[field] = null
 
+                console.log(field)
                 let fi = this.paramObject.fields.find(x => x.apiName == field)
                 if (fi.type == "checkbox") {
                     if (value[field] == "on") {
@@ -668,7 +669,7 @@ export class TableGenerator {
                         </form>
                     </div>
                 </div>`
-        
+
         const deleteForm = document.querySelector('#delete-record-form')
         this.paramObject.apiUrl.delete.param.forEach(x => {
             const inputDelete = document.createElement("input")
@@ -677,7 +678,7 @@ export class TableGenerator {
             inputDelete.name = x
             deleteForm.appendChild(inputDelete)
         })
-        
+
 
         deleteForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -690,6 +691,7 @@ export class TableGenerator {
 
             const statusResponse = generateResponseMessage(res, "delete")
 
+            console.log(statusResponse)
             if (statusResponse == "success") await this.changePage(this.currentPage)
 
         })
@@ -840,7 +842,7 @@ export class TableGenerator {
             rowNumber.innerText = index + 1
             row.appendChild(rowNumber)
 
-            const editTd = document.createElement("td") 
+            const editTd = document.createElement("td")
             row.appendChild(editTd)
 
             const editBtn = document.createElement("button")
@@ -852,6 +854,7 @@ export class TableGenerator {
             editBtn.setAttribute("data-bs-target", "#updateRecord")
             editBtn.addEventListener("click", () => {
                 this.paramObject.apiUrl.put.param.forEach(v => {
+                    console.log(v)
                     let updateValue = editBtn.parentElement.parentElement.querySelector(`td[fieldname="${v}"]`).getAttribute("valore")
                     console.log(updateValue)
                     let updateInput = document.querySelector(`#update-input-` + v)
@@ -863,9 +866,9 @@ export class TableGenerator {
                 updateModalTitle.innerText = "Update the following record"
 
                 const fields = this.paramObject.fields.filter(x => x.modals != false)
-
+                console.log(fields)
                 const values = Array.from(editBtn.parentElement.parentElement.children).filter(x => x.getAttribute("fieldname") && x != null)
-
+                console.log(values)
                 for (let i = 0; i < fields.length; i++) {
                     const td = values.find(v => v.getAttribute("fieldname") == fields[i].apiName)
                     const input = document.querySelector(`#updateDialog *[name="${fields[i].apiName}"]`)
@@ -900,7 +903,7 @@ export class TableGenerator {
 
             const deleteTd = document.createElement("td")
             row.appendChild(deleteTd)
-            
+
             const deleteBtn = document.createElement("button")
             deleteBtn.id = "deleteRecordBtn"
             deleteBtn.className = "btn-general-table"
@@ -1226,42 +1229,49 @@ export class TableGenerator {
      * @returns {Object} - Response GET dell'API della pagina scelta.
      * @memberof changePage
      */
-    
+
     changePage = async (page) => {
         if (!this.isTableCreated) return
         this.currentPage = page
         let prevPageBtn = document.querySelector(`.btn[selected="true"]`)
-        prevPageBtn.removeAttribute("selected")
+        if (prevPageBtn) {
+            prevPageBtn.removeAttribute("selected")
+        }
         let btn = document.querySelector(`.btn[page="${page}"]`)
-        if (btn.classList.contains("hide-element")) {
-            if (prevPageBtn.value > page) {
-                showNextPageButtons(this.maxPageButtons, page)
-            } else {
-                showPreviousPageButtons(this.maxPageButtons, page)
-            }
-        }
-
-        let previousBtn = document.querySelector("#previous-btn")
-        let nextBtn = document.querySelector("#next-btn")
-
-        if (btn.value > 1) {
-            previousBtn.removeAttribute("disabled")
-        } else {
-            previousBtn.setAttribute("disabled", "true")
-        }
-
-        let allBtns = Array.from(document.querySelectorAll(".page-button"))
-        //let allVisibleButtons = document.querySelectorAll(".page-button:not(.hide-element)")
-
-        if (btn.value != allBtns[allBtns.length - 1].value) {
-            nextBtn.removeAttribute("disabled")
-        } else {
-            nextBtn.setAttribute("disabled", "true")
-        }
-
-        btn.setAttribute("selected", "true")
+        let res
         let pageLimit = document.querySelector("#selectEntries").value
-        let res = await this.fetchGetApi(btn.value, pageLimit)
+        if (btn) {
+            if (btn.classList.contains("hide-element")) {
+                if (prevPageBtn.value > page) {
+                    showNextPageButtons(this.maxPageButtons, page)
+                } else {
+                    showPreviousPageButtons(this.maxPageButtons, page)
+                }
+            }
+            let previousBtn = document.querySelector("#previous-btn")
+            let nextBtn = document.querySelector("#next-btn")
+
+            if (btn.value > 1) {
+                previousBtn.removeAttribute("disabled")
+            } else {
+                previousBtn.setAttribute("disabled", "true")
+            }
+
+            let allBtns = Array.from(document.querySelectorAll(".page-button"))
+            //let allVisibleButtons = document.querySelectorAll(".page-button:not(.hide-element)")
+
+            if (btn.value != allBtns[allBtns.length - 1].value) {
+                nextBtn.removeAttribute("disabled")
+            } else {
+                nextBtn.setAttribute("disabled", "true")
+            }
+
+            btn.setAttribute("selected", "true")
+            
+            res = await this.fetchGetApi(btn.value, pageLimit)
+        }
+
+
         let tbody = document.querySelector("tbody")
         tbody.innerHTML = ""
         this.bodyGenerator(res.response, tbody)
@@ -1407,7 +1417,7 @@ export class TableGenerator {
         const res = await response.json()
         console.log(res)
         return res
-        
+
     }
 
     /**
@@ -1519,41 +1529,41 @@ export class TableGenerator {
                 trHeaders.appendChild(th)
                 const sort = document.createElement("div")
                 /* sort.addEventListener("click", () => { */
-/*                     let rows = [...document.querySelectorAll("tbody tr")]
-                    rows = rows.sort((a, b) => a[x.apiName] - b[x.apiName])
-                    console.log(rows)
-                    const tbody = document.querySelector("tbody")
-                    tbody.innerHTML = ""
-                    rows.forEach(element => {
-                        tbody.appendChild(element)
-                    });
-                    //this.addMenuListenersToRows() */
-                    /* var table, rows, switching, i, x, y, shouldSwitch;
-                    table = document.querySelector("#containerLayoutAziendale table");
-                    switching = true;
+                /*                     let rows = [...document.querySelectorAll("tbody tr")]
+                                    rows = rows.sort((a, b) => a[x.apiName] - b[x.apiName])
+                                    console.log(rows)
+                                    const tbody = document.querySelector("tbody")
+                                    tbody.innerHTML = ""
+                                    rows.forEach(element => {
+                                        tbody.appendChild(element)
+                                    });
+                                    //this.addMenuListenersToRows() */
+                /* var table, rows, switching, i, x, y, shouldSwitch;
+                table = document.querySelector("#containerLayoutAziendale table");
+                switching = true;
 
-                    while (switching) {
-                        switching = false;
-                        rows = table.rows;
+                while (switching) {
+                    switching = false;
+                    rows = table.rows;
 
-                        for (i = 1; i < rows.length - 1; i++) {
-                        shouldSwitch = false;
-                        x = rows[i].getElementsByTagName("td")[index];
-                        y = rows[i + 1].getElementsByTagName("td")[index];
+                    for (i = 1; i < rows.length - 1; i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[index];
+                    y = rows[i + 1].getElementsByTagName("td")[index];
 
-                            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                                shouldSwitch = true;
-                                break;
-                            }
-                        }
-
-                        if (shouldSwitch) {
-                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                        switching = true;
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
                         }
                     }
-                }) */
-               /*  sort.classList.add("sorter", "pointer-pointer") */
+
+                    if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    }
+                }
+            }) */
+                /*  sort.classList.add("sorter", "pointer-pointer") */
                 let p = document.createElement("p")
                 p.className = "m-0"
                 p.style.width = "max-content"
@@ -1561,7 +1571,7 @@ export class TableGenerator {
                 p.innerText = x.displayedName
                 if (x.type == "hidden") th.classList.add("d-none")
                 sort.appendChild(p)
-                
+
                 /* sort.innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M137.4 41.4c12.5-12.5 32.8-12.5 45.3 0l128 128c9.2 9.2 11.9 22.9 6.9 34.9s-16.6 19.8-29.6 19.8H32c-12.9 0-24.6-7.8-29.6-19.8s-2.2-25.7 6.9-34.9l128-128zm0 429.3l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8H288c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128c-12.5 12.5-32.8 12.5-45.3 0z"/></svg>`
                 sort.style.display = "inline-block" */
                 th.appendChild(sort)
@@ -1631,7 +1641,7 @@ export class TableGenerator {
          * @description Genera la dropdown da cui è possibile scegliere il numero di righe per pagina.
          * @memberof createTable
          */
-        
+
         const generatePagOptions = async () => {
 
             let entriesSelect = document.querySelector("#selectEntries");
@@ -1782,14 +1792,14 @@ export class TableGenerator {
             let rowDati = document.createElement("div")
             rowDati.className = "row align-items-center mb-1"
             mainCol.appendChild(rowDati)
-            
+
             ////////////////////////////////////////////////////////////////
-            
+
             const colopti = document.createElement("div")
             colopti.className = "col-md-3 d-flex justify-content-start"
             colopti.id = "container-options"
             rowDati.appendChild(colopti)
-            
+
             ////////////////////////////////////////////////////////////////
             let tableLoader = document.createElement("span")
             tableLoader.id = "tLoader"
@@ -1895,7 +1905,7 @@ export class TableGenerator {
             showingNumber.className = "m-0"
             colShowEntries.appendChild(showingNumber)
 
-            
+
 
             let col7 = document.createElement("div")
             col7.className = "col-md-5 d-flex justify-content-end"
@@ -1926,7 +1936,7 @@ export class TableGenerator {
         this.apiResponse = apiResponse
         this.createTableMenu()
 
-        
+
 
         /**
          * @function generateSearchFields

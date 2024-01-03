@@ -179,7 +179,7 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.RecordGiaEsistente, "Il record che si sta cercando di aggiornare non è presente all'interno della tabella");
             }
 
-            if(updateRequest.OreAcquistate != 0)
+            if(updateRequest.OreAcquistate != null && updateRequest.OreAcquistate >= 0)
             {
                 c001.HhAcq = updateRequest.OreAcquistate;
             }
