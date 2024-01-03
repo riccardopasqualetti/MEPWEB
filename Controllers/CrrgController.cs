@@ -119,7 +119,11 @@ namespace Mep01Web.Controllers
 				{
 					ModelState.AddModelError("CrrgCCaus", addCrrgResponse.Errors[0].Message);
 				}
-				await _crrgService.AddCrrgPrepareDataAsync(obj);
+                if (addCrrgResponse.Errors[0].Code == "-12")
+                {
+                    ModelState.AddModelError("CrrgCmaatt", addCrrgResponse.Errors[0].Message); 
+                }
+                await _crrgService.AddCrrgPrepareDataAsync(obj);
 				return View(obj);
             }
             //}

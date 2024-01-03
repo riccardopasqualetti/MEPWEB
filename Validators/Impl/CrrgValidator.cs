@@ -67,6 +67,11 @@ namespace Mep01Web.Validators.Impl
 				{
 					return ResponseBase<CrrgResponse?>.Failed("-11", $"Causale non ammessa");
 				}
+
+				//if (ISL.TatvFlgOfferta > 0 && crrgRequest.CrrgCmaatt != "3")
+				//{
+                    return ResponseBase<CrrgResponse?>.Failed("-12", $"Verbale obbligatorio per ISL con offerta");
+                //}
 			}
 			// Se la ISL non è valorizzata, ma è valorizzato il campo CommCodeDesc con il codice in formato compatto,
             // la commessa è presa da quest'ultimo campo.
@@ -172,10 +177,9 @@ namespace Mep01Web.Validators.Impl
 					return ResponseBase<CrrgResponse?>.Failed("-10", $"Modulo inesistente (s)");
 				}
 			}
+			
 
-
-
-			return ResponseBase<CrrgResponse?>.Success();
+            return ResponseBase<CrrgResponse?>.Success();
 		}
 	}
 }
