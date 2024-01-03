@@ -55,6 +55,45 @@ namespace MepWeb.Service.Impl
 			return ResponseBase<List<MaccResponse>>.Success(res);
 		}
 
+		public async Task<ResponseBase<List<MaccResponse>>> GetAllAllowedMaccAsync()
+		{
+			var maccs = await _dbContext.FlussoMaccs.Where(x => x.MaccFlgAttivo == "S" && x.MaccCMatricola.Length == 2).ToListAsync();
+			var res = new List<MaccResponse>();
+
+			foreach (var macc in maccs)
+			{
+				res.Add(new MaccResponse
+				{
+					MaccCCdl = macc.MaccCCdl,
+					MaccTipo = macc.MaccTipo,
+					MaccCMatricola = macc.MaccCMatricola,
+					MaccCDitta = macc.MaccCDitta,
+					MaccDesc = macc.MaccDesc,
+					MaccPassw = macc.MaccPassw,
+					MaccFlgMag = macc.MaccFlgMag,
+					MaccFlgGrp = macc.MaccFlgGrp,
+					MaccNRis = macc.MaccNRis,
+					MaccGrpCosto = macc.MaccGrpCosto,
+					MaccDtIns = macc.MaccDtIns,
+					MaccUtenteIns = macc.MaccUtenteIns,
+					MaccDtUm = macc.MaccDtUm,
+					MaccUtenteUm = macc.MaccUtenteUm,
+					MaccPortata = macc.MaccPortata,
+					MaccId = macc.MaccId,
+					MaccStris = macc.MaccStris,
+					MaccFlgAttivo = macc.MaccFlgAttivo,
+					MaccFlgPresidio = macc.MaccFlgPresidio,
+					MaccListaCaus = macc.MaccListaCaus,
+					MaccTprocpers = macc.MaccTprocpers,
+					MaccFlgComdir = macc.MaccFlgComdir,
+					MaccPathParprogramSrc = macc.MaccPathParprogramSrc,
+					MaccPathParprogramDes = macc.MaccPathParprogramDes
+				});
+			}
+
+			return ResponseBase<List<MaccResponse>>.Success(res);
+		}
+
 		public async Task<ResponseBase<MaccResponse>> GetMaccByCdlAsync(string cdl)
 		{
 			var macc = await _dbContext.FlussoMaccs.FirstOrDefaultAsync(x => x.MaccCCdl == cdl);

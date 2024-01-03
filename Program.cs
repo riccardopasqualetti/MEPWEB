@@ -64,7 +64,8 @@ namespace WebApplication2
             builder.Services.AddTransient<IOreQualificaService, OreQualificaService>();
             builder.Services.AddTransient<ITcdlService, TcdlService>();
             builder.Services.AddTransient<IPscQualService, PscQualService>(); 
-            builder.Services.AddTransient<IVsCommAperteXCliService, VsCommAperteXCliService>(); 
+            builder.Services.AddTransient<IVsCommAperteXCliService, VsCommAperteXCliService>();
+			builder.Services.AddTransient<IMaccService, MaccService>();
 
 
 			var app = builder.Build();
