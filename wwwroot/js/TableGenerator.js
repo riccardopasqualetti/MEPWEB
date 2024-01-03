@@ -444,6 +444,17 @@ export class TableGenerator {
                         inputField.className = "form-select"
                         inputContainer.appendChild(inputField)
 
+                        if (!field.values) {
+                            const vals = {}
+                            const lista = await fetchGetResearchApi(field.searchUrls[0].url)
+                            console.log(lista)
+                            for (const f of lista) {
+                                vals["o" + f.cod] = f.descrizioneRidotta
+                            }
+
+                            field.values = vals
+                        }
+
                         for (let opt of Object.entries(field.values)) {
                             const option = document.createElement("option")
                             option.value = opt[0].replace("o", "")
@@ -1267,7 +1278,7 @@ export class TableGenerator {
             }
 
             btn.setAttribute("selected", "true")
-            
+
             res = await this.fetchGetApi(btn.value, pageLimit)
         }
 

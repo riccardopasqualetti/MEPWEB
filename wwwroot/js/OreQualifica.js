@@ -9,12 +9,12 @@ function getBaseUrl(cookieName) {
     console.log("ciao")
     for (const cookie of document.cookie.split("; ")) {
         console.log(cookie)
-        if (cookie.split("=")[0] == cookieName){
+        if (cookie.split("=")[0] == cookieName) {
             let id = decodeURIComponent(cookie.split("=")[1])
             console.log("id = " + id)
             return id
-        } 
-        
+        }
+
     }
 }
 const baseURL = "/"
@@ -24,89 +24,84 @@ console.log("Id doc= " + idDocumento)
 
 /* async function getDocumento(documento) {
     const idDocumento = documento */
-    /** 
- * Oggetto con i parametri per la generazione della tabella con API: MasterResource.
- * @type {types.ParamObject}
- *  */
-    const oreQualificaObj = {
-        //credentials: login,
-        authToken: tempToken,
-        apiUrl: {
-            get: {
-                url: [baseURL, `api/MepWeb_OreQualifica/${idDocumento}/GetAllPaged`]
-            },
-            post: {
-                param: ["idDocumento"],
-                url: [baseURL, "api/MepWeb_OreQualifica"]
-            },
-            put: {
-                param: ["idDocumento", "qualifica"],
-                url: [baseURL, "api/MepWeb_OreQualifica"]
-            },
-            delete: {
-                param: ["idDocumento", "qualifica"],
-                url: [baseURL, "api/MepWeb_OreQualifica"]
-            }
+/** 
+* Oggetto con i parametri per la generazione della tabella con API: MasterResource.
+* @type {types.ParamObject}
+*  */
+const oreQualificaObj = {
+    //credentials: login,
+    authToken: tempToken,
+    apiUrl: {
+        get: {
+            url: [baseURL, `api/MepWeb_OreQualifica/${idDocumento}/GetAllPaged`]
         },
-        paginationOptions: [640, 20, 50, 1280],
-        modals: {
-            create: { col: 1, maxFields: 5 }
+        post: {
+            param: ["idDocumento"],
+            url: [baseURL, "api/MepWeb_OreQualifica"]
         },
-        fields: [
-            {
-                apiName: "idDocumento",
-                displayedName: "Id Documento",
-                type: "hidden",
-                modals: false
-            },
-            {
-                apiName: "descrizioneQualifica",
-                displayedName: "Descrizione Qualifica",
-                /* searchUrls: [
-                    {
-                        url: "api/MepWeb_Qualifiche",
-                        searchFieldNames: ["codiceQualifica", "nomeQualifica"]
-                    }
-                ] */
-            },
-            {
-                apiName: "qualifica",
-                displayedName: "Qualifica",
-                type: "hidden",
-                modals: false
-            },
-            {
-                apiName: "oreAcquistate",
-                displayedName: "Ore Acquistate",
-                type: "number"
-            },
-            {
-                apiName: "tipoFatturazione",
-                displayedName: "Tipo Fatturazione",
-                type: "dropdown",
-                values: { o1: "Prepagate", o2: "Fatturate a consuntivo con check monte ore", o3: "Fatturate a consuntivo senza check monte ore" }
-            },
-            {
-                apiName: "note",
-                displayedName: "Note"
-            }
-        ]
-    }
+        put: {
+            param: ["idDocumento", "qualifica"],
+            url: [baseURL, "api/MepWeb_OreQualifica"]
+        },
+        delete: {
+            param: ["idDocumento", "qualifica"],
+            url: [baseURL, "api/MepWeb_OreQualifica"]
+        }
+    },
+    paginationOptions: [640, 20, 50, 1280],
+    modals: {
+        create: { col: 1, maxFields: 5 }
+    },
+    fields: [
+        {
+            apiName: "idDocumento",
+            displayedName: "Id Documento",
+            type: "hidden",
+            modals: false
+        },
+        {
+            apiName: "qualifica",
+            displayedName: "Qualifica",
+            searchUrls: [
+                {
+                    url: "api/MepWeb_Qualifiche",
+                    searchFieldNames: ["cod", "descrizioneRidotta"]
+                }
+            ],
+            type: "dropdown"
+        },
+        {
+            apiName: "oreAcquistate",
+            displayedName: "Ore Acquistate",
+            type: "number"
+        },
+        {
+            apiName: "tipoFatturazione",
+            displayedName: "Tipo Fatturazione",
+            type: "dropdown",
+            values: { o1: "Prepagate", o2: "Fatturate a consuntivo con check monte ore", o3: "Fatturate a consuntivo senza check monte ore" }
+        },
+        {
+            apiName: "note",
+            displayedName: "Note"
+        }
+    ]
+}
 
-    /* const optionsObj = {
-        cily: ["Cily", cilyObj],
-        workCenter: ["WorkCenter", workCenterObj],
-        resources: ["Risorse", resourcesObj]
-    } */
+/* const optionsObj = {
+    cily: ["Cily", cilyObj],
+    workCenter: ["WorkCenter", workCenterObj],
+    resources: ["Risorse", resourcesObj]
+} */
 
-    /**
-     * Un'istanza di TableGenerator utilizzata per eseguire azioni specifiche.
-     * @type {types.TableGenerator}
-     */
-    let tableGeneratorInstance = new TableGenerator(oreQualificaObj);
+/**
+ * Un'istanza di TableGenerator utilizzata per eseguire azioni specifiche.
+ * @type {types.TableGenerator}
+ */
+let tableGeneratorInstance = new TableGenerator(oreQualificaObj);
 
-    await tableGeneratorInstance.createModals()
-    await tableGeneratorInstance.createTable()
+await tableGeneratorInstance.createModals()
+await tableGeneratorInstance.createTable()
 /* } */
 
 //const idDocumento = getDocumento()
