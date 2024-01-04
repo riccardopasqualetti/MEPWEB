@@ -60,16 +60,6 @@ console.log("Id doc= " + idDocumento)
                 modals: false
             },
             {
-                apiName: "descrizioneQualifica",
-                displayedName: "Descrizione Qualifica",
-                /* searchUrls: [
-                    {
-                        url: "api/MepWeb_Qualifiche",
-                        searchFieldNames: ["codiceQualifica", "nomeQualifica"]
-                    }
-                ] */
-            },
-            {
                 apiName: "qualifica",
                 displayedName: "Qualifica",
                 type: "hidden",
@@ -183,16 +173,6 @@ console.log("Id doc= " + idDocumento)
                 displayedName: "Id",
                 type: "hidden",
                 modals: false
-            },
-            {
-                apiName: "descrizioneQualifica",
-                displayedName: "Descrizione Qualifica",
-                /* searchUrls: [
-                    {
-                        url: "api/MepWeb_Qualifiche",
-                        searchFieldNames: ["codiceQualifica", "nomeQualifica"]
-                    }
-                ] */
             },
             {
                 apiName: "qualifica",

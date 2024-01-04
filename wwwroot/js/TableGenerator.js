@@ -523,7 +523,7 @@ export class TableGenerator {
                         inputContainer.appendChild(inputField)
                 }
 
-                if (field.searchUrls) {
+                if (field.searchUrls && field.type != "dropdown") {
                     await generateResearchWindow(inputContainer, field, inputField, modalId)
                 }
 

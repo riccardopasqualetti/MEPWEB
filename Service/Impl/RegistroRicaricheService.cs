@@ -121,17 +121,17 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Id Documento non passato, questo campo è obbligatorio");
             }
 
-			if (string.IsNullOrEmpty(createRequest.DescrizioneQualifica))
-			{
-				return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
-			}
+			//if (string.IsNullOrEmpty(createRequest.DescrizioneQualifica))
+			//{
+			//	return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
+			//}
 
-			var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == createRequest.DescrizioneQualifica);
-			if (mvxzz12 == null)
-			{
-				return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
-			}
-			createRequest.Qualifica = mvxzz12.Cod;
+			//var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == createRequest.DescrizioneQualifica);
+			//if (mvxzz12 == null)
+			//{
+			//	return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
+			//}
+			//createRequest.Qualifica = mvxzz12.Cod;
 
 			var c001 = await _oreQualificaService.GetSingleRecordAsync(createRequest.IdDocumento, (decimal)createRequest.Qualifica);
             if (!c001.Succeeded)
@@ -169,7 +169,7 @@ namespace MepWeb.Service.Impl
 
             OreQualificaUpdateRequest c001Update = new OreQualificaUpdateRequest();
             c001Update.IdDocumento = createRequest.IdDocumento;
-            c001Update.DescrizioneQualifica = createRequest.DescrizioneQualifica;
+            //c001Update.DescrizioneQualifica = createRequest.DescrizioneQualifica;
             c001Update.Qualifica = createRequest.Qualifica;
             c001Update.OreAcquistate = c001.Body.OreAcquistate + createRequest.OreAcquistate;
 
@@ -198,17 +198,17 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Id Documento non passato, questo campo è obbligatorio");
             }
 
-			if (string.IsNullOrEmpty(updateRequest.DescrizioneQualifica))
-			{
-				return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
-			}
+			//if (string.IsNullOrEmpty(updateRequest.DescrizioneQualifica))
+			//{
+			//	return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
+			//}
 
-			var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == updateRequest.DescrizioneQualifica);
-			if (mvxzz12 == null)
-			{
-				return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
-			}
-			updateRequest.Qualifica = mvxzz12.Cod;
+			//var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == updateRequest.DescrizioneQualifica);
+			//if (mvxzz12 == null)
+			//{
+			//	return ResponseBase<RegistroRicaricheResponse?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
+			//}
+			//updateRequest.Qualifica = mvxzz12.Cod;
 
 			var c003 = await _dbContext.PscCo03s.FirstOrDefaultAsync(x => x.Id == updateRequest.Id);
             if (c003 == null)
@@ -223,13 +223,13 @@ namespace MepWeb.Service.Impl
             decimal availableHours = 0;
 
             c001Update1.IdDocumento = updateRequest.IdDocumento;
-            c001Update1.DescrizioneQualifica = updateRequest.DescrizioneQualifica;
+            //c001Update1.DescrizioneQualifica = updateRequest.DescrizioneQualifica;
 
             if (updateRequest.Qualifica != c003.Grpcdl)
             {
 
 				c001Update2.IdDocumento = updateRequest.IdDocumento;
-				c001Update2.DescrizioneQualifica = updateRequest.DescrizioneQualifica;
+				//c001Update2.DescrizioneQualifica = updateRequest.DescrizioneQualifica;
 				var c001N1 = await _oreQualificaService.GetSingleRecordAsync(updateRequest.IdDocumento, (decimal)updateRequest.Qualifica);
                 if (!c001N1.Succeeded)
                 {
@@ -357,7 +357,7 @@ namespace MepWeb.Service.Impl
 
             OreQualificaUpdateRequest c001Update = new OreQualificaUpdateRequest();
             c001Update.IdDocumento = c003.IdDoc;
-            c001Update.DescrizioneQualifica = c001.Body.DescrizioneQualifica;
+            //c001Update.DescrizioneQualifica = c001.Body.DescrizioneQualifica;
             c001Update.OreAcquistate = c001.Body.OreAcquistate - c003.HhAcq;
             var availableHours = await _crrgService.CheckHoursAvailability(c003.IdDoc, (decimal)c003.HhAcq, c001.Body.DescrizioneQualifica);
             if(availableHours < 0 )

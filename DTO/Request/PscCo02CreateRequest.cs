@@ -8,7 +8,7 @@ namespace MepWeb.DTO.Request
         public decimal IdDocumento { get; set; }
         [Required(ErrorMessage = "CRisorsa obbligatoria")]
         public string CRisorsa { get; set; }
-        public string DescrizioneQualifica { get; set; }
+        //public string DescrizioneQualifica { get; set; }
 
         public decimal Qualifica { get; set; }
 

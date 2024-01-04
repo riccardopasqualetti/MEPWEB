@@ -115,17 +115,17 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio , "Id Documento non passato, questo campo è obbligatorio");
             }
 
-			if (string.IsNullOrEmpty(createRequest.DescrizioneQualifica))
-			{
-				return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
-			}
+			//if (string.IsNullOrEmpty(createRequest.DescrizioneQualifica))
+			//{
+			//	return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
+			//}
 
-			var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == createRequest.DescrizioneQualifica);
-            if(mvxzz12 == null)
-            {
-                return ResponseBase<OreQualificaResponse?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
-            }
-            createRequest.Qualifica = mvxzz12.Cod;
+			//var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == createRequest.DescrizioneQualifica);
+   //         if(mvxzz12 == null)
+   //         {
+   //             return ResponseBase<OreQualificaResponse?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
+   //         }
+   //         createRequest.Qualifica = mvxzz12.Cod;
 
 			var checkExistence = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.CDitta == cDitta && x.IdDoc == createRequest.IdDocumento && x.Grpcdl == createRequest.Qualifica);
             if (checkExistence != null)
@@ -165,13 +165,13 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Id Documento non passato, questo campo è obbligatorio");
             }
 
-            if (string.IsNullOrEmpty(updateRequest.DescrizioneQualifica))
-            {
-                return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
-            }
+   //         if (string.IsNullOrEmpty(updateRequest.DescrizioneQualifica))
+   //         {
+   //             return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
+   //         }
 
-			var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == updateRequest.DescrizioneQualifica);
-			updateRequest.Qualifica = mvxzz12.Cod;
+			//var mvxzz12 = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == updateRequest.DescrizioneQualifica);
+			//updateRequest.Qualifica = mvxzz12.Cod;
 
 			var c001 = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.CDitta == cDitta && x.IdDoc == updateRequest.IdDocumento && x.Grpcdl == updateRequest.Qualifica);
             if (c001 == null)

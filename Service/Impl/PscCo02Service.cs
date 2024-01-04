@@ -122,17 +122,17 @@ namespace MepWeb.Service.Impl
 				return ResponseBase<PscCo02?>.Failed(GenericException.RecordInesistente, "Questo codice risorsa non è stato trovato");
 			}
 
-			if (string.IsNullOrEmpty(request.DescrizioneQualifica))
-			{
-				return ResponseBase<PscCo02?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
-			}
+			//if (string.IsNullOrEmpty(request.DescrizioneQualifica))
+			//{
+			//	return ResponseBase<PscCo02?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
+			//}
 
-			var mvxzz12 = await _db.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == request.DescrizioneQualifica);
-			if (mvxzz12 == null)
-			{
-				return ResponseBase<PscCo02?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
-			}
-			request.Qualifica = mvxzz12.Cod;
+			//var mvxzz12 = await _db.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == request.DescrizioneQualifica);
+			//if (mvxzz12 == null)
+			//{
+			//	return ResponseBase<PscCo02?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
+			//}
+			//request.Qualifica = mvxzz12.Cod;
 			var pscCo02 = new PscCo02
 			{
 				CDitta = "01",
@@ -171,12 +171,12 @@ namespace MepWeb.Service.Impl
 				return ResponseBase<PscCo02?>.Failed(PscCo02Errors.RecordNonTrovati, "Non sono stati trovati record in PscCo02");
 			}
 
-			var mvxzz12 = await _db.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == request.DescrizioneQualifica);
-			if (mvxzz12 == null)
-			{
-				return ResponseBase<PscCo02?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
-			}
-			request.Qualifica = mvxzz12.Cod;
+			//var mvxzz12 = await _db.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == request.DescrizioneQualifica);
+			//if (mvxzz12 == null)
+			//{
+			//	return ResponseBase<PscCo02?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
+			//}
+			//request.Qualifica = mvxzz12.Cod;
 
 			pscCo02.Grpcdl = (decimal)request.Qualifica;
 			pscCo02.DtUm = DateTime.Now;

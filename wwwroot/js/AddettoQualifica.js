@@ -63,16 +63,6 @@ console.log("Id doc= " + idDocumento)
                 displayedName: "Codice Risorsa"
             },
             {
-                apiName: "descrizioneQualifica",
-                displayedName: "Descrizione Qualifica",
-                /* searchUrls: [
-                    {
-                        url: "api/MepWeb_Qualifiche",
-                        searchFieldNames: ["codiceQualifica", "nomeQualifica"]
-                    }
-                ] */
-            },
-            {
                 apiName: "qualifica",
                 displayedName: "Qualifica",
                 type: "hidden",
