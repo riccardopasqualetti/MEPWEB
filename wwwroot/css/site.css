@@ -136,13 +136,17 @@ footer {
     margin-top: 2vh;
 }
 
+#searchIslModal tr[selected="true"] td {
+    background-color: #004f8c;
+}
+
 #isl-filters div {
     display: flex;
     justify-content: space-between;
 }
 
-#search-isl-table {
-    
+#search-isl-table td {
+    user-select: none;
 }
 
 /* #tatvDesc {

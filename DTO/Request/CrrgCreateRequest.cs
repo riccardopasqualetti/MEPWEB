@@ -46,8 +46,8 @@ namespace Mep01Web.DTO.Request
 
 		// Codice cliente        		
 		public string? ComCCli { get; set; }
-		// Dropdown per ComCCli
-		public AcliList AcliList { get; set; }
+        // Dropdown per ComCCli
+        public AcliList AcliList { get; set; } = new AcliList();
 
 
 		// Commessa		
@@ -61,26 +61,26 @@ namespace Mep01Web.DTO.Request
         public string CommCode { get; set; }
 		public string CommCodeDesc { get; set; }
 		// Dropdown per CommCodeDesc
-		public TbcpList TbcpList { get; set; }
+		public TbcpList TbcpList { get; set; } = new TbcpList();
 
 
 		//Operazione (NOper=0,50,ecc...) (TOper=M001,PS33,ecc...) 
 		public decimal CrrgNOper { get; set; }
         public string CrrgTOper { get; set; }
         public string NTOper { get; set; }
-		public NTOperList NTOperList { get; set; }
+		public NTOperList NTOperList { get; set; } = new NTOperList();
 
 
 		//Macroattività (0=n.d.,1=Garanzia,2=Assistenza,3=Verbale) 
 		public string CrrgCmaatt { get; set; }
-		// Dropdown per CrrgCCaus
-		public CrrgCmaattList CrrgCmaattList { get; set; }
+        // Dropdown per CrrgCCaus
+        public CrrgCmaattList CrrgCmaattList { get; set; } = new CrrgCmaattList();
 
 
 		// Causale (CORI, ANFU, SVIL, DELI)
 		public string CrrgCCaus { get; set; }		
 		// Dropdown per CrrgCCaus
-		public CrrgCCausList CrrgCCausList { get; set; }
+		public CrrgCCausList CrrgCCausList { get; set; } = new CrrgCCausList();
 
 		
         // Descrizione
@@ -89,17 +89,19 @@ namespace Mep01Web.DTO.Request
 
         // Applicazione (APP_MEP,APP_MAKINGONE,APP_DEPSOL,ecc...))
         public string CrrgApp { get; set; }
-		public AppList AppList { get; set; }
+		public AppList AppList { get; set; } = new AppList();
 
 		// Modulo (MOD_COMDES,ecc...)
 		public string CrrgMod { get; set; }
-		public ModList ModList { get; set; }
+		public ModList ModList { get; set; } = new ModList();
 
 
         public string? MemoModalita { get; set; }
 
+        public string Succeeded { get; set; } = "";
 
-		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             throw new NotImplementedException();
         }

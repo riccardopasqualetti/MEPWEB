@@ -68,10 +68,10 @@ namespace Mep01Web.Validators.Impl
 					return ResponseBase<CrrgResponse?>.Failed("-11", $"Causale non ammessa");
 				}
 
-				//if (ISL.TatvFlgOfferta > 0 && crrgRequest.CrrgCmaatt != "3")
-				//{
-                    return ResponseBase<CrrgResponse?>.Failed("-12", $"Verbale obbligatorio per ISL con offerta");
-                //}
+				if (ISL.TatvFlgOfferta > 0 && crrgRequest.CrrgCmaatt != "3")
+				{
+					return ResponseBase<CrrgResponse?>.Failed("-12", $"Verbale obbligatorio per ISL con offerta");
+				}
 			}
 			// Se la ISL non è valorizzata, ma è valorizzato il campo CommCodeDesc con il codice in formato compatto,
             // la commessa è presa da quest'ultimo campo.
@@ -84,7 +84,7 @@ namespace Mep01Web.Validators.Impl
 						crrgRequest.CrrgTstDoc = crrgRequest.CommCodeDesc.Substring(0, 3);
 						crrgRequest.CrrgPrfDoc = crrgRequest.CommCodeDesc.Substring(4, 1);
 						crrgRequest.CrrgADoc = Decimal.Parse(crrgRequest.CommCodeDesc.Substring(6, 4));
-						crrgRequest.CrrgNDoc = Decimal.Parse(crrgRequest.CommCodeDesc.Substring(11, 6));
+						crrgRequest.CrrgNDoc = Decimal.Parse(crrgRequest.CommCodeDesc[11..]);
 						flgcom = "-6";
 					} else
 					{
@@ -93,17 +93,14 @@ namespace Mep01Web.Validators.Impl
 							crrgRequest.CrrgTstDoc = crrgRequest.CommCode.Substring(0, 3);
 							crrgRequest.CrrgPrfDoc = crrgRequest.CommCode.Substring(4, 1);
 							crrgRequest.CrrgADoc = Decimal.Parse(crrgRequest.CommCode.Substring(6, 4));
-							crrgRequest.CrrgNDoc = Decimal.Parse(crrgRequest.CommCode.Substring(11, 6));
+							crrgRequest.CrrgNDoc = Decimal.Parse(crrgRequest.CommCode[11..]);
 							flgcom = "-7";
 						}						
 					}
 				}
 				catch
                 {
-                    crrgRequest.CrrgTstDoc = "";
-					crrgRequest.CrrgPrfDoc = "";
-					crrgRequest.CrrgADoc = 0;
-					crrgRequest.CrrgNDoc = 0;
+					return ResponseBase<CrrgResponse?>.Failed("-6", $"Commessa non valida: {crrgRequest.CommCodeDesc ?? ""}");
 				}
 				if (crrgRequest.CrrgCCaus != "CORI")
 				{
