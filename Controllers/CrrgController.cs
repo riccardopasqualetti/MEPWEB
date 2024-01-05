@@ -123,11 +123,19 @@ namespace Mep01Web.Controllers
                 {
                     ModelState.AddModelError("CrrgCmaatt", addCrrgResponse.Errors[0].Message); 
                 }
-                await _crrgService.AddCrrgPrepareDataAsync(obj);
-				return View(obj);
+
+                obj.Succeeded = "N";
+				//await _crrgService.AddCrrgPrepareDataAsync(obj);
+				//return View(obj);
             }
-            //}
-            return RedirectToAction("Create");
+            else
+            {
+				obj.Succeeded = "S";
+			}
+			//}
+			await _crrgService.AddCrrgPrepareDataAsync(obj);
+			return View(obj);
+			//return RedirectToAction("Create");
 			//return RedirectToAction("Index");
 		}
 
