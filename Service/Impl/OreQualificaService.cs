@@ -137,7 +137,7 @@ namespace MepWeb.Service.Impl
             c001.CDitta = cDitta;
             c001.IdDoc = createRequest.IdDocumento;
             c001.Grpcdl = (decimal)createRequest.Qualifica;
-            c001.HhAcq = createRequest.OreAcquistate;
+            c001.HhAcq = createRequest.OreAcquistate ?? 0;
             c001.TFatt = createRequest.TipoFatturazione;
             c001.DtIns = DateTime.Now;
             c001.UtenteIns = _scope.SV_USR_SIGLA;
@@ -217,7 +217,7 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Id Documento non passato, questo campo è obbligatorio");
             }
 
-            if (grpcdl == 0)
+            if (grpcdl == null)
             {
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
             }
@@ -228,7 +228,7 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.RecordGiaEsistente, "Il record che si sta cercando di eliminare non è presente all'interno della tabella");
             }
 
-            if(c001.HhAcq != 0) 
+            if(c001.HhAcq > 0) 
             {
                 return ResponseBase<OreQualificaResponse?>.Failed(GenericException.RecordNonEliminato, "Non è stato possibile eliminare il record in quanto le ore acquistate sono superiori a '0'");
             }

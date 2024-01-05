@@ -114,25 +114,14 @@ namespace MepWeb.Service.Impl
             
         }
 
-		public async Task<ResponseBase<PscCo02?>> CreateRecordAsync(PscCo02CreateRequest request)
+		public async Task<ResponseBase<PscCo02Response?>> CreateRecordAsync(PscCo02CreateRequest request)
 		{
 			var checkMacc = await _db.FlussoMaccs.FirstOrDefaultAsync(x => x.MaccCMatricola == request.CRisorsa);
 			if (checkMacc == null)
 			{
-				return ResponseBase<PscCo02?>.Failed(GenericException.RecordInesistente, "Questo codice risorsa non è stato trovato");
+				return ResponseBase<PscCo02Response?>.Failed(GenericException.RecordInesistente, "Questo codice risorsa non è stato trovato");
 			}
 
-			//if (string.IsNullOrEmpty(request.DescrizioneQualifica))
-			//{
-			//	return ResponseBase<PscCo02?>.Failed(GenericException.CampoObbligatorio, "Qualifica non passata, questo campo è obbligatorio");
-			//}
-
-			//var mvxzz12 = await _db.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == request.DescrizioneQualifica);
-			//if (mvxzz12 == null)
-			//{
-			//	return ResponseBase<PscCo02?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
-			//}
-			//request.Qualifica = mvxzz12.Cod;
 			var pscCo02 = new PscCo02
 			{
 				CDitta = "01",
@@ -149,34 +138,27 @@ namespace MepWeb.Service.Impl
 			var affected = await _db.SaveChangesAsync();
 			if (affected < 1)
 			{
-				return ResponseBase<PscCo02?>.Failed(PscCo02Errors.Inserimentofallito, "Inserimento fallito");
+				return ResponseBase<PscCo02Response?>.Failed(PscCo02Errors.Inserimentofallito, "Inserimento fallito");
 			}
-			return ResponseBase<PscCo02?>.Success();
+			return ResponseBase<PscCo02Response?>.Success();
 		}
 
-		public async Task<ResponseBase<PscCo02?>> UpdateRecordAsync(PscCo02UpdateRequest request)
+		public async Task<ResponseBase<PscCo02Response?>> UpdateRecordAsync(PscCo02UpdateRequest request)
 		{
 			string cDitta = CommonCostants.CDitta;
 
 			var macc = await _db.FlussoMaccs.FirstOrDefaultAsync(x => x.MaccDesc == request.CRisorsa);
 			if (macc == null)
 			{
-				return ResponseBase<PscCo02?>.Failed(GenericException.RecordInesistente, "Questo codice risorsa non è stato trovato");
+				return ResponseBase<PscCo02Response?>.Failed(GenericException.RecordInesistente, "Questo codice risorsa non è stato trovato");
 			}
 			request.CRisorsa = macc.MaccCMatricola;
 
 			PscCo02 pscCo02 = await _db.PscCo02s.SingleOrDefaultAsync(e => e.CRisorsa == request.CRisorsa && e.CDitta == cDitta && e.IdDoc == request.IdDocumento);
 			if (pscCo02 == null)
 			{
-				return ResponseBase<PscCo02?>.Failed(PscCo02Errors.RecordNonTrovati, "Non sono stati trovati record in PscCo02");
+				return ResponseBase<PscCo02Response?>.Failed(PscCo02Errors.RecordNonTrovati, "Non sono stati trovati record in PscCo02");
 			}
-
-			//var mvxzz12 = await _db.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == request.DescrizioneQualifica);
-			//if (mvxzz12 == null)
-			//{
-			//	return ResponseBase<PscCo02?>.Failed(GenericException.RecordInesistente, "Questo codice qualifica non è stato trovato");
-			//}
-			//request.Qualifica = mvxzz12.Cod;
 
 			pscCo02.Grpcdl = (decimal)request.Qualifica;
 			pscCo02.DtUm = DateTime.Now;
@@ -184,33 +166,33 @@ namespace MepWeb.Service.Impl
 			var result = await _db.SaveChangesAsync();
 			if (result < 1)
 			{
-				return ResponseBase<PscCo02?>.Failed(PscCo02Errors.Aggiornamentofallito, "Aggiornamento fallito");
+				return ResponseBase<PscCo02Response?>.Failed(PscCo02Errors.Aggiornamentofallito, "Aggiornamento fallito");
 			}
-			return ResponseBase<PscCo02?>.Success();
+			return ResponseBase<PscCo02Response?>.Success();
 
 		}
 
-		public async Task<ResponseBase<PscCo02?>> DeleteRecordAsync(decimal idDoc, string cRisorsa)
+		public async Task<ResponseBase<PscCo02Response?>> DeleteRecordAsync(decimal idDoc, string cRisorsa)
 		{
 			string cDitta = CommonCostants.CDitta;
 			var macc = await _db.FlussoMaccs.FirstOrDefaultAsync(x => x.MaccDesc == cRisorsa);
 			if (macc == null)
 			{
-				return ResponseBase<PscCo02?>.Failed(GenericException.RecordInesistente, "Questo codice risorsa non è stato trovato");
+				return ResponseBase<PscCo02Response?>.Failed(GenericException.RecordInesistente, "Questo codice risorsa non è stato trovato");
 			}
 			cRisorsa = macc.MaccCMatricola;
 			PscCo02 pscCo02 = await _db.PscCo02s.SingleOrDefaultAsync(e => e.IdDoc == idDoc && e.CRisorsa == cRisorsa && e.CDitta == cDitta);
 			if (pscCo02 == null)
 			{
-				return ResponseBase<PscCo02?>.Failed(PscCo02Errors.RecordNonTrovati, "Non sono stati trovati record in PscCo02");
+				return ResponseBase<PscCo02Response?>.Failed(PscCo02Errors.RecordNonTrovati, "Non sono stati trovati record in PscCo02");
 			}
 			_db.PscCo02s.Remove(pscCo02);
 			var res = await _db.SaveChangesAsync();
 			if(res < 1)
 			{
-				return ResponseBase<PscCo02?>.Failed(GenericException.RecordNonEliminato, "Non è stato possibile eliminare il record desiderato");
+				return ResponseBase<PscCo02Response?>.Failed(GenericException.RecordNonEliminato, "Non è stato possibile eliminare il record desiderato");
 			}
-			return ResponseBase<PscCo02?>.Success();
+			return ResponseBase<PscCo02Response?>.Success();
 		}
 
 	}

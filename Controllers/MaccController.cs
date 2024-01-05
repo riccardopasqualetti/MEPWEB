@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MepWeb.Controllers
 {
 	[Authorize]
-	[Route("api/[controller]")]
+	[Route("api/MepWeb_[controller]")]
 	[ApiController]
 	public class MaccController : ControllerBase
 	{

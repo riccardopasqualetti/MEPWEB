@@ -6,7 +6,7 @@ namespace MepWeb.Service.Interface
 {
     public interface IRegistroRicaricheService
     {
-        Task<ResponseBase<RegistroRicarichePagedResponse?>> GetAllRecordsByIdDocPagedAsync(decimal idDoc, BasePagedRequest pagedRequest);
+        Task<ResponseBase<RegistroRicarichePagedResponse?>> GetAllRecordsByIdDocPagedAsync(decimal idDoc, decimal qualifica, BasePagedRequest pagedRequest);
 		Task<ResponseBase<List<RegistroRicaricheResponse?>>> GetAllRecordsByIdDocAsync(decimal idDoc);
         Task<ResponseBase<RegistroRicaricheResponse?>> GetSingleRecordAsync(decimal id);
         Task<ResponseBase<RegistroRicaricheResponse?>> CreateRecordAsync(RegistroRicaricheCreateRequest createRequest);
