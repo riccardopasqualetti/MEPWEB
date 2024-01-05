@@ -130,6 +130,8 @@
 					<span asp-validation-for="NTOper" class="text-danger"></span>
 				</div>
 
+				<p class="d-none" id="operazione">@Model.NTOper</p>
+
 				@* Macroattività - n.d., Garanzia, Assistenza, Verbale *@
 				<div class="form-group" style="margin-top:5px;">
 					<label asp-for="CrrgCmaatt">Macroattività</label>
@@ -247,8 +249,20 @@
 </div>
 
 @section scripts{
+	@* <script>
+		let oper = "@Model.NTOper"
+		console.log(document.getElementById("NTOper"))
+		// if (oper != "") {
+		// 	setTimeout(()=> {
+
+		// 		console.log("diverso")
+		// 		document.getElementById("NTOper").value = oper
+		// 	}, 1000)
+		// }
+	</script> *@
 	<script src="~/js/Crrg.js"></script>
 	<script src="~/js/isl.js"></script>
+
 }
 
 

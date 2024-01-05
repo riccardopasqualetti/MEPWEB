@@ -8,7 +8,7 @@ divCommContent           = document.getElementById("divComm").innerHTML;
 //document.getElementById("divComCliBarra").innerHTML="";
 
 async function Modalita() {
-
+    document.getElementById("NTOper").innerHTML = ""
     switch (true) {
         case document.getElementById("modIsl").checked:
             //alert("isl");
@@ -337,6 +337,7 @@ async function LoadTOper(commCode) {
                 options += '<option value="' + operList[i].flussoOlca.olcaNOper + '-' + operList[i].flussoOlca.olcaTOper + '">' + operList[i].flussoOlca.olcaNOper + ' - ' + operList[i].flussoOlca.olcaTOper + ' - ' + operList[i].flussoCito.citoDescrizione + '</option>';
             };
             document.getElementById("NTOper").innerHTML = options;
+            document.getElementById("NTOper").value = document.getElementById("operazione").innerHTML
         }
         else {
             return {
