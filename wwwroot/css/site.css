@@ -9,24 +9,25 @@ html {
 ::-webkit-scrollbar {
     width: 14px;
 }
-  
+
 ::-webkit-scrollbar-track {
-background: rgba(250, 250, 250, 0.584); 
+    background: #717f82;
 }
 
 ::-webkit-scrollbar-thumb {
-background: rgba(230, 230, 230, 0.8); 
+background: #f8f8f8; 
 }
 
 ::-webkit-scrollbar-thumb:hover {
-background: rgba(250, 250, 250, 0.984); 
+background: #f8f8f8; 
 }
 
 ::-webkit-scrollbar-button {
-    background-color: rgba(255, 255, 255, 0.588);
+    background-color: #92a4a8;
     background-size: 10px 10px;
     background-repeat: no-repeat;
     background-position: center center;
+    border: 1px solid #92a4a8;
     height: 16px;
     width: 1em;
     -webkit-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
@@ -34,14 +35,16 @@ background: rgba(250, 250, 250, 0.984);
 
 ::-webkit-scrollbar-button:hover {
     background-color: rgba(255, 255, 255, 1);
+
 }
 
 ::-webkit-scrollbar-button:horizontal:increment {
     background-image: url(https://dl.dropboxusercontent.com/u/55165267/icon2.png);
+    
 }
 
 ::-webkit-scrollbar-button:end:increment {
-    /* border-radius: 0 0 8px 8px; */
+    /* border-radius: 0 0 8px 8px; background-color: rgba(255, 255, 255, 1); */
     background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQwNC4zMDggNDA0LjMwOSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDA0LjMwOCA0MDQuMzA5OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTAsMTAxLjA4aDQwNC4zMDhMMjAyLjE1MSwzMDMuMjI5TDAsMTAxLjA4eiIgZmlsbD0iIzAwMDAwMCIvPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=);
 
 }
@@ -117,6 +120,104 @@ footer {
     width: 7rem;
 }
 
+#result-p {
+    font-size: 20px;
+    display: block;
+    padding: 0.2rem 0.8rem;
+    color: #00ff00;
+    border-radius: 0.3rem;
+    border: 2px solid green;
+    font-weight: 600;
+    animation: result-p-animate 3s ease-in-out;
+    opacity: 0;
+}
+
+@keyframes result-p-animate {
+
+    0% {
+        opacity: 1;
+        
+    }
+    10% {
+        transform: scale(1.05);
+    }
+    20% {
+        transform: scale(1);
+    }
+    90% {
+        
+        opacity: 1;
+    }
+}
+
+#myDropdown {
+    width: fit-content;
+}
+
+#myDropdown input {
+    width: fit-content;
+}
+
+#dropdown-commesse {
+    background-color: #adb5bd;
+    width: max-content;
+    overflow: auto;
+    max-height: 15rem;
+    overscroll-behavior: contain;
+}
+
+#dropdown-commesse p {
+    user-select: none;
+    color: #073642;
+    padding: 0rem .6rem;
+    font-size: 15px;
+    min-width: 713px;
+    margin: 0;
+    height: 22px;
+}
+
+
+/*#dropdown-commesse p:nth-of-type(even) {
+    background-color: #839496;
+}*/
+
+.opt-hover {
+    background-color: #99c8ff;
+}
+
+.selectedDropItem {
+    
+}
+
+.bad-field {
+    border: 2px solid red !important;
+}
+
+/*  scrollbar per ricerca dropdown  */
+
+#border-style {
+    overflow: hidden;
+    border-radius: .5rem;
+    /*border: 1px solid #858585;*/
+}
+#dropdown-commesse::-webkit-scrollbar {
+    width: 11px;
+}
+#dropdown-commesse::-webkit-scrollbar-button {
+    height: 0;
+    width: 0;
+}
+#dropdown-commesse::-webkit-scrollbar-button:end:increment {
+    border-radius: 0rem 0rem 0.6rem 0rem;
+    background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQwNC4zMDggNDA0LjMwOSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDA0LjMwOCA0MDQuMzA5OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTAsMTAxLjA4aDQwNC4zMDhMMjAyLjE1MSwzMDMuMjI5TDAsMTAxLjA4eiIgZmlsbD0iIzAwMDAwMCIvPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=);
+    background-image: none;
+}
+
+#dropdown-commesse::-webkit-scrollbar-button:start:decrement {
+    border-radius: 0rem 0.6rem 0rem 0rem;
+    background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDI1NSAyNTUiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI1NSAyNTU7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8ZyBpZD0iYXJyb3ctZHJvcC11cCI+CgkJPHBvbHlnb24gcG9pbnRzPSIwLDE5MS4yNSAxMjcuNSw2My43NSAyNTUsMTkxLjI1ICAgIiBmaWxsPSIjMDAwMDAwIi8+Cgk8L2c+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==)
+}
+    
 /* isl search modal */
 #searchIslModal * {
     color: var(--whiter-text-color)
@@ -803,3 +904,4 @@ table #layoutAzTableBody::-webkit-scrollbar-track,
 #tLoader {
     font-size: 5px;
 }
+

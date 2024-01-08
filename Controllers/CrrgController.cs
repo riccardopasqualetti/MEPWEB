@@ -106,6 +106,7 @@ namespace Mep01Web.Controllers
 				if (addCrrgResponse.Errors[0].Code == "-6")
 				{
 					ModelState.AddModelError("CommCodeDesc", addCrrgResponse.Errors[0].Message);
+					ModelState.AddModelError("CommCode", addCrrgResponse.Errors[0].Message);
 				}
 				if (addCrrgResponse.Errors[0].Code == "-7")
 				{

@@ -47,7 +47,7 @@ namespace Mep01Web.Validators.Impl
 
 			// Validazione ISL - Valorizzazione di default Commessa
 			// Se la ISL è valorizzata, la Commessa, l'Applicativo e il Modulo sono presi di default dalla ISL.
-			string flgcom = "";
+			string? flgcom = null;
             if (!string.IsNullOrWhiteSpace(crrgRequest.CrrgRifCliente))
             {
                 var ISL = await _dbContext.FlussoTatvs.SingleOrDefaultAsync(x => x.TatvRifCliente == crrgRequest.CrrgRifCliente);
@@ -121,7 +121,7 @@ namespace Mep01Web.Validators.Impl
 			var commessa = await _dbContext.FlussoTbcps.SingleOrDefaultAsync(x => x.TbcpTstComm == crrgRequest.CrrgTstDoc && x.TbcpPrfComm == crrgRequest.CrrgPrfDoc && x.TbcpAComm == crrgRequest.CrrgADoc && x.TbcpNComm == crrgRequest.CrrgNDoc);
 			if (commessa == null)
 			{				
-				return ResponseBase<CrrgResponse?>.Failed(flgcom, $"Commessa inesistente");
+				return ResponseBase<CrrgResponse?>.Failed(flgcom ?? "-6", $"Commessa inesistente");
 			}
 
 			var testCommessa = await _dbContext.VsPpCommAperteXClis.FirstOrDefaultAsync(x => x.OrpbTstDoc == crrgRequest.CrrgTstDoc && x.OrpbPrfDoc == crrgRequest.CrrgPrfDoc && x.OrpbADoc == crrgRequest.CrrgADoc && x.OrpbNDoc == crrgRequest.CrrgNDoc);

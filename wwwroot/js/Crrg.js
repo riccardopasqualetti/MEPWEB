@@ -9,6 +9,8 @@ divCommContent           = document.getElementById("divComm").innerHTML;
 
 async function Modalita() {
     document.getElementById("NTOper").innerHTML = ""
+    
+    document.getElementById("dropdown-commesse").innerHTML = ""
     switch (true) {
         case document.getElementById("modIsl").checked:
             //alert("isl");
@@ -18,7 +20,7 @@ async function Modalita() {
             // disabilita divComCli
             document.getElementById("divComCli").innerHTML = "";
             // disabilita divCommCodeDesc
-            document.getElementById("divCommCodeDesc").innerHTML = "";
+            document.getElementById("divCommCodeDesc").classList.add("d-none");
             // disabilita divComm
             document.getElementById("divComm").innerHTML = "";
 
@@ -27,6 +29,8 @@ async function Modalita() {
             if (document.getElementById("MemoModalita").value == "modIsl") {
                 //alert("ricarica commessa per ISL");
                 ISLChanged();
+            } else {
+                document.getElementById("myInput").value = ""
             }
 
             //document.getElementById("CrrgRifCliente").removeAttribute('disabled');
@@ -42,7 +46,8 @@ async function Modalita() {
             // abilita divComCli
             document.getElementById("divComCli").innerHTML = divComCliContent;
             // abilita divCommCodeDesc
-            document.getElementById("divCommCodeDesc").innerHTML = divCommCodeDescContent;
+            //document.getElementById("divCommCodeDesc").innerHTML = divCommCodeDescContent;
+            document.getElementById("divCommCodeDesc").classList.remove("d-none")
             // disabilita divComm
             document.getElementById("divComm").innerHTML = divCommContent;
             document.getElementById("divComm").classList.add("d-none");
@@ -57,6 +62,7 @@ async function Modalita() {
                 document.getElementById("CommCodeDesc").value = ""
                 document.getElementById("CommCode").value = ""
                 document.getElementById("ComCCli").value = ""
+                document.getElementById("myInput").value = ""
             }
 
 
@@ -69,8 +75,8 @@ async function Modalita() {
             // abilita divComCli
             document.getElementById("divComCli").innerHTML = divComCliContent;
             // abilita divCommCodeDesc
-            document.getElementById("divCommCodeDesc").innerHTML = divCommCodeDescContent;
-
+            //document.getElementById("divCommCodeDesc").innerHTML = divCommCodeDescContent;
+            document.getElementById("divCommCodeDesc").classList.remove("d-none")
             // disabilita divComm
             document.getElementById("divComm").innerHTML = divCommContent;
             document.getElementById("divComm").classList.add("d-none");
@@ -87,6 +93,7 @@ async function Modalita() {
             } else {
                 document.getElementById("CommCodeDesc").value = ""
                 document.getElementById("CommCode").value = ""
+                document.getElementById("myInput").value = ""
             }
 
             document.getElementById("MemoModalita").value = "modGestInt";
@@ -99,7 +106,8 @@ async function Modalita() {
             // abilita divComCli
             document.getElementById("divComCli").innerHTML = divComCliContent;
             // abilita divCommCodeDesc
-            document.getElementById("divCommCodeDesc").innerHTML = divCommCodeDescContent;
+            //document.getElementById("divCommCodeDesc").innerHTML = divCommCodeDescContent;
+            document.getElementById("divCommCodeDesc").classList.remove("d-none")
             // disabilita divComm
             document.getElementById("divComm").innerHTML = divCommContent;
             document.getElementById("divComm").classList.add("d-none");
@@ -116,6 +124,7 @@ async function Modalita() {
             } else {
                 document.getElementById("CommCodeDesc").value = ""
                 document.getElementById("CommCode").value = ""
+                document.getElementById("myInput").value = ""
             }
 
             document.getElementById("MemoModalita").value = "modSvilInt";
@@ -124,13 +133,13 @@ async function Modalita() {
 
         case document.getElementById("modCom").checked: 
             //alert("com");
-
             // disabilita divCrrgRifCliente
             document.getElementById("divCrrgRifCliente").innerHTML = "";
             // disabilita divComCli
             document.getElementById("divComCli").innerHTML = "";
             // disabilita divCommCodeDesc
-            document.getElementById("divCommCodeDesc").innerHTML = "";
+            //document.getElementById("divCommCodeDesc").innerHTML = "";
+            document.getElementById("divCommCodeDesc").classList.add("d-none")
             // abilita divComm
             document.getElementById("divComm").innerHTML = divCommContent;
 
@@ -140,7 +149,9 @@ async function Modalita() {
             // e ricarica la commessa nel campo descrizione che è protetto e non eredita il valore.
             if (document.getElementById("MemoModalita").value == "modCom") {
                 //alert("ricarica descrizione commessa");
-                CommChanged();
+                await CommChanged();
+            } else {
+                document.getElementById("myInput").value = ""
             }
 
             document.getElementById("MemoModalita").value = "modCom";
@@ -229,14 +240,33 @@ async function CliListChanged(modalita) {
         if (response.status == 200) {
             let cliData = await response.json();
             let cliNumber = cliData.length;
-            document.getElementById("CommCodeDesc").empty;
-            options = '<option value=""></option>';
+            //document.getElementById("CommCodeDesc").empty;
+            //options = '<option value=""></option>';
+            //for (var i = 0; i < cliNumber; i++) {
+            //    if ((modalita == "modCli") || (modalita == "modGestInt" && "FGZ".includes(cliData[i].orpbPrfDoc)) || modalita == "modSvilInt" && "AH".includes(cliData[i].orpbPrfDoc)) {
+            //        options += `<option value="${cliData[i].orpbTstDoc}/${cliData[i].orpbPrfDoc}/${cliData[i].orpbADoc}/${cliData[i].orpbNDoc}">${cliData[i].commDescDd}</option>`;
+            //    }
+            //};
+            //document.getElementById("CommCodeDesc").innerHTML = options;
+            document.getElementById("dropdown-commesse").innerHTML = "";
+            const opt = document.createElement("p")
+            opt.className = "m-0 dropdown-opt"
+            opt.setAttribute("valore", ``)
+            opt.innerText = ""
+            opt.style.height = "22px"
+            document.getElementById("dropdown-commesse").appendChild(opt)
+            opt.addEventListener("click", () => {
+                document.getElementById("CommCodeDesc").value = opt.getAttribute("valore")
+                document.getElementById("myInput").value = opt.getAttribute("valore")
+            })
             for (var i = 0; i < cliNumber; i++) {
                 if ((modalita == "modCli") || (modalita == "modGestInt" && "FGZ".includes(cliData[i].orpbPrfDoc)) || modalita == "modSvilInt" && "AH".includes(cliData[i].orpbPrfDoc)) {
-                    options += `<option value="${cliData[i].orpbTstDoc}/${cliData[i].orpbPrfDoc}/${cliData[i].orpbADoc}/${cliData[i].orpbNDoc}">${cliData[i].commDescDd}</option>`;
-                } 
+                    document.getElementById("dropdown-commesse").appendChild(createOpt(cliData[i]))
+                }
             };
-            document.getElementById("CommCodeDesc").innerHTML = options;
+
+            //document.getElementById("dropdown-commesse").children[0].classList.add("selectedDropItem")
+            addHoverClassToOpt(document.getElementById("dropdown-commesse").children[0])
         }
         else {
             return {
@@ -252,6 +282,132 @@ async function CliListChanged(modalita) {
     //document.getElementById("divComCliBarra").innerHTML = "";
 }
 
+function showDropdown() {
+    document.getElementById("dropdown-commesse").classList.remove("d-none")
+    document.getElementById("dropdown-commesse").classList.add("active-custom-dropdown")
+    document.getElementById("dropdown-commesse").addEventListener("mousemove", (e) => {
+        if (e.target.classList.contains("dropdown-opt")) {
+            addHoverClassToOpt(e.target)
+        }
+    })
+}
+
+//gestisce l'aggiunta della classe per l'effetto di 'riga selezionata'
+function addHoverClassToOpt(target) {
+    if (!target) {
+        return
+    }
+    Array.from(document.getElementsByClassName("opt-hover")).forEach(x => x.classList.remove("opt-hover"))
+    target.classList.add("opt-hover")
+}
+
+function hideDropdown() {
+    document.getElementById("dropdown-commesse").classList.add("d-none")
+}
+
+//riceve l'input da cui prende il testo e l'id della dropdown da filtrare
+function filterDropdown(input, dropdownId) {
+    const value = input.value
+    const dropdown = document.getElementById(dropdownId)
+    const elements = Array.from(dropdown.children)
+
+    elements.forEach(el => {
+        const elementText = el.innerText.toUpperCase().replaceAll(" ", "")
+
+        if (!elementText.includes(value.toUpperCase().replaceAll(" ", ""))) {
+            el.classList.add("d-none")
+        } else {
+            el.classList.remove("d-none")
+        }
+    })
+
+    //filtra le opzioni della dropdown, se non ne trova significa che il valore dell'input non è presente nella dropdown quindi fa il bordo rosso
+    const isValueAccepted = elements.filter(x => x.getAttribute("valore") == value)
+    if (isValueAccepted.length < 1) {
+        input.classList.add("bad-field")
+    } else {
+        input.classList.remove("bad-field")
+    }
+
+    //aggiunge l'hover al primo elemento di quelli visibili
+    addHoverClassToOpt(elements.find(x => !x.classList.contains("d-none")))
+}
+
+//gestisce freccia su, giu e invio sulla dropdown
+function handleKeys(e, dropdownId, inputId) {
+    const dropdown = document.getElementById(dropdownId)
+    const input = document.getElementById(inputId)
+    const shownElements = Array.from(dropdown.querySelectorAll(".dropdown-opt:not(.d-none)"))
+
+    //se non ci sono elementi visibili esce
+    if (shownElements < 1) {
+        return
+    }
+    const optionHeight = shownElements[0].getBoundingClientRect().height
+    let selectedIndex = 0;
+
+    if (e.keyCode == 40) { //freccia giu
+        for (let i = 0; i < shownElements.length; i++) {
+
+            if (i == shownElements.length - 1) {
+                selectedIndex = i
+                break
+            }
+            if (shownElements[i].classList.contains("opt-hover")) {
+                addHoverClassToOpt(shownElements[i + 1])
+                selectedIndex = i + 1
+                break
+            }
+        }
+
+    } else if (e.keyCode == 38) { //freccia su
+        for (let i = shownElements.length - 1; i > 0; i--) {
+
+            if (i == 0) {
+                selectedIndex = 0
+                break
+            }
+            if (shownElements[i].classList.contains("opt-hover")) {
+                addHoverClassToOpt(shownElements[i - 1])
+                selectedIndex = i - 1
+                break
+            }
+        }
+
+    } else if (e.keyCode == 13) { //invio
+        e.preventDefault();
+        const value = shownElements.find(x => x.classList.contains("opt-hover")).getAttribute("valore")
+        input.value = value
+        document.getElementById("CommCodeDesc").value = value
+        document.getElementById("CommCode").value = value
+        hideDropdown()
+    }
+
+    const selectedOptionOffset = selectedIndex * optionHeight;
+    const containerHeight = dropdown.offsetHeight;
+
+    if (selectedOptionOffset < dropdown.scrollTop) {
+        dropdown.scrollTop = selectedOptionOffset;
+    } else if (selectedOptionOffset + optionHeight > dropdown.scrollTop + containerHeight) {
+        dropdown.scrollTop = selectedOptionOffset + optionHeight - containerHeight;
+    }
+}
+
+function createOpt(cliData, i) {
+    const opt = document.createElement("p")
+    opt.className = "m-0 dropCom-group dropdown-opt"
+    opt.setAttribute("valore", `${cliData.orpbTstDoc}/${cliData.orpbPrfDoc}/${cliData.orpbADoc}/${cliData.orpbNDoc}`)
+    opt.innerText = cliData.commDescDd
+    opt.addEventListener("mousedown", async () => {
+        document.getElementById("myInput").value = opt.getAttribute("valore")
+        document.getElementById("CommCodeDesc").value = opt.getAttribute("valore")
+        document.getElementById("CommCode").value = opt.getAttribute("valore")
+        document.getElementById("dropdown-commesse").classList.add("d-none")
+        await CommChanged()
+    })
+    return opt
+}
+
 async function CommListChanged() {    
     //document.getElementById("CommCode").value = document.getElementById("CommCodeDesc").value;
     //var dropdown = document.getElementById("CommCodeDesc");
@@ -263,9 +419,7 @@ async function CommListChanged() {
 
 async function CommChanged() {
     var com = document.getElementById("CommCode").value;
-    console.log(com);    
     if (com.match(/^[0-9]+$/) != null) {
-        console.log('numero');
         var url = "/api/Tbcp/GetCommByNumAsync/" + com
     } else {
         var url = "/api/Tbcp/GetCommByCompCode1Async/" + com
@@ -285,23 +439,23 @@ async function CommChanged() {
 
         if (response.status == 200) {
             let comData = await response.json()
-            console.log(comData);
             if (com.match(/^[0-9]+$/) != null) {
-                console.log(comData.CommCompCode);
                 document.getElementById("CommCode").value = comData.commCompCode;
                 document.getElementById("CommDesc").value = comData.commDesc;
             } else {
                 document.getElementById("CommDesc").value = comData.commMasterData.tbcpDesc;
             }            
-            LoadTOper(document.getElementById("CommCode").value);
+            await LoadTOper(document.getElementById("CommCode").value);
         }
         else {
+            document.getElementById("CommDesc").value = "";
             return {
                 res: null,
                 statusCode: response.status,
                 message: "Commessa non trovata"
             }
         }
+
 
     } catch (ex) {
         console.log(ex)
@@ -373,6 +527,47 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("modGestInt").addEventListener("change", async () => await Modalita())
     document.getElementById("modSvilInt").addEventListener("change", async () => await Modalita())
     document.getElementById("modCom").addEventListener("change", async () => await Modalita())
+    document.getElementById("CommCodeDesc").addEventListener("focusout", async () => {
+        await CommChanged()
+    })
+
+    //apre la dropdown al focus sull'input
+    document.getElementById("myInput").addEventListener("focusin", (e) => {
+
+        //se all'apertura c'è già un valore nell'input viene filtrata la dropdown
+        if (e.target.value != "") {
+            filterDropdown(e.target, "dropdown-commesse")
+        }
+        showDropdown()
+    })
+
+    //se viene fatto click fuori dalla dropdown viene chiusa
+    document.addEventListener("mousedown", (e) => {
+        if (!e.target.classList.contains("dropCom-group")) {
+            hideDropdown()
+        }
+    })
+
+    //se l'input delle commesse della dropdown perde il focus la dropdown viene nascosta e viene chiamata la funzione che carica le operazioni
+    document.getElementById("myInput").addEventListener("focusout", async (e) => {
+        hideDropdown()
+        if (!e.target.classList.contains("bad-field") && e.target.value != "") {
+            await CommChanged()
+        }
+    })
+
+    //se viene scritto qualcosa nell'input delle commesse della dropdown, il valore viene scritto anche nei veri input delle commesse
+    document.getElementById("myInput").addEventListener("input", async (e) => {
+        e.target.value = e.target.value.toUpperCase()
+        document.getElementById("CommCodeDesc").value = e.target.value
+        document.getElementById("CommCode").value = e.target.value
+        filterDropdown(e.target, "dropdown-commesse")
+    })
+
+    //per gestire i tasti su, giu e invio
+    document.getElementById("myInput").addEventListener("keydown", (e) => {
+        handleKeys(e, "dropdown-commesse", "myInput")
+    })
 
     await Modalita();
 });

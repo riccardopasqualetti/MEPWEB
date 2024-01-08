@@ -7,20 +7,27 @@
 <div class="main-mep-container scrolling-container">
 	<div class="container">
 		<form method="post" name="CrrgCreateForm">
-			<div class="p-3 mt-4">
+			<div class="p-3">
 
-				<div class="row pb-2">
-					<h2 class="text-primary">
-						Inserimento consuntivo
-					</h2>
+				<div class="row">
+					<div class="col-4">
+						<h2 class="text-primary d-inline-block">
+							Inserimento consuntivo
+						</h2>
+					</div>
+					<div class="col-4 text-center">
+						@if (Model.Succeeded == "S")
+						{
+							<p id="result-p" class="mb-2">Inserimento Effettuato</p>
+						}
+					</div>
+					<div class="col-4">
+					</div>
 					<hr />
 				</div>
 				@*<div asp-validation-summary="All"></div>*@ @*Riporta qui gli stessi errori che mostra sotto i componenti che hanno asp-validation-for*@
-				<p>Utente : @_userScope.SV_USR_SIGLA</p>
-				@if(Model.Succeeded == "S")
-				{
-					<p>Inserimento Effettuato</p>
-				}
+				@* <p>Utente : @_userScope.SV_USR_SIGLA</p>  *@
+				
 				<div class="mb-3">
 					<table>
 						<tr>
@@ -94,9 +101,23 @@
 				@* Commessa *@
 				<div id="divCommCodeDesc">
 					<div class="form-group" style="margin-top:5px;">
-						<label asp-for="CommCodeDesc">Commessa</label>
-						<select asp-for="CommCodeDesc" asp-items="@Model.TbcpList.TbcpListLight" class="form-select" id="CommCodeDesc" style="width:100%" onchange="CommListChanged()"></select>
-						<span asp-validation-for="CommCodeDesc" class="text-danger"></span>
+						@* <label asp-for="CommCodeDesc">Commessa</label>
+						<select asp-for="CommCodeDesc" asp-items="@Model.TbcpList.TbcpListLight" class="form-select" id="CommCodeDesc" style="width:100%" onchange="CommListChanged()"></select> *@
+						<input asp-for="CommCodeDesc" class="form-control" id="CommCodeDesc" onchange="CommListChanged()" hidden style="width:200px" />
+						
+					</div>
+
+					<div>
+						<div id="myDropdown" class="dropdown-content form-group">
+							<label for="myInput">Commessa</label>
+							<input autocomplete="off" value="@Model.CommCode" type="text" class="form-control dropCom-group" placeholder="Search.." id="myInput">
+							<span asp-validation-for="CommCodeDesc" class="text-danger"></span>
+							<div id="border-style">
+								<div id="dropdown-commesse" class="d-none dropCom-group">
+
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -249,17 +270,10 @@
 </div>
 
 @section scripts{
-	@* <script>
-		let oper = "@Model.NTOper"
-		console.log(document.getElementById("NTOper"))
-		// if (oper != "") {
-		// 	setTimeout(()=> {
+	<script>
 
-		// 		console.log("diverso")
-		// 		document.getElementById("NTOper").value = oper
-		// 	}, 1000)
-		// }
-	</script> *@
+		
+	</script>
 	<script src="~/js/Crrg.js"></script>
 	<script src="~/js/isl.js"></script>
 
