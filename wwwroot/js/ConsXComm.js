@@ -50,7 +50,7 @@ inputCliente.addEventListener("input", (e) => {
 
 document.getElementById("search-form").addEventListener("submit", (e) => {
     e.preventDefault()
-    search("TBCP_N_COMM","TBCP_C_CLI", inputNCommessa.value, inputCliente.value)
+    search("TBCP_N_COMM", "TBCP_C_CLI", inputNCommessa.value, inputCliente.value)
 });
 
 document.getElementById("reset-research").addEventListener("click", () => {
@@ -62,10 +62,10 @@ function search(nComm, cCli, value1, value2) {
     value2 = value2.trim().toLowerCase()
     if (value1 != "" || value2 != "") {
         for (const row of tableRows) {
-                const field1 = row.querySelector(`[campo="${nComm}"]`).innerText.toLowerCase()
-                const field2 = row.querySelector(`[campo="${cCli}"]`).innerText.toLowerCase()
+            const field1 = row.querySelector(`[campo="${nComm}"]`).innerText.toLowerCase()
+            const field2 = row.querySelector(`[campo="${cCli}"]`).innerText.toLowerCase()
 
-                
+
             if (field1.includes(value1) && field2.includes(value2)) {
                 console.log("entrato doppio  " + value1 + " " + value2 + "             " + field1 + " " + field2)
                 row.classList.remove("d-none")
@@ -93,10 +93,11 @@ function resetRows() {
 }
 
 function goToDoc(pageAction) {
+
     if (idDoc == "") {
         const modal = new bootstrap.Modal("#err-modal")
         modal.show()
         return
     }
-    window.location.href = `../Crrg/${pageAction}/${idDoc}`
+    window.open(`../Crrg/${pageAction}/${idDoc}`)
 }

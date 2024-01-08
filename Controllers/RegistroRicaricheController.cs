@@ -21,14 +21,14 @@ namespace MepWeb.Controllers
             _logger = logger;
         }
 
-		[HttpGet("{idDocumento}/GetAllPaged")]
-		public async Task<IActionResult> GetAllPscCo03sPagedAsync(decimal idDocumento, [FromQuery] BasePagedRequest request)
+		[HttpGet("{idDocumento}/{qualifica}/GetAllPaged")]
+		public async Task<IActionResult> GetAllPscCo03sPagedAsync(decimal idDocumento, decimal qualifica, [FromQuery] BasePagedRequest request)
 		{
-			_logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllPscCo03sPagedAsync");
+			_logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllRecordsByIdDocPagedAsync");
 
 			try
 			{
-				var getResponse = await _registroRicaricheService.GetAllRecordsByIdDocPagedAsync(idDocumento, request);
+				var getResponse = await _registroRicaricheService.GetAllRecordsByIdDocPagedAsync(idDocumento, qualifica, request);
 
 				if (getResponse.Succeeded)
 				{

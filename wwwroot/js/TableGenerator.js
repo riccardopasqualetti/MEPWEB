@@ -83,7 +83,6 @@ export class TableGenerator {
         for (const key in editObject) {
             const input = modal._dialog.querySelector(`*[name="${key}"]`)
             const field = this.paramObject.fields.find(field => field.apiName == key && field.modals != false)
-            console.log("key: " + key)
             if (field.type == "checkbox") {
                 input.checked = editObject[key] == "S"
             }
@@ -152,6 +151,7 @@ export class TableGenerator {
             }
 
             let url = `${this.paramObject.apiUrl.get.url[0] + fieldUrl}`
+            console.log(url)
 
             return await this.fetchApi(url, settings)
         }
@@ -222,7 +222,6 @@ export class TableGenerator {
                     }
                 }
             }
-            console.log("params: " + params)
 
             let url = `${this.paramObject.apiUrl.delete.url[0] + this.paramObject.apiUrl.delete.url[1]}${params}`
             console.log(url)
@@ -366,13 +365,13 @@ export class TableGenerator {
                     await populateResearchObject(e.target.name)
                     researchLoader.classList.remove("d-block")
                     tbody.innerHTML = ""
-                    populateResearchWindow(field, tbody, inputField)
+                    populateResearchWindow(field, tbody, inputField, wrap)
                 }
             })
             inputField.classList.add("research-input")
         }
 
-        const populateResearchWindow = (field, researchBody) => {
+        const populateResearchWindow = (field, researchBody, inputField, wrap) => {
             researchBody = researchBody || document.getElementById("research-table-body")
 
             researchResponses[field.apiName].forEach((x, i) => {
@@ -447,9 +446,8 @@ export class TableGenerator {
                         if (!field.values) {
                             const vals = {}
                             const lista = await fetchGetResearchApi(field.searchUrls[0].url)
-                            console.log(lista)
                             for (const f of lista) {
-                                vals["o" + f.cod] = f.descrizioneRidotta
+                                vals["o" + f[field.searchUrls[0].searchFieldNames[0]]] = f[field.searchUrls[0].searchFieldNames[1]]
                             }
 
                             field.values = vals
@@ -462,9 +460,9 @@ export class TableGenerator {
                             inputField.appendChild(option)
                         }
 
-                        inputField.addEventListener("change", (e) => {
+                        /* inputField.addEventListener("change", (e) => {
                             disableCilyInput(e.target.value)
-                        })
+                        }) */
                         break
 
                     case "decimalColor":
@@ -515,6 +513,11 @@ export class TableGenerator {
                         inputContainer.appendChild(inputField)
                         break
 
+                    /* case "button":
+                        inputField = document.createElement("a")
+                        inputField.type = "button"
+                        inputContainer.appendChild(inputField)
+                        break */
                     default:
 
                         inputField = document.createElement("input")
@@ -525,6 +528,14 @@ export class TableGenerator {
 
                 if (field.searchUrls && field.type != "dropdown") {
                     await generateResearchWindow(inputContainer, field, inputField, modalId)
+                }
+
+                if (dialogId == "updateDialog") {
+                    console.log("entrato in updateDialog")
+                    if (field.update == false) {
+                        console.log("entrato in field.update")
+                        inputField.disabled = true
+                    }
                 }
 
                 inputField.autocomplete = "off"
@@ -621,7 +632,6 @@ export class TableGenerator {
             e.preventDefault();
             const data = new FormData(e.target);
             const value = Object.fromEntries(data.entries());
-            console.log(value)
 
             for (let field of Object.keys(value)) {
                 if (value[field] == "null") value[field] = null
@@ -697,12 +707,10 @@ export class TableGenerator {
             const data = new FormData(e.target);
 
             const value = Object.fromEntries(data.entries());
-            console.log(value)
             let res = await fetchDeleteApi(value)
 
             const statusResponse = generateResponseMessage(res, "delete")
 
-            console.log(statusResponse)
             if (statusResponse == "success") await this.changePage(this.currentPage)
 
         })
@@ -744,7 +752,7 @@ export class TableGenerator {
 
         Array.from(document.querySelectorAll(".modal")).forEach(x => {
             x.addEventListener('show.bs.modal', () => {
-                disableCilyInput()
+                //disableCilyInput()
                 let messageContainer = document.querySelectorAll('.response-message-container');
                 messageContainer.forEach(x => x.innerHTML = "")
             })
@@ -773,7 +781,6 @@ export class TableGenerator {
             e.preventDefault();
             const data = new FormData(e.target);
             const value = Object.fromEntries(data.entries());
-            console.log("data entries value: " + value);
 
             for (let field of Object.keys(value)) {
 
@@ -789,7 +796,6 @@ export class TableGenerator {
             }
 
             value.codiceDitta = "01"
-            console.log("value2: " + value);
             let res = await fetchPutApi(value)
 
             const statusResponse = generateResponseMessage(res, "update")
@@ -865,9 +871,7 @@ export class TableGenerator {
             editBtn.setAttribute("data-bs-target", "#updateRecord")
             editBtn.addEventListener("click", () => {
                 this.paramObject.apiUrl.put.param.forEach(v => {
-                    console.log(v)
                     let updateValue = editBtn.parentElement.parentElement.querySelector(`td[fieldname="${v}"]`).getAttribute("valore")
-                    console.log(updateValue)
                     let updateInput = document.querySelector(`#update-input-` + v)
                     updateInput.value = updateValue
                     updateInput.type = "hidden"
@@ -877,9 +881,7 @@ export class TableGenerator {
                 updateModalTitle.innerText = "Update the following record"
 
                 const fields = this.paramObject.fields.filter(x => x.modals != false)
-                console.log(fields)
                 const values = Array.from(editBtn.parentElement.parentElement.children).filter(x => x.getAttribute("fieldname") && x != null)
-                console.log(values)
                 for (let i = 0; i < fields.length; i++) {
                     const td = values.find(v => v.getAttribute("fieldname") == fields[i].apiName)
                     const input = document.querySelector(`#updateDialog *[name="${fields[i].apiName}"]`)
@@ -924,10 +926,8 @@ export class TableGenerator {
             deleteBtn.setAttribute("data-bs-target", "#deleteRecord")
             deleteBtn.addEventListener("click", () => {
                 this.paramObject.apiUrl.delete.param.forEach(x => {
-                    console.log(x)
                     console.log(deleteBtn.parentElement)
                     const deleteValue = deleteBtn.parentElement.parentElement.querySelector(`td[fieldname="${x}"]`).getAttribute("valore")
-                    console.log(deleteValue)
                     const inputDelete = document.querySelector("#delete-input-" + x)
                     inputDelete.value = deleteValue
                     inputDelete.type = "hidden"
@@ -999,6 +999,15 @@ export class TableGenerator {
 
                 case "hidden":
                     td.classList.add("d-none")
+                    break
+
+                case "button":
+                    let button = document.createElement("a")
+                    button.type = "button"
+                    button.classList.add("btn", "btn-secondary", "opt-general-btn")
+                    button.href = field.href.replace("{}", apiData[field.varValue])
+                    button.innerHTML = field.svg
+                    td.appendChild(button)
                     break
 
                 default:
@@ -1129,7 +1138,6 @@ export class TableGenerator {
                 btn1.addEventListener("click", () => {
                     this.paramObject.apiUrl.put.param.forEach(v => {
                         let updateValue = e.target.parentElement.querySelector(`td[fieldname="${v}"]`).getAttribute("valore")
-                        console.log(updateValue)
                         let updateInput = document.querySelector(`#update-input-` + v)
                         updateInput.value = updateValue
                         updateInput.type = "hidden"
@@ -1220,11 +1228,11 @@ export class TableGenerator {
     beginSearch(e) {
         const val = e ? e.target.value : document.getElementById("searchRecord").value
         let searchField = document.querySelector(`[aria-label="Research-Fields"]`).value
-        let research = Array.from(document.querySelectorAll(`tbody td[fieldname="${searchField}"]`))
+        let research = Array.from(document.querySelectorAll(`#main-table-tbody td[fieldname="${searchField}"]`))
             .filter(x => x.innerText.toLowerCase().includes(val.toLowerCase()))
             .map(x => x.parentElement)
 
-        document.querySelectorAll("tbody tr").forEach(x => {
+        document.querySelectorAll("#main-table-tbody tr").forEach(x => {
             if (!research.includes(x)) {
                 x.style.display = "none"
             } else {
@@ -1242,6 +1250,7 @@ export class TableGenerator {
      */
 
     changePage = async (page) => {
+        //debugger
         if (!this.isTableCreated) return
         this.currentPage = page
         let prevPageBtn = document.querySelector(`.btn[selected="true"]`)
@@ -1252,6 +1261,7 @@ export class TableGenerator {
         let res
         let pageLimit = document.querySelector("#selectEntries").value
         if (btn) {
+            console.log("btn")
             if (btn.classList.contains("hide-element")) {
                 if (prevPageBtn.value > page) {
                     showNextPageButtons(this.maxPageButtons, page)
@@ -1278,13 +1288,17 @@ export class TableGenerator {
             }
 
             btn.setAttribute("selected", "true")
-
             res = await this.fetchGetApi(btn.value, pageLimit)
+            console.log(res)
+        } else {
+            res = await this.fetchGetApi(1, pageLimit)
+            console.log(res)
         }
 
-
-        let tbody = document.querySelector("tbody")
+        let tbody = document.getElementById("main-table-tbody")
+        console.log(tbody.innerHTML)
         tbody.innerHTML = ""
+        console.log(tbody.innerHTML)
         this.bodyGenerator(res.response, tbody)
 
         let from = page == 1 ? 1 : pageLimit * (page - 1) + 1
@@ -1422,7 +1436,7 @@ export class TableGenerator {
                 return errorData
             }
         } catch (e) {
-            console.log("e: " + e)
+            console.log(e)
         }
 
         const res = await response.json()
@@ -1834,15 +1848,15 @@ export class TableGenerator {
             addBtnWrap.setAttribute("data-bs-toggle", "modal")
             addBtnWrap.setAttribute("data-bs-target", "#createRecord")
             addBtnWrap.addEventListener("click", () => {
+                //Prende i valori che servono di default alla create (DA SISTEMARE)
+                let count = 3
                 this.paramObject.apiUrl.post.param.forEach(c => {
-                    console.log(c)
-                    //const createValue = document.querySelector(`td[fieldname="${c}"]`).getAttribute("valore")
                     const allValues = window.location.pathname.split("/")
-                    const createValue = allValues[allValues.length - 1]
-                    console.log(createValue)
+                    const createValue = allValues[count]
                     const inputCreate = document.querySelector("#create-input-" + c)
                     inputCreate.value = createValue
                     inputCreate.type = "hidden"
+                    count++
                 })
             })
             colAddBtn.appendChild(addBtnWrap)
@@ -1878,6 +1892,7 @@ export class TableGenerator {
             generateHeaders(thead) //generates the headers of the table
 
             let tbody = document.createElement("tbody")
+            tbody.id = "main-table-tbody"
             table.appendChild(tbody)
 
             let rowEntries = document.createElement("div")
@@ -1929,9 +1944,7 @@ export class TableGenerator {
             await generateAdditionalParameters(generatePageBtns)
 
             if (!this.paramObject.authToken) {
-                console.log("in attesa di login")
                 const login = await this.logon()
-                console.log("login fatto")
                 this.paramObject.authToken = login.access_token
             }
 

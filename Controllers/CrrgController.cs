@@ -200,7 +200,6 @@ namespace Mep01Web.Controllers
         [HttpGet("Crrg/OreQualifica/{idDoc}")]
         public async Task<IActionResult> OreQualifica(decimal idDoc)
 		{
-			Response.Cookies.Append("ID_Documento", idDoc.ToString());
 			var request = new IdDocumentoRequest()
 			{
 				idDocumento = idDoc
@@ -211,7 +210,6 @@ namespace Mep01Web.Controllers
         [HttpGet("Crrg/AddettoQualifica/{idDoc}")]
         public async Task<IActionResult> AddettoQualifica(decimal idDoc)
 		{
-			Response.Cookies.Append("ID_Documento", idDoc.ToString());
 			var request = new IdDocumentoRequest()
 			{
 				idDocumento = idDoc
@@ -219,10 +217,9 @@ namespace Mep01Web.Controllers
 			return View(request);
 		}
 
-        [HttpGet("Crrg/RegistroRicariche/{idDoc}")]
-        public async Task<IActionResult> RegistroRicariche(decimal idDoc)
+        [HttpGet("Crrg/RegistroRicariche/{idDoc}/{qualifica}")]
+        public async Task<IActionResult> RegistroRicariche(decimal idDoc, decimal qualifica)
 		{
-			Response.Cookies.Append("ID_Documento", idDoc.ToString());
 			var request = new IdDocumentoRequest()
 			{
 				idDocumento = idDoc
