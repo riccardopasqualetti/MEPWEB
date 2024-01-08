@@ -33,7 +33,7 @@ const oreQualificaObj = {
     },
     paginationOptions: [640, 20, 50, 1280],
     modals: {
-        create: { col: 1, maxFields: 5 }
+        create: { width: "c1" }
     },
     fields: [
         {
@@ -52,7 +52,11 @@ const oreQualificaObj = {
                 }
             ],
             type: "dropdown",
-            update: false
+            update: false,
+            modalPosition :{
+                row: 1,
+                nCols: 12
+            }
         },
         {
             apiName: "oreAcquistate",
@@ -64,11 +68,19 @@ const oreQualificaObj = {
             apiName: "tipoFatturazione",
             displayedName: "Tipo Fatturazione",
             type: "dropdown",
-            values: { o1: "Prepagate", o2: "Fatturate a consuntivo con check monte ore", o3: "Fatturate a consuntivo senza check monte ore" }
+            values: { o1: "Prepagate", o2: "Fatturate a consuntivo con check monte ore", o3: "Fatturate a consuntivo senza check monte ore" },
+            modalPosition :{
+                row: 2,
+                nCols: 12
+            }
         },
         {
             apiName: "note",
-            displayedName: "Note"
+            displayedName: "Note",
+            modalPosition :{
+                row: 3,
+                nCols: 12
+            }
         },
         {
             apiName: "registroRicariche",

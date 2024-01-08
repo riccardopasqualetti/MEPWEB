@@ -50,7 +50,7 @@ const registroRicaricheObj = {
     },
     paginationOptions: [20, 50, 100, 200, 400, 800],
     modals: {
-        create: { col: 1, maxFields: 5 }
+        create: { width: "c1" }
     },
     fields: [
         {
@@ -74,31 +74,41 @@ const registroRicaricheObj = {
         {
             apiName: "descrizioneQualifica",
             displayedName: "Qualifica",
-            /* searchUrls: [
-                {
-                    url: `api/MepWeb_OreQualifica/${idDocumento}`,
-                    searchFieldNames: ["qualifica", "descrizioneQualifica"]
-                }
-            ], */
             modals: false
         },
         {
             apiName: "riferimentoOfferta",
             displayedName: "Riferimento Offerta",
+            modalPosition :{
+                row: 1,
+                nCols: 12
+            }
         },
         {
             apiName: "dataRicarica",
             displayedName: "Data Ricarica",
-            type: "datenormal"
+            type: "datenormal",
+            modalPosition :{
+                row: 2,
+                nCols: 7
+            }
         },
         {
             apiName: "oreAcquistate",
             displayedName: "Ore Acquistate",
-            type: "number"
+            type: "number",
+            modalPosition :{
+                row: 2,
+                nCols: 5
+            }
         },
         {
             apiName: "note",
-            displayedName: "Note"
+            displayedName: "Note",
+            modalPosition :{
+                row: 3,
+                nCols: 12
+            }
         }
     ]
 }

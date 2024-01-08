@@ -49,7 +49,7 @@ const addettoQualificaObj = {
     },
     paginationOptions: [20, 2, 5, 10, 50],
     modals: {
-        create: { col: 1, maxFields: 2 }
+        create: { width: "c1" }
     },
     fields: [
         {
@@ -67,7 +67,11 @@ const addettoQualificaObj = {
                     searchFieldNames: ["maccCMatricola", "maccDesc"]
                 }
             ],
-            update: false
+            update: false,
+            modalPosition: {
+                row: 1,
+                nCols: 12
+            }
         },
         {
             apiName: "qualifica",
@@ -78,7 +82,11 @@ const addettoQualificaObj = {
                     searchFieldNames: ["cod", "descrizioneRidotta"]
                 }
             ],
-            type: "dropdown"
+            type: "dropdown",
+            modalPosition: {
+                row: 2,
+                nCols: 12
+            }
         }
     ]
 }
