@@ -404,9 +404,9 @@ export class TableGenerator {
 
         const generateInputs = async (col, colIndex, dialogId, modalId) => {
 
-            const index = colIndex * this.paramObject.modals.create.maxFields
-            const max = (colIndex * this.paramObject.modals.create.maxFields) + this.paramObject.modals.create.maxFields
-            const fields = this.paramObject.fields.filter(x => x.modals != false)
+            /* const index = colIndex * this.paramObject.modals.create.maxFields
+            const max = (colIndex * this.paramObject.modals.create.maxFields) + this.paramObject.modals.create.maxFields */
+            /* const fields = this.paramObject.fields.filter(x => x.modals != false)
 
             for (let i = index; i < max; i++) {
 
@@ -460,9 +460,6 @@ export class TableGenerator {
                             inputField.appendChild(option)
                         }
 
-                        /* inputField.addEventListener("change", (e) => {
-                            disableCilyInput(e.target.value)
-                        }) */
                         break
 
                     case "decimalColor":
@@ -513,11 +510,176 @@ export class TableGenerator {
                         inputContainer.appendChild(inputField)
                         break
 
-                    /* case "button":
+                    case "button":
                         inputField = document.createElement("a")
                         inputField.type = "button"
                         inputContainer.appendChild(inputField)
-                        break */
+                        break
+                    default:
+
+                        inputField = document.createElement("input")
+                        inputField.className = "form-control mb-2"
+                        inputField.type = "text"
+                        inputContainer.appendChild(inputField)
+                }
+
+                if (field.searchUrls && field.type != "dropdown") {
+                    await generateResearchWindow(inputContainer, field, inputField, modalId)
+                }
+
+                if (dialogId == "updateDialog") {
+                    console.log("entrato in updateDialog")
+                    if (field.update == false) {
+                        console.log("entrato in field.update")
+                        inputField.disabled = true
+                    }
+                }
+
+                inputField.autocomplete = "off"
+                inputField.id = dialogId + "input" + i
+                inputField.name = field.apiName
+                inputField.classList.add(dialogId + "-input")
+            }*/
+        }
+
+        /**
+         * @function generateFields         
+         * @description Funzione dedicata alla creazione delle colonne e degli input della modale.
+         * @param {string} dialogId 
+         * @param {string} modalId 
+         * @memberof createModals
+         */
+
+        const generateFields = async (dialogId, modalId) => {
+
+            const classi = {
+                c1: "max-w-25",
+                c2: "max-w-40",
+                c3: "max-w-55",
+                c4: "max-w-70",
+                c6: "max-w-90"
+            }
+            const dialog = document.getElementById(dialogId);
+            dialog.classList.add(classi[this.paramObject.modals.create.width])
+
+            const modalBody = document.querySelector('#' + dialogId + ' .modal-body')
+
+            const fields = this.paramObject.fields.filter(x => x.modals != false)
+
+            for (let i = 0; i < fields.length; i++) {
+
+                const field = fields[i]
+                if (!field) break
+
+                const nRow = fields[i].modalPosition.row
+                let row = document.getElementById(dialogId + "-row-" + nRow)
+                if (!row) {
+                    row = document.createElement('div')
+                    row.className = "row"
+                    row.id = dialogId + "-row-" + nRow
+                    modalBody.appendChild(row)
+                }
+                const colWidth = fields[i].modalPosition.nCols
+                const col = document.createElement("div")
+                col.className = `col-md-${colWidth} px-2`
+                row.appendChild(col)
+                const inputContainer = document.createElement('div')
+                inputContainer.style.position = 'relative'
+                col.appendChild(inputContainer)
+                let label = document.createElement('label')
+                label.innerText = field.displayedName.replace(/(\r\n|\n|\r)/gm, "")
+                label.classNames = "fs-14"
+                label.for = dialogId + "-input" + i
+                inputContainer.appendChild(label)
+                var inputField;
+
+                switch (field.type) {
+
+                    case "checkbox":
+                        let formCheck = document.createElement("div")
+                        formCheck.className = "form-check"
+                        inputContainer.appendChild(formCheck)
+
+                        inputField = document.createElement("input")
+                        inputField.type = "checkbox"
+                        inputField.checked = false
+                        inputField.className = "form-check-input"
+                        formCheck.appendChild(inputField)
+                        break
+
+                    case "dropdown":
+
+                        inputField = document.createElement("select")
+                        inputField.className = "form-select"
+                        inputContainer.appendChild(inputField)
+
+                        if (!field.values) {
+                            const vals = {}
+                            const lista = await fetchGetResearchApi(field.searchUrls[0].url)
+                            for (const f of lista) {
+                                vals["o" + f[field.searchUrls[0].searchFieldNames[0]]] = f[field.searchUrls[0].searchFieldNames[1]]
+                            }
+
+                            field.values = vals
+                        }
+
+                        for (let opt of Object.entries(field.values)) {
+                            const option = document.createElement("option")
+                            option.value = opt[0].replace("o", "")
+                            option.innerText = opt[1]
+                            inputField.appendChild(option)
+                        }
+
+                        break
+
+                    case "decimalColor":
+
+                        inputField = document.createElement("select")
+                        inputField.className = "form-select"
+                        inputField.addEventListener("change", (e) => {
+                            const rgb = this.getRGBFromNumber(field.values[e.target.value])
+                            e.target.style.backgroundColor = `rgb(${rgb.red},${rgb.green},${rgb.blue})`
+                        })
+                        inputContainer.appendChild(inputField)
+
+                        for (let opt of Object.values(field.values)) {
+                            const rgb = this.getRGBFromNumber(opt)
+                            const option = document.createElement("option")
+                            option.value = opt
+                            option.style.backgroundColor = `rgb(${rgb.red},${rgb.green},${rgb.blue})`
+                            inputField.appendChild(option)
+                        }
+                        break
+
+                    case "datelong":
+
+                        inputField = document.createElement("input")
+                        inputField.type = "datetime"
+                        inputField.className = "form-control"
+                        inputContainer.appendChild(inputField)
+                        break
+
+                    case "datenormal":
+
+                        inputField = document.createElement("input")
+                        let date = new Date()
+                        inputField.type = "date"
+                        inputField.className = "form-control"
+                        inputField.min = "01-01-1800"
+                        inputField.max = "01-01-2100"
+                        inputField.value = date.toISOString().substring(0, 10)
+                        inputContainer.appendChild(inputField)
+                        break
+
+                    case "number":
+
+                        inputField = document.createElement("input")
+                        inputField.type = "number"
+                        inputField.className = "form-control"
+                        inputField.value = 0
+                        inputContainer.appendChild(inputField)
+                        break
+
                     default:
 
                         inputField = document.createElement("input")
@@ -545,40 +707,6 @@ export class TableGenerator {
             }
         }
 
-        /**
-         * @function generateFields         
-         * @description Funzione dedicata alla creazione delle colonne e degli input della modale.
-         * @param {string} dialoglId 
-         * @param {string} modalId 
-         * @memberof createModals
-         */
-
-        const generateFields = async (dialoglId, modalId) => {
-
-            const classi = {
-                c1: "max-w-25",
-                c2: "max-w-40",
-                c3: "max-w-55",
-                c4: "max-w-70",
-                c6: "max-w-90"
-            }
-            const dialog = document.querySelector(`#${dialoglId}`);
-            const mainRow = document.querySelector(`#${dialoglId} #main-row`);
-            const colWidth = 12 / this.paramObject.modals.create.col
-            dialog.classList.add(classi["c" + this.paramObject.modals.create.col])
-
-            for (let i = 0; i < this.paramObject.modals.create.col; i++) {
-
-                const col = document.createElement('div')
-                col.className = `col-md-${colWidth} px-2`
-                col.id = dialoglId + "-col" + i
-
-                await generateInputs(col, i, dialoglId, modalId)
-
-                mainRow.appendChild(col)
-            }
-        }
-
         let researchResponses = {};
         const main = document.querySelector("#tgen")
 
@@ -600,9 +728,6 @@ export class TableGenerator {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row" id="main-row">
-                                
-                        </div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <div id="response-message-container-create" class="response-message-container d-flex align-content-center">
@@ -732,9 +857,6 @@ export class TableGenerator {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="row" id="main-row">
-                                    
-                            </div>
                         </div>
                         <div class="modal-footer justify-content-between">
                             <div id="response-message-container-update" class="response-message-container d-flex align-content-center">
@@ -933,7 +1055,7 @@ export class TableGenerator {
                     inputDelete.type = "hidden"
                 })
 
-                document.querySelector("#deleteText").innerText = "Confermare l'eliminazione del record?"
+                document.getElementById("deleteText").innerText = "Confermare l'eliminazione del record?"
             })
             deleteTd.appendChild(deleteBtn)
 
@@ -954,7 +1076,7 @@ export class TableGenerator {
 
             tbody.appendChild(row)
             tbody.scrollTop = 0;
-            document.querySelector("#lateral-scroll").scrollLeft = 0;
+            document.getElementById("lateral-scroll").scrollLeft = 0;
         }
 
         //this.addMenuListenersToRows()
