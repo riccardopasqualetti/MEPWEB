@@ -6,6 +6,7 @@ using Mep01Web.Models;
 using Mep01Web.DTO.Request;
 using Mep01Web.DTO.Response;
 using Mep01Web.DTO;
+using MepWeb.Costants;
 
 namespace Mep01Web.Validators.Impl
 {
@@ -17,13 +18,13 @@ namespace Mep01Web.Validators.Impl
         {
             _dbContext = context;
         }
-        public async Task<ResponseBase<CrrgResponse>?> CrrgValidateAsync(CrrgCreateRequest crrgRequest)
+        public async Task<ResponseBase<CrrgResponse?>> CrrgValidateAsync(CrrgCreateRequest crrgRequest)
         {
 
             if (string.IsNullOrWhiteSpace(crrgRequest.CrrgCRis))
             {
 				//throw new CrrgException(-1, $"Risorsa non indicata (s)");
-				return ResponseBase<CrrgResponse?>.Failed("-1", $"Risorsa non indicata (s)");
+				return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCRis, $"Risorsa non indicata (s)");
 			}
 
             // test provvisorio
@@ -37,11 +38,11 @@ namespace Mep01Web.Validators.Impl
 
             if (crrgRequest.CrrgDtt < dd1 || crrgRequest.CrrgDtt > dd2)
             {   
-				return ResponseBase<CrrgResponse?>.Failed("-2", $"Data non valida (s)");
+				return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgDtt, $"Data non valida (s)");
 			}
             if (crrgRequest.CrrgTmRunIncrHMS.Hour == 0 && crrgRequest.CrrgTmRunIncrHMS.Minute == 0 && crrgRequest.CrrgTmRunIncrHMS.Second == 0)
             {                
-				return ResponseBase<CrrgResponse?>.Failed("-3", $"Durata non valida (s)");
+				return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgTmRunIncrHMS, $"Durata non valida (s)");
 			}
 
 
@@ -53,7 +54,7 @@ namespace Mep01Web.Validators.Impl
                 var ISL = await _dbContext.FlussoTatvs.SingleOrDefaultAsync(x => x.TatvRifCliente == crrgRequest.CrrgRifCliente);
                 if (ISL == null)
                 {                    
-					return ResponseBase<CrrgResponse?>.Failed("-4", $"ISL inesistente (s)");
+					return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgRifCliente, $"ISL inesistente (s)");
 				}
                 crrgRequest.CrrgTstDoc = ISL.TatvTstComm;
                 crrgRequest.CrrgPrfDoc = ISL.TatvPrfComm;
@@ -65,46 +66,38 @@ namespace Mep01Web.Validators.Impl
 
 				if (crrgRequest.CrrgCCaus == "CORI")
 				{
-					return ResponseBase<CrrgResponse?>.Failed("-11", $"Causale non ammessa");
+					return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCCaus, $"Causale non ammessa");
 				}
 
 				if (ISL.TatvFlgOfferta > 0 && crrgRequest.CrrgCmaatt != "3")
 				{
-					return ResponseBase<CrrgResponse?>.Failed("-12", $"Verbale obbligatorio per ISL con offerta");
+					return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCmaatt, $"Verbale obbligatorio per ISL con offerta");
 				}
 			}
-			// Se la ISL non è valorizzata, ma è valorizzato il campo CommCodeDesc con il codice in formato compatto,
+			// Se la ISL non è valorizzata, ma è valorizzato il campo CommCode con il codice in formato compatto,
             // la commessa è presa da quest'ultimo campo.
 			// Altrimenti, mantiene i campi della form inalterati.
 			else
 			{
                 try {
-					if (!string.IsNullOrWhiteSpace(crrgRequest.CommCodeDesc))
+					
+					if (!string.IsNullOrWhiteSpace(crrgRequest.CommCode))
 					{
-						crrgRequest.CrrgTstDoc = crrgRequest.CommCodeDesc.Substring(0, 3);
-						crrgRequest.CrrgPrfDoc = crrgRequest.CommCodeDesc.Substring(4, 1);
-						crrgRequest.CrrgADoc = Decimal.Parse(crrgRequest.CommCodeDesc.Substring(6, 4));
-						crrgRequest.CrrgNDoc = Decimal.Parse(crrgRequest.CommCodeDesc[11..]);
-						flgcom = "-6";
-					} else
-					{
-						if (!string.IsNullOrWhiteSpace(crrgRequest.CommCode))
-						{
-							crrgRequest.CrrgTstDoc = crrgRequest.CommCode.Substring(0, 3);
-							crrgRequest.CrrgPrfDoc = crrgRequest.CommCode.Substring(4, 1);
-							crrgRequest.CrrgADoc = Decimal.Parse(crrgRequest.CommCode.Substring(6, 4));
-							crrgRequest.CrrgNDoc = Decimal.Parse(crrgRequest.CommCode[11..]);
-							flgcom = "-7";
-						}						
-					}
+						crrgRequest.CrrgTstDoc = crrgRequest.CommCode.Substring(0, 3);
+						crrgRequest.CrrgPrfDoc = crrgRequest.CommCode.Substring(4, 1);
+						crrgRequest.CrrgADoc = Decimal.Parse(crrgRequest.CommCode.Substring(6, 4));
+						crrgRequest.CrrgNDoc = Decimal.Parse(crrgRequest.CommCode[11..]);
+						flgcom = "-7";
+					}						
+					
 				}
 				catch
                 {
-					return ResponseBase<CrrgResponse?>.Failed("-6", $"Commessa non valida: {crrgRequest.CommCodeDesc ?? ""}");
+					return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CommCode, $"Commessa non valida: {crrgRequest.CommCode ?? ""}");
 				}
 				if (crrgRequest.CrrgCCaus != "CORI")
 				{
-					return ResponseBase<CrrgResponse?>.Failed("-11", $"Causale non ammessa");
+					return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCCaus, $"Causale non ammessa");
 				}
 			}
 
@@ -121,14 +114,14 @@ namespace Mep01Web.Validators.Impl
 			var commessa = await _dbContext.FlussoTbcps.SingleOrDefaultAsync(x => x.TbcpTstComm == crrgRequest.CrrgTstDoc && x.TbcpPrfComm == crrgRequest.CrrgPrfDoc && x.TbcpAComm == crrgRequest.CrrgADoc && x.TbcpNComm == crrgRequest.CrrgNDoc);
 			if (commessa == null)
 			{				
-				return ResponseBase<CrrgResponse?>.Failed(flgcom ?? "-6", $"Commessa inesistente");
+				return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CommCode, $"Commessa inesistente");
 			}
 
 			var testCommessa = await _dbContext.VsPpCommAperteXClis.FirstOrDefaultAsync(x => x.OrpbTstDoc == crrgRequest.CrrgTstDoc && x.OrpbPrfDoc == crrgRequest.CrrgPrfDoc && x.OrpbADoc == crrgRequest.CrrgADoc && x.OrpbNDoc == crrgRequest.CrrgNDoc);
 
 			if (testCommessa == null)
 			{
-				return ResponseBase<CrrgResponse?>.Failed(flgcom, "Commessa chiusa");
+				return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CommCode, "Commessa chiusa");
 			}
 
 			// Validazione Numero Operazione e Tipo Operazione 
@@ -150,7 +143,7 @@ namespace Mep01Web.Validators.Impl
 			FlussoOlca flussoOlca = await _dbContext.FlussoOlcas.SingleOrDefaultAsync(x => x.OlcaTstDoc == crrgRequest.CrrgTstDoc && x.OlcaPrfDoc == crrgRequest.CrrgPrfDoc && x.OlcaADoc == crrgRequest.CrrgADoc && x.OlcaNDoc == crrgRequest.CrrgNDoc && x.OlcaNOper == crrgRequest.CrrgNOper && x.OlcaTOper == crrgRequest.CrrgTOper);
 			if (flussoOlca == null)
 			{
-				return ResponseBase<CrrgResponse?>.Failed("-8", $"Operazione inesistente (s)");
+				return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.NTOper, $"Operazione inesistente (s)");
 			}
 
 
@@ -161,7 +154,7 @@ namespace Mep01Web.Validators.Impl
 				flussoTbpn = await _dbContext.FlussoTbpns.SingleOrDefaultAsync(x => x.TbpnCPart == crrgRequest.CrrgApp && crrgRequest.CrrgApp.StartsWith("APP_"));
 				if (flussoTbpn == null && !string.IsNullOrWhiteSpace(crrgRequest.CrrgApp))
 				{
-					return ResponseBase<CrrgResponse?>.Failed("-9", $"Applicativo inesistente (s)");
+					return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgApp, $"Applicativo inesistente (s)");
 				}
 			}
 
@@ -171,10 +164,15 @@ namespace Mep01Web.Validators.Impl
 				flussoTbpn = await _dbContext.FlussoTbpns.SingleOrDefaultAsync(x => x.TbpnCPart == crrgRequest.CrrgMod && crrgRequest.CrrgMod.StartsWith("MOD_"));
 				if (flussoTbpn == null && !string.IsNullOrWhiteSpace(crrgRequest.CrrgMod))
 				{
-					return ResponseBase<CrrgResponse?>.Failed("-10", $"Modulo inesistente (s)");
+					return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgMod, $"Modulo inesistente (s)");
 				}
 			}
-			
+
+			//controllo che il campo note sia valorizzato
+			if (string.IsNullOrWhiteSpace(crrgRequest.CrrgNote))
+			{
+				return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgNote, $"Campo note obligatorio");
+			}
 
             return ResponseBase<CrrgResponse?>.Success();
 		}

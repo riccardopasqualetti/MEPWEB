@@ -33,6 +33,7 @@ async function setupSearchIsl(elementId) {
     const input = document.getElementById(elementId);
     input.value = selectedIsl;
     input.onchange();
+    document.getElementById("NTOper").focus()
   });
 }
 

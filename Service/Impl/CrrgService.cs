@@ -241,21 +241,6 @@ namespace Mep01Web.Service.Impl
 
 		public async Task<CrrgCreateRequest> AddCrrgPrepareDataAsync(CrrgCreateRequest crrgCreateRequest)
         {
-
-            // Se ISL risulta valorizzata, imposto la commessa in CommCode e CommCodeDesc che essendo protette vengono ripulite
-            //if (!string.IsNullOrWhiteSpace(crrgCreateRequest.CrrgRifCliente))
-            //{
-            //    TatvGetRequest tatvGetRequest = new TatvGetRequest();
-            //    tatvGetRequest.codeISl = crrgCreateRequest.CrrgRifCliente;
-            //    var tatv = await _tatvService.GetTatvAsync(tatvGetRequest);
-            //    if (tatv != null)
-            //    {
-            //        crrgCreateRequest.CommCode = tatv.Body.ISLMasterData.TatvTstComm + "/" + tatv.Body.ISLMasterData.TatvPrfComm + "/" + tatv.Body.ISLMasterData.TatvAComm + "/" + tatv.Body.ISLMasterData.TatvNComm;
-            //        crrgCreateRequest.CommCodeDesc = tatv.Body.ISLCommData.CommMasterData.TbcpDesc;
-            //    }
-            //}
-
-
             // Preparazione dropdown con causali
             CrrgCCausList crrgCCausList = new CrrgCCausList();
 			crrgCreateRequest.CrrgCCausList = crrgCCausList;
@@ -372,7 +357,6 @@ namespace Mep01Web.Service.Impl
             if (getTbcpResponse.Succeeded)
             {
 				crrgCreateRequest.ComCCli = getTbcpResponse.Body.CommMasterData.TbcpCCli + " - " + getTbcpResponse.Body.CommRCli;
-                crrgCreateRequest.CommCodeDesc = crrgCreateRequest.CommCode + " - " + getTbcpResponse.Body.CommMasterData.TbcpDesc;
 			}			
 			return crrgCreateRequest;
 		}

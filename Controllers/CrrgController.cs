@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using MepWeb.Service;
 using MepWeb.Service.Interface;
 using MepWeb.DTO.Request;
+using MepWeb.Costants;
 
 namespace Mep01Web.Controllers
 {
@@ -91,41 +92,40 @@ namespace Mep01Web.Controllers
 
             if (!addCrrgResponse.Succeeded)
             {
-				if (addCrrgResponse.Errors[0].Code == "-3")
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgCRis)
+				{
+					ModelState.AddModelError("CrrgCRis", addCrrgResponse.Errors[0].Message);
+				}
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgTmRunIncrHMS)
                 {
                     ModelState.AddModelError("CrrgTmRunIncrHMS", addCrrgResponse.Errors[0].Message);
                 }
-                if (addCrrgResponse.Errors[0].Code == "-4")
+                if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgRifCliente)
                 {
                     ModelState.AddModelError("CrrgRifCliente", addCrrgResponse.Errors[0].Message);
                 }
-				if (addCrrgResponse.Errors[0].Code == "-5")
-				{
-					ModelState.AddModelError("CrrgRifCliente", addCrrgResponse.Errors[0].Message);
-				}
-				if (addCrrgResponse.Errors[0].Code == "-6")
-				{
-					ModelState.AddModelError("CommCodeDesc", addCrrgResponse.Errors[0].Message);
-					ModelState.AddModelError("CommCode", addCrrgResponse.Errors[0].Message);
-				}
-				if (addCrrgResponse.Errors[0].Code == "-7")
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CommCode)
 				{
 					ModelState.AddModelError("CommCode", addCrrgResponse.Errors[0].Message);
 				}
-				if (addCrrgResponse.Errors[0].Code == "-8")
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.NTOper)
 				{
 					ModelState.AddModelError("NTOper", addCrrgResponse.Errors[0].Message);
 				}
-				if (addCrrgResponse.Errors[0].Code == "-11")
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgCCaus)
 				{
 					ModelState.AddModelError("CrrgCCaus", addCrrgResponse.Errors[0].Message);
 				}
-                if (addCrrgResponse.Errors[0].Code == "-12")
+                if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgCmaatt)
                 {
                     ModelState.AddModelError("CrrgCmaatt", addCrrgResponse.Errors[0].Message); 
                 }
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgNote)
+				{
+					ModelState.AddModelError("CrrgNote", addCrrgResponse.Errors[0].Message);
+				}
 
-                obj.Succeeded = "N";
+				obj.Succeeded = "N";
 				//await _crrgService.AddCrrgPrepareDataAsync(obj);
 				//return View(obj);
             }
