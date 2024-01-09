@@ -80,6 +80,8 @@
 						<input asp-for="CrrgRifCliente" class="form-control" style="width:150px" id="CrrgRifCliente" onchange="ISLChanged()" />
 						<button type="button" onclick="setupSearchIsl('CrrgRifCliente')" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
 						<span asp-validation-for="CrrgRifCliente" class="text-danger"></span>
+						<label for="DescrIsl">Descrizione ISL</label>
+						<input class="form-control" id="DescrIsl" disabled />
 					</div>
 					<div class="form-group" style="margin-top:5px;">
 						<label>Commessa</label>
@@ -91,30 +93,26 @@
 				<div id="divComCli">
 					<div class="form-group" style="margin-top:5px;">
 						<label asp-for="ComCCli">Cliente</label>
-						<select asp-for="ComCCli" asp-items="@Model.AcliList.Clienti" class="form-select" id="ComCCli" style="width:350px" onfocusout="CliListChanged('modCli')"></select>
+						<select asp-for="ComCCli" hidden asp-items="@Model.AcliList.Clienti" class="form-select" id="ComCCli" style="width:350px" onfocusout="CliListChanged('modCli')"></select>
 					</div>
-					@*<div class="progress" id="divComCliBarra">
-					<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
-					</div>*@
-				</div>
-
-				@* Commessa *@
-				<div id="divCommCodeDesc">
-					<div class="form-group" style="margin-top:5px;">
-						@* <label asp-for="CommCodeDesc">Commessa</label>
-						<select asp-for="CommCodeDesc" asp-items="@Model.TbcpList.TbcpListLight" class="form-select" id="CommCodeDesc" style="width:100%" onchange="CommListChanged()"></select> *@
-						<input asp-for="CommCodeDesc" class="form-control" id="CommCodeDesc" onchange="CommListChanged()" hidden style="width:200px" />
-						
-					</div>
-
 					<div>
-						<div id="myDropdown" class="dropdown-content form-group">
-							<label for="myInput">Commessa</label>
-							<input autocomplete="off" value="@Model.CommCode" type="text" class="form-control dropCom-group" placeholder="Search.." id="myInput">
-							<span asp-validation-for="CommCodeDesc" class="text-danger"></span>
-							<div id="border-style">
-								<div id="dropdown-commesse" class="d-none dropCom-group">
-
+						<div class="dropdown-content form-group customDropdown">
+							@* <label for="ComDropdown">Commessa</label> *@
+							<input autocomplete="off" value="" type="text" class="form-control customDropdown-group" placeholder="Cliente.." id="CliDropdownInput">
+							<span asp-validation-for="ComCCli" class="text-danger"></span>
+							<div class="border-style">
+								<div id="dropdown-clienti" class="d-none customDropdown-group dropdown-scrollbar customDropdown-container">
+									@for(int i = 0; i < Model.AcliList.Clienti.Count; i++)
+									{
+										if (i == 0)
+										{
+											<p class="m-0 customDropdown-group dropdown-opt opt-hover" valore="@Model.AcliList.Clienti[i].Value" onmousedown="cliOpt('@Model.AcliList.Clienti[i].Value')">@Model.AcliList.Clienti[i].Text</p>
+										} 
+										else
+										{
+											<p class="m-0 customDropdown-group dropdown-opt" valore="@Model.AcliList.Clienti[i].Value" onmousedown="cliOpt('@Model.AcliList.Clienti[i].Value')">@Model.AcliList.Clienti[i].Text</p>
+										}
+									}
 								</div>
 							</div>
 						</div>
@@ -126,7 +124,17 @@
 					<div class="form-group" style="margin-top:5px;">
 						<label asp-for="CommCode">Commessa</label>
 						<input asp-for="CommCode" class="form-control" id="CommCode" style="width:200px" onchange="CommChanged()" />
-						<span asp-validation-for="CommCode" class="text-danger"></span>
+						<div>
+							<div class="dropdown-content form-group customDropdown">
+								@* <label for="ComDropdown">Commessa</label> *@
+								<input autocomplete="off" value="@Model.CommCode" type="text" class="form-control customDropdown-group" placeholder="Commessa.." id="ComDropdownInput">
+								<span asp-validation-for="CommCode" class="text-danger"></span>
+								<div class="border-style">
+									<div id="dropdown-commesse" class="d-none customDropdown-group dropdown-scrollbar customDropdown-container">
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="form-group" style="margin-top:5px;">
 						<label>Descrizione</label>
@@ -147,7 +155,7 @@
 				@* Operazione *@
 				<div class="form-group" style="margin-top:5px;">
 					<label asp-for="NTOper">Operazione</label>
-					<select asp-for="NTOper" asp-items="@Model.NTOperList.Operazioni" class="form-select" id="NTOper" style="width:200px"></select>
+					<select asp-for="NTOper" asp-items="@Model.NTOperList.Operazioni" class="form-select" id="NTOper"></select>
 					<span asp-validation-for="NTOper" class="text-danger"></span>
 				</div>
 
@@ -183,6 +191,7 @@
 				<div class="form-group" style="margin-top:5px;">
 					<label asp-for="CrrgNote">Note</label>
 					<textarea asp-for="CrrgNote" class="form-control" style="width:100%"></textarea>
+					<span asp-validation-for="CrrgNote" class="text-danger"></span>
 				</div>
 				<br />
 

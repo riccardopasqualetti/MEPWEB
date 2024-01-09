@@ -59,8 +59,7 @@ namespace Mep01Web.DTO.Request
         public decimal CrrgPrgDoc { get; set; }
         // Codice commessa compatto
         public string CommCode { get; set; }
-		public string CommCodeDesc { get; set; }
-		// Dropdown per CommCodeDesc
+		// Dropdown per CommCode
 		public TbcpList TbcpList { get; set; } = new TbcpList();
 
 

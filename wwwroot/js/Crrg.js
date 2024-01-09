@@ -2,27 +2,20 @@
 
 divCrrgRifClienteContent = document.getElementById("divCrrgRifCliente").innerHTML;
 divComCliContent         = document.getElementById("divComCli").innerHTML;
-divCommCodeDescContent   = document.getElementById("divCommCodeDesc").innerHTML;
 divCommContent           = document.getElementById("divComm").innerHTML;
-//divComCliBarra           = document.getElementById("divComCliBarra");
 //document.getElementById("divComCliBarra").innerHTML="";
 
 async function Modalita() {
-    document.getElementById("NTOper").innerHTML = ""
-    
     document.getElementById("dropdown-commesse").innerHTML = ""
     switch (true) {
         case document.getElementById("modIsl").checked:
-            //alert("isl");
             
             // abilita divCrrgRifCliente
-            document.getElementById("divCrrgRifCliente").innerHTML = divCrrgRifClienteContent;
+            document.getElementById("divCrrgRifCliente").classList.remove("d-none");
             // disabilita divComCli
-            document.getElementById("divComCli").innerHTML = "";
-            // disabilita divCommCodeDesc
-            document.getElementById("divCommCodeDesc").classList.add("d-none");
+            document.getElementById("divComCli").classList.add("d-none");
             // disabilita divComm
-            document.getElementById("divComm").innerHTML = "";
+            document.getElementById("divComm").classList.add("d-none")
 
             // se la modalità è sempre la stessa significa che sta gestendo un errore 
             // e ricarica la commessa nel campo descrizione che è protetto e non eredita il valore.
@@ -30,70 +23,68 @@ async function Modalita() {
                 //alert("ricarica commessa per ISL");
                 ISLChanged();
             } else {
-                document.getElementById("myInput").value = ""
+                document.getElementById("ComDropdownInput").value = ""
+                document.getElementById("NTOper").innerHTML = ""
+                document.getElementById("CommDesc").innerHTML = ""
+                document.getElementById("dropdown-commesse").innerHTML = ""
             }
-
-            //document.getElementById("CrrgRifCliente").removeAttribute('disabled');
 
             document.getElementById("MemoModalita").value = "modIsl";
             break;
 
         case document.getElementById("modCli").checked:
-            //alert("cli");
             
             // disabilita divCrrgRifCliente
-            document.getElementById("divCrrgRifCliente").innerHTML = "";
+            document.getElementById("divCrrgRifCliente").classList.add("d-none");
             // abilita divComCli
-            document.getElementById("divComCli").innerHTML = divComCliContent;
-            // abilita divCommCodeDesc
-            //document.getElementById("divCommCodeDesc").innerHTML = divCommCodeDescContent;
-            document.getElementById("divCommCodeDesc").classList.remove("d-none")
-            // disabilita divComm
-            document.getElementById("divComm").innerHTML = divCommContent;
-            document.getElementById("divComm").classList.add("d-none");
-
-            //document.getElementById("CrrgRifCliente").setAttribute('disabled', 'disabled');
+            document.getElementById("divComCli").classList.remove("d-none");
+            document.getElementById("CliDropdownInput").classList.remove("d-none")
+            document.getElementById("CliDropdownInput").classList.remove("bad-field")
+            document.getElementById("ComCCli").disabled = false;
+            document.getElementById("ComCCli").hidden = true;
+            // abilita divComm
+            document.getElementById("divComm").classList.remove("d-none")
+            document.getElementById("ComDropdownInput").classList.remove("d-none")
+            document.getElementById("CommCode").hidden = true
+            
 
             if (document.getElementById("MemoModalita").value == "modCli") {
                 await CliListChanged("modCli");
-                document.getElementById("CommCodeDesc").value = document.getElementById("CommCode").value
                 await LoadTOper(document.getElementById("CommCode").value);
             } else {
-                document.getElementById("CommCodeDesc").value = ""
-                document.getElementById("CommCode").value = ""
                 document.getElementById("ComCCli").value = ""
-                document.getElementById("myInput").value = ""
+                document.getElementById("CommCode").value = ""
+                document.getElementById("ComDropdownInput").value = ""
+                document.getElementById("CommDesc").value = ""
+                document.getElementById("NTOper").innerHTML = ""
+                document.getElementById("CliDropdownInput").value = ""
             }
-
 
             document.getElementById("MemoModalita").value = "modCli";
             break;
 
         case document.getElementById("modGestInt").checked:
             // disabilita divCrrgRifCliente
-            document.getElementById("divCrrgRifCliente").innerHTML = "";
+            document.getElementById("divCrrgRifCliente").classList.add("d-none");
             // abilita divComCli
-            document.getElementById("divComCli").innerHTML = divComCliContent;
-            // abilita divCommCodeDesc
-            //document.getElementById("divCommCodeDesc").innerHTML = divCommCodeDescContent;
-            document.getElementById("divCommCodeDesc").classList.remove("d-none")
-            // disabilita divComm
-            document.getElementById("divComm").innerHTML = divCommContent;
-            document.getElementById("divComm").classList.add("d-none");
-
-            //document.getElementById("CrrgRifCliente").setAttribute('disabled', 'disabled');
-
+            document.getElementById("divComCli").classList.remove("d-none");
+            document.getElementById("CliDropdownInput").classList.add("d-none")
             document.getElementById("ComCCli").value = "0153S018";
             document.getElementById("ComCCli").disabled = true;
+            document.getElementById("ComCCli").hidden = false;
+            // abilita divComm
+            document.getElementById("divComm").classList.remove("d-none")
+            document.getElementById("ComDropdownInput").classList.remove("d-none")
+            document.getElementById("CommCode").hidden = true
 
             await CliListChanged("modGestInt");
             if (document.getElementById("MemoModalita").value == "modGestInt") {
-                document.getElementById("CommCodeDesc").value = document.getElementById("CommCode").value
                 await LoadTOper(document.getElementById("CommCode").value);
             } else {
-                document.getElementById("CommCodeDesc").value = ""
                 document.getElementById("CommCode").value = ""
-                document.getElementById("myInput").value = ""
+                document.getElementById("ComDropdownInput").value = ""
+                document.getElementById("CommDesc").value = ""
+                document.getElementById("NTOper").innerHTML = ""
             }
 
             document.getElementById("MemoModalita").value = "modGestInt";
@@ -102,29 +93,26 @@ async function Modalita() {
 
         case document.getElementById("modSvilInt").checked:
             // disabilita divCrrgRifCliente
-            document.getElementById("divCrrgRifCliente").innerHTML = "";
+            document.getElementById("divCrrgRifCliente").classList.add("d-none");
             // abilita divComCli
-            document.getElementById("divComCli").innerHTML = divComCliContent;
-            // abilita divCommCodeDesc
-            //document.getElementById("divCommCodeDesc").innerHTML = divCommCodeDescContent;
-            document.getElementById("divCommCodeDesc").classList.remove("d-none")
-            // disabilita divComm
-            document.getElementById("divComm").innerHTML = divCommContent;
-            document.getElementById("divComm").classList.add("d-none");
-
-            //document.getElementById("CrrgRifCliente").setAttribute('disabled', 'disabled');
-
+            document.getElementById("divComCli").classList.remove("d-none");    
+            document.getElementById("CliDropdownInput").classList.add("d-none")
             document.getElementById("ComCCli").value = "0153S018";
             document.getElementById("ComCCli").disabled = true;
+            document.getElementById("ComCCli").hidden = false;
+            // abilita divComm
+            document.getElementById("divComm").classList.remove("d-none")
+            document.getElementById("ComDropdownInput").classList.remove("d-none")
+            document.getElementById("CommCode").hidden = true
 
             await CliListChanged("modSvilInt");
             if (document.getElementById("MemoModalita").value == "modSvilInt") {
-                document.getElementById("CommCodeDesc").value = document.getElementById("CommCode").value
                 await LoadTOper(document.getElementById("CommCode").value);
             } else {
-                document.getElementById("CommCodeDesc").value = ""
                 document.getElementById("CommCode").value = ""
-                document.getElementById("myInput").value = ""
+                document.getElementById("ComDropdownInput").value = ""
+                document.getElementById("CommDesc").value = ""
+                document.getElementById("NTOper").innerHTML = ""
             }
 
             document.getElementById("MemoModalita").value = "modSvilInt";
@@ -134,24 +122,25 @@ async function Modalita() {
         case document.getElementById("modCom").checked: 
             //alert("com");
             // disabilita divCrrgRifCliente
-            document.getElementById("divCrrgRifCliente").innerHTML = "";
+            document.getElementById("divCrrgRifCliente").classList.add("d-none");
             // disabilita divComCli
-            document.getElementById("divComCli").innerHTML = "";
-            // disabilita divCommCodeDesc
-            //document.getElementById("divCommCodeDesc").innerHTML = "";
-            document.getElementById("divCommCodeDesc").classList.add("d-none")
+            document.getElementById("divComCli").classList.add("d-none");
             // abilita divComm
-            document.getElementById("divComm").innerHTML = divCommContent;
-
+            document.getElementById("CommCode").hidden = false
             document.getElementById("divComm").classList.remove("d-none");
+            document.getElementById("ComDropdownInput").classList.add("d-none")
 
             // se la modalità è sempre la stessa significa che sta gestendo un errore 
             // e ricarica la commessa nel campo descrizione che è protetto e non eredita il valore.
             if (document.getElementById("MemoModalita").value == "modCom") {
-                //alert("ricarica descrizione commessa");
                 await CommChanged();
             } else {
-                document.getElementById("myInput").value = ""
+                document.getElementById("ComCCli").value = ""
+                document.getElementById("CommCode").value = ""
+                document.getElementById("ComDropdownInput").value = ""
+                document.getElementById("dropdown-commesse").innerHTML = ""
+                document.getElementById("CommDesc").value = ""
+                document.getElementById("NTOper").innerHTML = ""
             }
 
             document.getElementById("MemoModalita").value = "modCom";
@@ -164,24 +153,6 @@ function ReloadCrrgCreateForm() {
     document.CrrgCreateForm.submit();
 }
 
-
-//function SetCommCode() {
-//    var ISL = document.getElementById("CrrgRifCliente").value
-//    if (ISL != null && ISL != '') {
-//        var url1 = "https://localhost:44300/api/Tatv/GetCommByISL/" + ISL
-//        var url = "https://localhost:44300/api/Tatv/GetCommByISL/ISL-0108-1000"
-//        alert(url);
-//        //document.getElementById("CommCode").value = "pippo";
-//        $.getJSON(url, function (comm) {
-//            alert("ret: " + comm.CrrgTstDoc);
-//          //  if (comm != null && !jQuery.isEmptyObject(comm)) {
-//          //      commcode = comm.CrrgNDoc;
-//          //      document.getElementById("CommCode").value = commcode;
-//          //  }
-//        });
-//        alert("get");
-//    }
-//}
 async function ISLChanged() { 
     var ISL = document.getElementById("CrrgRifCliente").value
     var url = "/api/Tatv/GetISLByCodeAsync/" + ISL
@@ -202,7 +173,8 @@ async function ISLChanged() {
             comm = islData.islMasterData.tatvTstComm + '/' + islData.islMasterData.tatvPrfComm + '/' + islData.islMasterData.tatvAComm + '/' + islData.islMasterData.tatvNComm;
             document.getElementById("ISLCommDesc").value = islData.islMasterData.tatvTstComm + '/' + islData.islMasterData.tatvPrfComm + '/' + islData.islMasterData.tatvAComm + '/' + islData.islMasterData.tatvNComm + ' - ' + islData.islCommData.commMasterData.tbcpDesc;
             document.getElementById("CrrgApp").value = islData.islMasterData.tatvCPartApp;            
-            document.getElementById("CrrgMod").value = islData.islMasterData.tatvCPart;            
+            document.getElementById("CrrgMod").value = islData.islMasterData.tatvCPart;
+            document.getElementById("DescrIsl").value = islData.islMasterData.tatvDesc;
             await LoadTOper(comm);
         }
         else {
@@ -240,14 +212,7 @@ async function CliListChanged(modalita) {
         if (response.status == 200) {
             let cliData = await response.json();
             let cliNumber = cliData.length;
-            //document.getElementById("CommCodeDesc").empty;
-            //options = '<option value=""></option>';
-            //for (var i = 0; i < cliNumber; i++) {
-            //    if ((modalita == "modCli") || (modalita == "modGestInt" && "FGZ".includes(cliData[i].orpbPrfDoc)) || modalita == "modSvilInt" && "AH".includes(cliData[i].orpbPrfDoc)) {
-            //        options += `<option value="${cliData[i].orpbTstDoc}/${cliData[i].orpbPrfDoc}/${cliData[i].orpbADoc}/${cliData[i].orpbNDoc}">${cliData[i].commDescDd}</option>`;
-            //    }
-            //};
-            //document.getElementById("CommCodeDesc").innerHTML = options;
+
             document.getElementById("dropdown-commesse").innerHTML = "";
             const opt = document.createElement("p")
             opt.className = "m-0 dropdown-opt"
@@ -256,16 +221,15 @@ async function CliListChanged(modalita) {
             opt.style.height = "22px"
             document.getElementById("dropdown-commesse").appendChild(opt)
             opt.addEventListener("click", () => {
-                document.getElementById("CommCodeDesc").value = opt.getAttribute("valore")
-                document.getElementById("myInput").value = opt.getAttribute("valore")
+                document.getElementById("ComDropdownInput").value = opt.getAttribute("valore")
             })
             for (var i = 0; i < cliNumber; i++) {
                 if ((modalita == "modCli") || (modalita == "modGestInt" && "FGZ".includes(cliData[i].orpbPrfDoc)) || modalita == "modSvilInt" && "AH".includes(cliData[i].orpbPrfDoc)) {
-                    document.getElementById("dropdown-commesse").appendChild(createOpt(cliData[i]))
+                    const opt = createOpt(cliData[i])
+                    document.getElementById("dropdown-commesse").appendChild(opt)
                 }
             };
 
-            //document.getElementById("dropdown-commesse").children[0].classList.add("selectedDropItem")
             addHoverClassToOpt(document.getElementById("dropdown-commesse").children[0])
         }
         else {
@@ -282,10 +246,54 @@ async function CliListChanged(modalita) {
     //document.getElementById("divComCliBarra").innerHTML = "";
 }
 
-function showDropdown() {
-    document.getElementById("dropdown-commesse").classList.remove("d-none")
-    document.getElementById("dropdown-commesse").classList.add("active-custom-dropdown")
-    document.getElementById("dropdown-commesse").addEventListener("mousemove", (e) => {
+function setupCustomDropdowns(dropdownInputId, dropdownContainerId, realInput) {
+
+    //apre la dropdown al focus sull'input
+    document.getElementById(dropdownInputId).addEventListener("focusin", (e) => {
+
+        //se all'apertura c'è già un valore nell'input viene filtrata la dropdown
+        if (e.target.value != "") {
+            filterDropdown(e.target, dropdownContainerId)
+        }
+        showDropdown(dropdownContainerId)
+    })
+
+    //se viene fatto click fuori dalla dropdown viene chiusa
+    document.addEventListener("mousedown", (e) => {
+        if (!e.target.classList.contains("customDropdown-group")) {
+            hideDropdown(dropdownContainerId)
+        }
+    })
+
+    //se l'input delle commesse della dropdown perde il focus la dropdown viene nascosta e viene chiamata la funzione che carica le operazioni
+    document.getElementById(dropdownInputId).addEventListener("focusout", async (e) => {
+        hideDropdown(dropdownContainerId)
+        if (!e.target.classList.contains("bad-field") && e.target.value != "") {
+            if (dropdownInputId == "ComDropdownInput") {
+                await CommChanged()
+            } else {
+                await CliListChanged("modCli")
+            }
+        }
+    })
+
+    //se viene scritto qualcosa nell'input delle commesse della dropdown, il valore viene scritto anche nei veri input delle commesse
+    document.getElementById(dropdownInputId).addEventListener("input", async (e) => {
+        //e.target.value = e.target.value.toUpperCase()
+        document.getElementById(realInput).value = e.target.value
+        filterDropdown(e.target, dropdownContainerId)
+    })
+
+    //per gestire i tasti su, giu e invio
+    document.getElementById(dropdownInputId).addEventListener("keydown", (e) => {
+        handleKeys(e, dropdownContainerId, dropdownInputId, realInput)
+    })
+}
+
+function showDropdown(containerId) {
+    document.getElementById(containerId).classList.remove("d-none")
+    document.getElementById(containerId).classList.add("active-custom-dropdown")
+    document.getElementById(containerId).addEventListener("mousemove", (e) => {
         if (e.target.classList.contains("dropdown-opt")) {
             addHoverClassToOpt(e.target)
         }
@@ -301,8 +309,11 @@ function addHoverClassToOpt(target) {
     target.classList.add("opt-hover")
 }
 
-function hideDropdown() {
-    document.getElementById("dropdown-commesse").classList.add("d-none")
+function hideDropdown(containerId) {
+    if (!containerId) {
+        return
+    }
+    document.getElementById(containerId).classList.add("d-none")
 }
 
 //riceve l'input da cui prende il testo e l'id della dropdown da filtrare
@@ -334,7 +345,7 @@ function filterDropdown(input, dropdownId) {
 }
 
 //gestisce freccia su, giu e invio sulla dropdown
-function handleKeys(e, dropdownId, inputId) {
+function handleKeys(e, dropdownId, inputId, inputIdToSet) {
     const dropdown = document.getElementById(dropdownId)
     const input = document.getElementById(inputId)
     const shownElements = Array.from(dropdown.querySelectorAll(".dropdown-opt:not(.d-none)"))
@@ -378,11 +389,12 @@ function handleKeys(e, dropdownId, inputId) {
         e.preventDefault();
         const value = shownElements.find(x => x.classList.contains("opt-hover")).getAttribute("valore")
         input.value = value
-        document.getElementById("CommCodeDesc").value = value
-        document.getElementById("CommCode").value = value
-        hideDropdown()
+        document.getElementById(inputIdToSet).value = value
+        filterDropdown(e.target, dropdownId)
+        hideDropdown(dropdownId)
     }
 
+    //fa scorrere in giù la scrollbar se l'opzione selezionata è sotto
     const selectedOptionOffset = selectedIndex * optionHeight;
     const containerHeight = dropdown.offsetHeight;
 
@@ -393,14 +405,14 @@ function handleKeys(e, dropdownId, inputId) {
     }
 }
 
+//per creare le options delle commesse che vengono create quando viene inserito il cliente
 function createOpt(cliData, i) {
     const opt = document.createElement("p")
-    opt.className = "m-0 dropCom-group dropdown-opt"
+    opt.className = "m-0 customDropdown-group dropdown-opt"
     opt.setAttribute("valore", `${cliData.orpbTstDoc}/${cliData.orpbPrfDoc}/${cliData.orpbADoc}/${cliData.orpbNDoc}`)
     opt.innerText = cliData.commDescDd
     opt.addEventListener("mousedown", async () => {
-        document.getElementById("myInput").value = opt.getAttribute("valore")
-        document.getElementById("CommCodeDesc").value = opt.getAttribute("valore")
+        document.getElementById("ComDropdownInput").value = opt.getAttribute("valore")
         document.getElementById("CommCode").value = opt.getAttribute("valore")
         document.getElementById("dropdown-commesse").classList.add("d-none")
         await CommChanged()
@@ -408,12 +420,17 @@ function createOpt(cliData, i) {
     return opt
 }
 
+//per gestire le options dei clienti che vengono create direttamente da c# alla creazione della pagina 
+function cliOpt(value) {
+    document.getElementById("CliDropdownInput").value = value
+    document.getElementById("ComCCli").value = value
+    document.getElementById("dropdown-clienti").classList.add("d-none")
+    const fn = async () => await CliListChanged("modCli")
+    fn()
+}
+
 async function CommListChanged() {    
-    //document.getElementById("CommCode").value = document.getElementById("CommCodeDesc").value;
-    //var dropdown = document.getElementById("CommCodeDesc");
-    //document.getElementById("CommDesc").value = dropdown.options[dropdown.selectedIndex].text.substring(20);
-    document.getElementById("CommCode").value = document.getElementById("CommCodeDesc").value
-    await LoadTOper(document.getElementById("CommCodeDesc").value);
+    await LoadTOper(document.getElementById("CommCode").value);
 }
 
 
@@ -527,47 +544,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("modGestInt").addEventListener("change", async () => await Modalita())
     document.getElementById("modSvilInt").addEventListener("change", async () => await Modalita())
     document.getElementById("modCom").addEventListener("change", async () => await Modalita())
-    document.getElementById("CommCodeDesc").addEventListener("focusout", async () => {
-        await CommChanged()
-    })
 
-    //apre la dropdown al focus sull'input
-    document.getElementById("myInput").addEventListener("focusin", (e) => {
-
-        //se all'apertura c'è già un valore nell'input viene filtrata la dropdown
-        if (e.target.value != "") {
-            filterDropdown(e.target, "dropdown-commesse")
-        }
-        showDropdown()
-    })
-
-    //se viene fatto click fuori dalla dropdown viene chiusa
-    document.addEventListener("mousedown", (e) => {
-        if (!e.target.classList.contains("dropCom-group")) {
-            hideDropdown()
-        }
-    })
-
-    //se l'input delle commesse della dropdown perde il focus la dropdown viene nascosta e viene chiamata la funzione che carica le operazioni
-    document.getElementById("myInput").addEventListener("focusout", async (e) => {
-        hideDropdown()
-        if (!e.target.classList.contains("bad-field") && e.target.value != "") {
-            await CommChanged()
-        }
-    })
-
-    //se viene scritto qualcosa nell'input delle commesse della dropdown, il valore viene scritto anche nei veri input delle commesse
-    document.getElementById("myInput").addEventListener("input", async (e) => {
-        e.target.value = e.target.value.toUpperCase()
-        document.getElementById("CommCodeDesc").value = e.target.value
-        document.getElementById("CommCode").value = e.target.value
-        filterDropdown(e.target, "dropdown-commesse")
-    })
-
-    //per gestire i tasti su, giu e invio
-    document.getElementById("myInput").addEventListener("keydown", (e) => {
-        handleKeys(e, "dropdown-commesse", "myInput")
-    })
+    //gli viene passato l'input su cui fare la ricerca, il container che conterrà le opzioni e l'input 'vero' che verrà valorizzato
+    //setta gli event listener necessari per far funzionare la dropdown ma non gestisce la funzione per la creazione delle opzioni
+    setupCustomDropdowns("ComDropdownInput", "dropdown-commesse", "CommCode")
+    setupCustomDropdowns("CliDropdownInput", "dropdown-clienti", "ComCCli")
 
     await Modalita();
 });
