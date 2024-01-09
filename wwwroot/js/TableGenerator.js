@@ -1932,7 +1932,7 @@ export class TableGenerator {
             container.appendChild(mainRow)
 
             let mainCol = document.createElement("div")
-            mainCol.className = "col rounded-3 pt-3"
+            mainCol.className = "col rounded-3 pt-3 bg-secondary"
             mainCol.id = "table-background"
             mainRow.appendChild(mainCol)
 
@@ -1964,6 +1964,11 @@ export class TableGenerator {
             let colAddBtn = document.createElement("div")
             colAddBtn.className = "col-md-3 d-flex  justify-content-center"
             rowDati.appendChild(colAddBtn)
+
+            let btnNew = document.createElement("button")
+            btnNew.className = "btn btn-primary"
+            btnNew.innerHTML = `<i class="bi bi-plus-circle"></i> &nbsp Add(demo)`
+            colAddBtn.appendChild(btnNew)
 
             let addBtnWrap = document.createElement("div")
             addBtnWrap.className = "add-btn-wrapper pointer-pointer d-flex align-items-center border"
