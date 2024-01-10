@@ -9,6 +9,7 @@ using MepWeb.Service;
 using MepWeb.Service.Interface;
 using MepWeb.DTO.Request;
 using MepWeb.Costants;
+using System.Globalization;
 
 namespace Mep01Web.Controllers
 {
@@ -41,12 +42,24 @@ namespace Mep01Web.Controllers
             obj.FilterCrrgDttStart = dd1;
             obj.FilterCrrgDttEnd = dd2;
             obj.FilterHidden = "Y";
-            IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
+            IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs.ToList()
                 .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
                 .OrderByDescending(c=> c.CrrgDttIni);
             obj.CrrgList = objCrrgList;
 
-            return View(obj);           
+			//var results = _db.FlussoCrrgs
+			//	.GroupBy(x => CultureInfo.CurrentCulture.DateTimeFormat.Calendar
+			//                    .GetWeekOfYear((DateTime)x.CrrgDtt, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday))
+		 //       .SelectMany(gx => gx, (gx, x) => new
+		 //       {
+			//        Week = gx.Key,
+			//        DateTime = x,
+			//        Count = gx.Count(),
+		 //       });
+
+   //         var re = results.ToList();
+
+			return View(obj);           
         }
 
         //POST

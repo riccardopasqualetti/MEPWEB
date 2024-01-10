@@ -9,8 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mep01Web.Controllers
 {
+#if !DEBUG 
     [Authorize]
-    public class IslController : Controller
+#endif
+	public class IslController : Controller
     {
 
         private readonly SataconsultingContext _db;

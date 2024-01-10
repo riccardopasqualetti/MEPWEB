@@ -88,8 +88,13 @@ namespace Mep01Web.Validators.Impl
 						crrgRequest.CrrgADoc = Decimal.Parse(crrgRequest.CommCode.Substring(6, 4));
 						crrgRequest.CrrgNDoc = Decimal.Parse(crrgRequest.CommCode[11..]);
 						flgcom = "-7";
-					}						
-					
+					}
+
+					if (crrgRequest.CrrgCCaus != "CORI")
+					{
+						return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCCaus, $"Causale non ammessa");
+					}
+
 				}
 				catch
                 {

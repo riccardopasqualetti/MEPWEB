@@ -57,5 +57,24 @@ namespace MepWeb.Controllers
 				);
 			}
 		}
+
+		[HttpGet("GetByRifCli/{rifCli}")]
+		public async Task<IActionResult> GetByIsl(string rifCli)
+		{
+			try
+			{
+				var res = await _dbContext.VsPpMonitorIsl.FirstOrDefaultAsync(x => x.RifCli == rifCli);
+
+				return Ok(res);
+			}
+
+			catch (Exception ex)
+			{
+				return Problem(
+					detail: ex.Message,
+					statusCode: StatusCodes.Status500InternalServerError
+				);
+			}
+		}
 	}
 }

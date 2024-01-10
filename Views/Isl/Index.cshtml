@@ -62,25 +62,25 @@
     <table class="table table-borderer table-striped" style="width:100%">
         <thead>
             <tr>
-                <th width="5%" align="left" style="color: rgba(51, 204, 255, 1)">
+                <th class="isl-th-color1 text-start">
                     Codice ISL
                 </th>
-                <th width="10%" align="left" style="color: rgba(51, 204, 255, 1)">
+                <th class="isl-th-color1 text-start">
                     Flag
                 </th>
-                <th width="10%" align="left" style="color: rgba(51, 204, 255, 1)">
+                <th class="isl-th-color1 text-start">
                     Stato
                 </th>
-                <th width="10%" align="left" style="color: rgba(51, 204, 255, 1)">
+                <th class="isl-th-color1 text-start">
                     Cambio stato
                 </th>
-                <th width="12%" align="left" style="color: rgba(51, 204, 255, 1)">
+                <th class="isl-th-color1 text-start">
                     CdL
                 </th>
-                <th width="10" align="left" style="color: rgba(51, 204, 255, 1)">
+                <th class="isl-th-color1 text-start">
                     Date Current Task
                 </th>
-                <th width="10" align="left" style="color: rgba(51, 204, 255, 1)">
+                <th class="isl-th-color1 text-start">
                     Commessa
                 </th>
                 <th></th>
@@ -91,33 +91,37 @@
             {
                 //var duration = new Duration(@obj.CrrgTmRunIncr);
                 var com = string.Concat(@obj.TbcpTstComm, "/", @obj.TbcpPrfComm, "/", @obj.TbcpAComm, "/", @obj.TbcpNComm);
-                <tr >
-                    <td width="15%" align="left">
-                        @obj.RifCli
-                    </td>
-                    <td width="10%" align="left">
-                        @obj.Flag
-                    </td>
-                    <td width="10%" align="left">
-                        @obj.Stato
-                    </td>
-                    <td width="10%" align="left">
-                        @obj.CambioStato
-                    </td>
-                    <td width="5%" align="left">
-                        @obj.CurrCdl
-                    </td>
-                    <td width="10%" align="left">
-                        @obj.CurrDt
-                    </td>
-                    <td width="55%" align="left">
-                        @com
+                <tr class="table-row">
+                    <td>
+                        <div>@obj.RifCli</div>
                     </td>
                     <td>
-                        <div class="w-75 btn-group" role="group">
+                        <div>@obj.Flag</div>
+                    </td>
+                    <td>
+                        <div>@obj.Stato</div>
+                    </td>
+                    <td>
+                        <div>@obj.CambioStato</div>
+                    </td>
+                    <td>
+                        <div>@obj.CurrCdl</div>
+                    </td>
+                    <td>
+                        <div>@obj.CurrDt</div>
+                    </td>
+                    <td>
+                        <div>@com</div>
+                    </td>
+                    <td class="d-flex justify-content-center isl-row-btns">
+                        <div class="w-75 btn-group d-flex justify-content-center" role="group">
                             @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>*@
                             <a asp-controller="Isl" asp-action="Index" asp-route-id="@Model.FilterIslCRis" onclick="alert('Consuntivo')"><i class="bi bi-clock-fill"></i></a>
+                            <a class="openAccordion pointer-pointer" rowIsl="@obj.RifCli"><i class="bi bi-list-check open-btn"></i></a>
                         </div>
+                    </td>
+                    <td>
+                        <div id="container-@obj.RifCli" class="opens"></div>
                     </td>
                 </tr>
             }
@@ -134,25 +138,25 @@
     <table class="table table-borderer table-striped" style="width:100%">
         <thead>
             <tr>
-                <th width="5%" align="left" style="color: rgba(102, 255, 51, 1)">
+                <th class="isl-th-color2 text-start">
                     Codice ISL
                 </th>
-                <th width="10%" align="left" style="color: rgba(102, 255, 51, 1)">
+                <th class="isl-th-color2 text-start">
                     Flag
                 </th>
-                <th width="10%" align="left" style="color: rgba(102, 255, 51, 1)">
+                <th class="isl-th-color2 text-start">
                     Stato
                 </th>
-                <th width="10%" align="left" style="color: rgba(102, 255, 51, 1)">
+                <th class="isl-th-color2 text-start">
                     Cambio stato
                 </th>
-                <th width="12%" align="left" style="color: rgba(102, 255, 51, 1)">
+                <th class="isl-th-color2 text-start">
                     CdL
                 </th>
-                <th width="10" align="left" style="color: rgba(102, 255, 51, 1)">
+                <th class="isl-th-color2 text-start">
                     Date Current Task
                 </th>
-                <th width="10" align="left" style="color: rgba(102, 255, 51, 1)">
+                <th class="isl-th-color2 text-start">
                     Commessa
                 </th>
                 <th></th>
@@ -164,30 +168,29 @@
                 //var duration = new Duration(@obj.CrrgTmRunIncr);
                 var com = string.Concat(@obj.TbcpTstComm, "/", @obj.TbcpPrfComm, "/", @obj.TbcpAComm, "/", @obj.TbcpNComm);
                 <tr>
-                    <td width="15%" align="left">
+                    <td>
                         @obj.RifCli
                     </td>
-                    <td width="10%" align="left">
+                    <td>
                         @obj.Flag
                     </td>
-                    <td width="10%" align="left">
+                    <td>
                         @obj.Stato
                     </td>
-                    <td width="10%" align="left">
+                    <td>
                         @obj.CambioStato
                     </td>
-                    <td width="10%" align="left">
+                    <td>
                         @obj.CurrCdl
                     </td>
-                    <td width="10%" align="left">
+                    <td>
                         @obj.CurrDt
                     </td>
-                    <td width="55%" align="left">
+                    <td>
                         @com
                     </td>
-                    <td>
-                        <div class="w-75 btn-group" role="group">
-                            @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>*@
+                    <td class="d-flex justify-content-center">
+                        <div class="w-75 btn-group d-flex justify-content-center" role="group">
                             <a asp-controller="Isl" asp-action="Index" asp-route-id="@Model.FilterIslCRis" onclick="alert('Consuntivo')"><i class="bi bi-clock-fill"></i></a>
                         </div>
                     </td>
@@ -199,3 +202,4 @@
 </div>
 
 <script src="~/js/Filter.js?v=1.1"></script>
+<script src="~/js/indexIsl.js"></script>

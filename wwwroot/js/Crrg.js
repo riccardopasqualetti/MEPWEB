@@ -45,6 +45,7 @@ async function Modalita() {
             // abilita divComm
             document.getElementById("divComm").classList.remove("d-none")
             document.getElementById("ComDropdownInput").classList.remove("d-none")
+            document.getElementById("ComDropdownInput").classList.remove("bad-field")
             document.getElementById("CommCode").hidden = true
             
 
@@ -75,6 +76,7 @@ async function Modalita() {
             // abilita divComm
             document.getElementById("divComm").classList.remove("d-none")
             document.getElementById("ComDropdownInput").classList.remove("d-none")
+            document.getElementById("ComDropdownInput").classList.remove("bad-field")
             document.getElementById("CommCode").hidden = true
 
             await CliListChanged("modGestInt");
@@ -103,6 +105,7 @@ async function Modalita() {
             // abilita divComm
             document.getElementById("divComm").classList.remove("d-none")
             document.getElementById("ComDropdownInput").classList.remove("d-none")
+            document.getElementById("ComDropdownInput").classList.remove("bad-field")
             document.getElementById("CommCode").hidden = true
 
             await CliListChanged("modSvilInt");
@@ -155,7 +158,7 @@ function ReloadCrrgCreateForm() {
 
 async function ISLChanged() { 
     var ISL = document.getElementById("CrrgRifCliente").value
-    var url = "/api/Tatv/GetISLByCodeAsync/" + ISL
+    var url = "api/VsPpMonitorIsl/GetByRifCli/" + ISL
     try {
         const response = await fetch(url, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -170,11 +173,18 @@ async function ISLChanged() {
         
         if (response.status == 200) {
             let islData = await response.json()
-            comm = islData.islMasterData.tatvTstComm + '/' + islData.islMasterData.tatvPrfComm + '/' + islData.islMasterData.tatvAComm + '/' + islData.islMasterData.tatvNComm;
-            document.getElementById("ISLCommDesc").value = islData.islMasterData.tatvTstComm + '/' + islData.islMasterData.tatvPrfComm + '/' + islData.islMasterData.tatvAComm + '/' + islData.islMasterData.tatvNComm + ' - ' + islData.islCommData.commMasterData.tbcpDesc;
-            document.getElementById("CrrgApp").value = islData.islMasterData.tatvCPartApp;            
-            document.getElementById("CrrgMod").value = islData.islMasterData.tatvCPart;
-            document.getElementById("DescrIsl").value = islData.islMasterData.tatvDesc;
+            console.log(islData)
+            comm = islData.tbcpTstComm + '/' + islData.tbcpPrfComm + '/' + islData.tbcpAComm + '/' + islData.tbcpNComm;
+            document.getElementById("ISLCommDesc").value = comm + ' - ' + islData.tbcpDesc;
+            document.getElementById("DescrIsl").value = islData.tatvDesc;
+            const tipo = {
+                "1-ANFU": "ANFU",
+                "2-SVIL": "SVIL",
+                "3-DELI": "DELI"
+            }
+            document.getElementById("CrrgCCaus").value = tipo[islData.flag]
+            document.getElementById("CrrgApp").value = islData.tatvCPartApp;            
+            document.getElementById("CrrgMod").value = islData.tatvCPart;
             await LoadTOper(comm);
         }
         else {
