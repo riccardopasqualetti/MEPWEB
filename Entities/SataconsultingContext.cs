@@ -4690,6 +4690,9 @@ public partial class SataconsultingContext : DbContext
 				.HasMaxLength(1)
 				.IsUnicode(false)
 				.HasColumnName("vinc");
+            entity.Property(e => e.TatvFlgOfferta)
+                .HasColumnType("numeric(4, 0)")
+                .HasColumnName("tatv_flg_offerta");
 		});
 
 

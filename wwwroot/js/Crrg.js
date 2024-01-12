@@ -1,566 +1,620 @@
 ﻿//location.reload(true);
 
 divCrrgRifClienteContent = document.getElementById("divCrrgRifCliente").innerHTML;
-divComCliContent         = document.getElementById("divComCli").innerHTML;
-divCommContent           = document.getElementById("divComm").innerHTML;
+divComCliContent = document.getElementById("divComCli").innerHTML;
+divCommContent = document.getElementById("divComm").innerHTML;
 //document.getElementById("divComCliBarra").innerHTML="";
 
 async function Modalita() {
-    document.getElementById("dropdown-commesse").innerHTML = ""
-    switch (true) {
-        case document.getElementById("modIsl").checked:
-            
-            // abilita divCrrgRifCliente
-            document.getElementById("divCrrgRifCliente").classList.remove("d-none");
-            // disabilita divComCli
-            document.getElementById("divComCli").classList.add("d-none");
-            // disabilita divComm
-            document.getElementById("divComm").classList.add("d-none")
+  document.getElementById("dropdown-commesse").innerHTML = "";
+  console.log("modalita:");
 
-            // se la modalità è sempre la stessa significa che sta gestendo un errore 
-            // e ricarica la commessa nel campo descrizione che è protetto e non eredita il valore.
-            if (document.getElementById("MemoModalita").value == "modIsl") {
-                //alert("ricarica commessa per ISL");
-                ISLChanged();
-            } else {
-                document.getElementById("ComDropdownInput").value = ""
-                document.getElementById("NTOper").innerHTML = ""
-                document.getElementById("CommDesc").innerHTML = ""
-                document.getElementById("dropdown-commesse").innerHTML = ""
-            }
+  switch (true) {
+    case document.getElementById("modIsl").checked:
+      // abilita divCrrgRifCliente
+      document.getElementById("divCrrgRifCliente").classList.remove("d-none");
+      // disabilita divComCli
+      document.getElementById("divComCli").classList.add("d-none");
+      // disabilita divComm
+      document.getElementById("divComm").classList.add("d-none");
 
-            document.getElementById("MemoModalita").value = "modIsl";
-            break;
+      // se la modalità è sempre la stessa significa che sta gestendo un errore
+      // e ricarica la commessa nel campo descrizione che è protetto e non eredita il valore.
+      if (document.getElementById("MemoModalita").value == "modIsl") {
+        //alert("ricarica commessa per ISL");
+        ISLChanged();
+      } else {
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("NTOper").innerHTML = "";
+        document.getElementById("CommDesc").innerHTML = "";
+        document.getElementById("dropdown-commesse").innerHTML = "";
+        Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
+        document.getElementById("CrrgApp").value = ""; 
+        document.getElementById("cli-description").value = "";
+        document.getElementById("CrrgMod").value = "";
+          document.getElementById("CrrgNote").value = "";
+          console.log("qui")
+          document.getElementById("CrrgRifCliente").value = "";
+          document.getElementById("DescrIsl").value = "";
+          document.getElementById("ISLCommDesc").value = "";
+      }
 
-        case document.getElementById("modCli").checked:
-            
-            // disabilita divCrrgRifCliente
-            document.getElementById("divCrrgRifCliente").classList.add("d-none");
-            // abilita divComCli
-            document.getElementById("divComCli").classList.remove("d-none");
-            document.getElementById("CliDropdownInput").classList.remove("d-none")
-            document.getElementById("CliDropdownInput").classList.remove("bad-field")
-            document.getElementById("ComCCli").disabled = false;
-            document.getElementById("ComCCli").hidden = true;
-            // abilita divComm
-            document.getElementById("divComm").classList.remove("d-none")
-            document.getElementById("ComDropdownInput").classList.remove("d-none")
-            document.getElementById("ComDropdownInput").classList.remove("bad-field")
-            document.getElementById("CommCode").hidden = true
-            
+      document.getElementById("MemoModalita").value = "modIsl";
+      break;
 
-            if (document.getElementById("MemoModalita").value == "modCli") {
-                await CliListChanged("modCli");
-                await LoadTOper(document.getElementById("CommCode").value);
-            } else {
-                document.getElementById("ComCCli").value = ""
-                document.getElementById("CommCode").value = ""
-                document.getElementById("ComDropdownInput").value = ""
-                document.getElementById("CommDesc").value = ""
-                document.getElementById("NTOper").innerHTML = ""
-                document.getElementById("CliDropdownInput").value = ""
-            }
+    case document.getElementById("modCli").checked:
+      console.log("cli");
+      // disabilita divCrrgRifCliente
+      document.getElementById("divCrrgRifCliente").classList.add("d-none");
+      // abilita divComCli
+      document.getElementById("divComCli").classList.remove("d-none");
+      document.getElementById("CliDropdownInput").classList.remove("d-none");
+      document.getElementById("CliDropdownInput").classList.remove("bad-field");
+      document.getElementById("CliDropdownInput").disabled = false;
+      document.getElementById("CliDropdownInput").hidden = false;
+      // abilita divComm
+      document.getElementById("divComm").classList.remove("d-none");
+      document.getElementById("ComDropdownInput").classList.remove("d-none");
+      document.getElementById("ComDropdownInput").classList.remove("bad-field");
 
-            document.getElementById("MemoModalita").value = "modCli";
-            break;
+      if (document.getElementById("MemoModalita").value == "modCli") {
+        await CliListChanged("modCli");
+        await LoadTOper(document.getElementById("ComDropdownInput").value);
+      } else {
+        document.getElementById("CliDropdownInput").value = "";
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("CommDesc").value = "";
+        document.getElementById("NTOper").innerHTML = "";
+        document.getElementById("CliDropdownInput").value = "";
+        Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
+        document.getElementById("CrrgApp").value = "";
+        document.getElementById("cli-description").value = "";
+        document.getElementById("CrrgMod").value = "";
+        document.getElementById("CrrgNote").value = "";
+      }
 
-        case document.getElementById("modGestInt").checked:
-            // disabilita divCrrgRifCliente
-            document.getElementById("divCrrgRifCliente").classList.add("d-none");
-            // abilita divComCli
-            document.getElementById("divComCli").classList.remove("d-none");
-            document.getElementById("CliDropdownInput").classList.add("d-none")
-            document.getElementById("ComCCli").value = "0153S018";
-            document.getElementById("ComCCli").disabled = true;
-            document.getElementById("ComCCli").hidden = false;
-            // abilita divComm
-            document.getElementById("divComm").classList.remove("d-none")
-            document.getElementById("ComDropdownInput").classList.remove("d-none")
-            document.getElementById("ComDropdownInput").classList.remove("bad-field")
-            document.getElementById("CommCode").hidden = true
+      document.getElementById("MemoModalita").value = "modCli";
+      break;
 
-            await CliListChanged("modGestInt");
-            if (document.getElementById("MemoModalita").value == "modGestInt") {
-                await LoadTOper(document.getElementById("CommCode").value);
-            } else {
-                document.getElementById("CommCode").value = ""
-                document.getElementById("ComDropdownInput").value = ""
-                document.getElementById("CommDesc").value = ""
-                document.getElementById("NTOper").innerHTML = ""
-            }
+    case document.getElementById("modGestInt").checked:
+      console.log("int");
+      // disabilita divCrrgRifCliente
+      document.getElementById("divCrrgRifCliente").classList.add("d-none");
+      // abilita divComCli
+      document.getElementById("divComCli").classList.remove("d-none");
+      document.getElementById("CliDropdownInput").classList.remove("d-none");
+          document.getElementById("CliDropdownInput").value = "0153S018";
+          document.getElementById("cli-description").value = "0153S018 - Sata Consulting S.r.l.";
+      document.getElementById("CliDropdownInput").disabled = true;
+      document.getElementById("CliDropdownInput").hidden = false;
+      // abilita divComm
+      document.getElementById("divComm").classList.remove("d-none");
+      document.getElementById("ComDropdownInput").classList.remove("d-none");
+      document.getElementById("ComDropdownInput").classList.remove("bad-field");
 
-            document.getElementById("MemoModalita").value = "modGestInt";
+      await CliListChanged("modGestInt");
+      if (document.getElementById("MemoModalita").value == "modGestInt") {
+        await LoadTOper(document.getElementById("ComDropdownInput").value);
+      } else {
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("CommDesc").value = "";
+        document.getElementById("NTOper").innerHTML = "";
+        Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
+        document.getElementById("CrrgApp").value = "";
+        document.getElementById("CrrgMod").value = "";
+        document.getElementById("CrrgNote").value = "";
+      }
 
-            break;
+      document.getElementById("MemoModalita").value = "modGestInt";
 
-        case document.getElementById("modSvilInt").checked:
-            // disabilita divCrrgRifCliente
-            document.getElementById("divCrrgRifCliente").classList.add("d-none");
-            // abilita divComCli
-            document.getElementById("divComCli").classList.remove("d-none");    
-            document.getElementById("CliDropdownInput").classList.add("d-none")
-            document.getElementById("ComCCli").value = "0153S018";
-            document.getElementById("ComCCli").disabled = true;
-            document.getElementById("ComCCli").hidden = false;
-            // abilita divComm
-            document.getElementById("divComm").classList.remove("d-none")
-            document.getElementById("ComDropdownInput").classList.remove("d-none")
-            document.getElementById("ComDropdownInput").classList.remove("bad-field")
-            document.getElementById("CommCode").hidden = true
+      break;
 
-            await CliListChanged("modSvilInt");
-            if (document.getElementById("MemoModalita").value == "modSvilInt") {
-                await LoadTOper(document.getElementById("CommCode").value);
-            } else {
-                document.getElementById("CommCode").value = ""
-                document.getElementById("ComDropdownInput").value = ""
-                document.getElementById("CommDesc").value = ""
-                document.getElementById("NTOper").innerHTML = ""
-            }
+    case document.getElementById("modSvilInt").checked:
+      // disabilita divCrrgRifCliente
+      document.getElementById("divCrrgRifCliente").classList.add("d-none");
+      // abilita divComCli
+      document.getElementById("divComCli").classList.remove("d-none");
+      document.getElementById("CliDropdownInput").classList.remove("d-none");
+          document.getElementById("CliDropdownInput").value = "0153S018";
+          document.getElementById("cli-description").value = "0153S018 - Sata Consulting S.r.l.";
+      document.getElementById("CliDropdownInput").disabled = true;
+      document.getElementById("CliDropdownInput").hidden = false;
+      // abilita divComm
+      document.getElementById("divComm").classList.remove("d-none");
+      document.getElementById("ComDropdownInput").classList.remove("d-none");
+      document.getElementById("ComDropdownInput").classList.remove("bad-field");
 
-            document.getElementById("MemoModalita").value = "modSvilInt";
+      await CliListChanged("modSvilInt");
+      if (document.getElementById("MemoModalita").value == "modSvilInt") {
+        await LoadTOper(document.getElementById("ComDropdownInput").value);
+      } else {
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("CommDesc").value = "";
+        document.getElementById("NTOper").innerHTML = "";
+        Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
+          document.getElementById("CrrgApp").value = "";
+        document.getElementById("CrrgMod").value = "";
+        document.getElementById("CrrgNote").value = "";
+      }
 
-            break;
+      document.getElementById("MemoModalita").value = "modSvilInt";
 
-        case document.getElementById("modCom").checked: 
-            //alert("com");
-            // disabilita divCrrgRifCliente
-            document.getElementById("divCrrgRifCliente").classList.add("d-none");
-            // disabilita divComCli
-            document.getElementById("divComCli").classList.add("d-none");
-            // abilita divComm
-            document.getElementById("CommCode").hidden = false
-            document.getElementById("divComm").classList.remove("d-none");
-            document.getElementById("ComDropdownInput").classList.add("d-none")
+      break;
 
-            // se la modalità è sempre la stessa significa che sta gestendo un errore 
-            // e ricarica la commessa nel campo descrizione che è protetto e non eredita il valore.
-            if (document.getElementById("MemoModalita").value == "modCom") {
-                await CommChanged();
-            } else {
-                document.getElementById("ComCCli").value = ""
-                document.getElementById("CommCode").value = ""
-                document.getElementById("ComDropdownInput").value = ""
-                document.getElementById("dropdown-commesse").innerHTML = ""
-                document.getElementById("CommDesc").value = ""
-                document.getElementById("NTOper").innerHTML = ""
-            }
+    case document.getElementById("modCom").checked:
+      //alert("com");
+      // disabilita divCrrgRifCliente
+      document.getElementById("divCrrgRifCliente").classList.add("d-none");
+      // disabilita divComCli
+      document.getElementById("divComCli").classList.add("d-none");
+      // abilita divComm
+      document.getElementById("ComDropdownInput").hidden = false;
+      document.getElementById("divComm").classList.remove("d-none");
+      CliListChanged("modCom")
 
-            document.getElementById("MemoModalita").value = "modCom";
-            break;
-    }   
+      // se la modalità è sempre la stessa significa che sta gestendo un errore
+      // e ricarica la commessa nel campo descrizione che è protetto e non eredita il valore.
+      if (document.getElementById("MemoModalita").value == "modCom") {
+        await CommChanged();
+      } else {
+        document.getElementById("CliDropdownInput").value = "";
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("ComDropdownInput").classList.remove("d-none");
+        document.getElementById("dropdown-commesse").innerHTML = "";
+        document.getElementById("CommDesc").value = "";
+        document.getElementById("NTOper").innerHTML = "";
+        Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
+          document.getElementById("CrrgApp").value = "";
+          document.getElementById("cli-description").value = "";
+        document.getElementById("CrrgMod").value = "";
+        document.getElementById("CrrgNote").value = "";
+      }
+
+      document.getElementById("MemoModalita").value = "modCom";
+      break;
+  }
 }
 
 function ReloadCrrgCreateForm() {
-    console.log("a")
-    document.CrrgCreateForm.submit();
+  console.log("a");
+  document.CrrgCreateForm.submit();
 }
 
-async function ISLChanged() { 
-    var ISL = document.getElementById("CrrgRifCliente").value
-    var url = "api/VsPpMonitorIsl/GetByRifCli/" + ISL
-    try {
-        const response = await fetch(url, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        })
-        
-        if (response.status == 200) {
-            let islData = await response.json()
-            console.log(islData)
-            comm = islData.tbcpTstComm + '/' + islData.tbcpPrfComm + '/' + islData.tbcpAComm + '/' + islData.tbcpNComm;
-            document.getElementById("ISLCommDesc").value = comm + ' - ' + islData.tbcpDesc;
-            document.getElementById("DescrIsl").value = islData.tatvDesc;
-            const tipo = {
-                "1-ANFU": "ANFU",
-                "2-SVIL": "SVIL",
-                "3-DELI": "DELI"
-            }
-            document.getElementById("CrrgCCaus").value = tipo[islData.flag]
-            document.getElementById("CrrgApp").value = islData.tatvCPartApp;            
-            document.getElementById("CrrgMod").value = islData.tatvCPart;
-            await LoadTOper(comm);
-        }
-        else {
-            return {
-                res: null,
-                statusCode: response.status,
-                message: "ISL non trovata"
-            }
-        }          
+async function ISLChanged() {
+  var ISL = document.getElementById("CrrgRifCliente").value;
+  console.log(ISL);
+  if (ISL == "") {
+    document.getElementById("ISLCommDesc").value = "";
+    document.getElementById("DescrIsl").value = "";
+    document.getElementById("CrrgApp").value = "";
+    document.getElementById("CrrgMod").value = "";
+    return;
+  }
+  var url = "api/VsPpMonitorIsl/GetByRifCli/" + ISL;
+  try {
+    const response = await fetch(url, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
 
-    } catch (ex) {
-        console.log(ex)
+    if (response.status == 200) {
+      let islData = await response.json();
+      console.log(islData);
+      comm = islData.tbcpTstComm + "/" + islData.tbcpPrfComm + "/" + islData.tbcpAComm + "/" + islData.tbcpNComm;
+      document.getElementById("ISLCommDesc").value = comm + " - " + islData.tbcpDesc;
+      document.getElementById("DescrIsl").value = islData.tatvDesc;
+      const tipo = {
+        "1-ANFU": "ANFU",
+        "2-SVIL": "SVIL",
+        "3-DELI": "DELI",
+        "7-NEW": "ANFU",
+        "8-SOSP": "ANFU",
+        "9-CLOSE": "DELI",
+      };
+      if (islData.tbcpPrfComm == "B" || islData.tatvFlgOfferta > 0) {
+          document.getElementById("CrrgCmaatt").value = "3";
+      } else {
+          document.getElementById("CrrgCmaatt").value = "0";
+      }
+      document.getElementById("CrrgCCaus").value = tipo[islData.flag];
+      document.getElementById("CrrgApp").value = islData.tatvCPartApp;
+        document.getElementById("CrrgMod").value = islData.tatvCPart;
+        document.getElementById("CrrgNote").value = islData.tatvDesc;
+      await LoadTOper(comm);
+    } else {
+      return {
+        res: null,
+        statusCode: response.status,
+        message: "ISL non trovata",
+      };
     }
+  } catch (ex) {
+    console.log(ex);
+  }
 }
-
 
 async function CliListChanged(modalita) {
-    //document.getElementById("divComCliBarra").innerHTML = divComCliBarra;
-    var cli = document.getElementById("ComCCli").value
-    var url = "/api/VsCommAperteXCli/GetCommAllByCliAsync/" + cli
-    //alert(url);
-    try {
-        const response = await fetch(url, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        })
-
-
-        if (response.status == 200) {
-            let cliData = await response.json();
-            let cliNumber = cliData.length;
-
-            document.getElementById("dropdown-commesse").innerHTML = "";
-            const opt = document.createElement("p")
-            opt.className = "m-0 dropdown-opt"
-            opt.setAttribute("valore", ``)
-            opt.innerText = ""
-            opt.style.height = "22px"
-            document.getElementById("dropdown-commesse").appendChild(opt)
-            opt.addEventListener("click", () => {
-                document.getElementById("ComDropdownInput").value = opt.getAttribute("valore")
-            })
-            for (var i = 0; i < cliNumber; i++) {
-                if ((modalita == "modCli") || (modalita == "modGestInt" && "FGZ".includes(cliData[i].orpbPrfDoc)) || modalita == "modSvilInt" && "AH".includes(cliData[i].orpbPrfDoc)) {
-                    const opt = createOpt(cliData[i])
-                    document.getElementById("dropdown-commesse").appendChild(opt)
-                }
-            };
-
-            addHoverClassToOpt(document.getElementById("dropdown-commesse").children[0])
-        }
-        else {
-            return {
-                res: null,
-                statusCode: response.status,
-                message: "ISL non trovata"
-            }
-        }
-
-    } catch (ex) {
-        console.log(ex)
+    var cli = document.getElementById("CliDropdownInput").value
+    if (modalita == "modCom") {
+        var url = "/api/VsCommAperteXCli/GetAllComm"
+    } else {
+        var url = "/api/VsCommAperteXCli/GetCommAllByCliAsync/" + cli
     }
-    //document.getElementById("divComCliBarra").innerHTML = "";
+  try {
+    const response = await fetch(url, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    if (response.status == 200) {
+      let cliData = await response.json();
+      let cliNumber = cliData.length;
+
+      document.getElementById("dropdown-commesse").innerHTML = "";
+      const opt = document.createElement("p");
+      opt.className = "m-0 dropdown-opt";
+      opt.setAttribute("valore", ``);
+      opt.innerText = "";
+      opt.style.height = "22px";
+      document.getElementById("dropdown-commesse").appendChild(opt);
+      opt.addEventListener("click", () => {
+        document.getElementById("ComDropdownInput").value = opt.getAttribute("valore");
+      });
+      for (var i = 0; i < cliNumber; i++) {
+          if (modalita == "modCli" || (modalita == "modGestInt" && "FGZ".includes(cliData[i].orpbPrfDoc)) || (modalita == "modSvilInt" && "AH".includes(cliData[i].orpbPrfDoc)) || modalita == "modCom") {
+          const opt = createOpt(cliData[i]);
+          document.getElementById("dropdown-commesse").appendChild(opt);
+        }
+      }
+
+      addHoverClassToOpt(document.getElementById("dropdown-commesse").children[0]);
+    } else {
+      return {
+        res: null,
+        statusCode: response.status,
+        message: "ISL non trovata",
+      };
+    }
+  } catch (ex) {
+    console.log(ex);
+  }
 }
 
 function setupCustomDropdowns(dropdownInputId, dropdownContainerId, realInput) {
+  //apre la dropdown al focus sull'input
+  document.getElementById(dropdownInputId).addEventListener("focusin", (e) => {
+    //se all'apertura c'è già un valore nell'input viene filtrata la dropdown
+    if (e.target.value != "") {
+      filterDropdown(e.target, dropdownContainerId);
+    }
+    showDropdown(dropdownContainerId);
+  });
 
-    //apre la dropdown al focus sull'input
-    document.getElementById(dropdownInputId).addEventListener("focusin", (e) => {
+  //se viene fatto click fuori dalla dropdown viene chiusa
+  document.addEventListener("mousedown", (e) => {
+    if (!e.target.classList.contains("customDropdown-group")) {
+      hideDropdown(dropdownContainerId);
+    }
+  });
 
-        //se all'apertura c'è già un valore nell'input viene filtrata la dropdown
-        if (e.target.value != "") {
-            filterDropdown(e.target, dropdownContainerId)
-        }
-        showDropdown(dropdownContainerId)
-    })
+  //se l'input delle commesse della dropdown perde il focus la dropdown viene nascosta e viene chiamata la funzione che carica le operazioni
+  document.getElementById(dropdownInputId).addEventListener("focusout", async (e) => {
+    hideDropdown(dropdownContainerId);
+    if (!e.target.classList.contains("bad-field") && e.target.value != "") {
+      if (dropdownInputId == "ComDropdownInput") {
+        await CommChanged();
+      } else {
+        await CliListChanged("modCli");
+      }
+    }
+  });
 
-    //se viene fatto click fuori dalla dropdown viene chiusa
-    document.addEventListener("mousedown", (e) => {
-        if (!e.target.classList.contains("customDropdown-group")) {
-            hideDropdown(dropdownContainerId)
-        }
-    })
+  //se viene scritto qualcosa nell'input delle commesse della dropdown, il valore viene scritto anche nei veri input delle commesse
+  document.getElementById(dropdownInputId).addEventListener("input", async (e) => {
+    //e.target.value = e.target.value.toUpperCase()
+    document.getElementById(realInput).value = e.target.value;
+    filterDropdown(e.target, dropdownContainerId);
+  });
 
-    //se l'input delle commesse della dropdown perde il focus la dropdown viene nascosta e viene chiamata la funzione che carica le operazioni
-    document.getElementById(dropdownInputId).addEventListener("focusout", async (e) => {
-        hideDropdown(dropdownContainerId)
-        if (!e.target.classList.contains("bad-field") && e.target.value != "") {
-            if (dropdownInputId == "ComDropdownInput") {
-                await CommChanged()
-            } else {
-                await CliListChanged("modCli")
-            }
-        }
-    })
-
-    //se viene scritto qualcosa nell'input delle commesse della dropdown, il valore viene scritto anche nei veri input delle commesse
-    document.getElementById(dropdownInputId).addEventListener("input", async (e) => {
-        //e.target.value = e.target.value.toUpperCase()
-        document.getElementById(realInput).value = e.target.value
-        filterDropdown(e.target, dropdownContainerId)
-    })
-
-    //per gestire i tasti su, giu e invio
-    document.getElementById(dropdownInputId).addEventListener("keydown", (e) => {
-        handleKeys(e, dropdownContainerId, dropdownInputId, realInput)
-    })
+  //per gestire i tasti su, giu e invio
+  document.getElementById(dropdownInputId).addEventListener("keydown", (e) => {
+    handleKeys(e, dropdownContainerId, dropdownInputId, realInput);
+  });
 }
 
 function showDropdown(containerId) {
-    document.getElementById(containerId).classList.remove("d-none")
-    document.getElementById(containerId).classList.add("active-custom-dropdown")
-    document.getElementById(containerId).addEventListener("mousemove", (e) => {
-        if (e.target.classList.contains("dropdown-opt")) {
-            addHoverClassToOpt(e.target)
-        }
-    })
+  document.getElementById(containerId).classList.remove("d-none");
+  document.getElementById(containerId).classList.add("active-custom-dropdown");
+  document.getElementById(containerId).addEventListener("mousemove", (e) => {
+    if (e.target.classList.contains("dropdown-opt")) {
+      addHoverClassToOpt(e.target);
+    }
+  });
 }
 
 //gestisce l'aggiunta della classe per l'effetto di 'riga selezionata'
 function addHoverClassToOpt(target) {
-    if (!target) {
-        return
-    }
-    Array.from(document.getElementsByClassName("opt-hover")).forEach(x => x.classList.remove("opt-hover"))
-    target.classList.add("opt-hover")
+  if (!target) {
+    return;
+  }
+  Array.from(document.getElementsByClassName("opt-hover")).forEach((x) => x.classList.remove("opt-hover"));
+  target.classList.add("opt-hover");
 }
 
 function hideDropdown(containerId) {
-    if (!containerId) {
-        return
-    }
-    document.getElementById(containerId).classList.add("d-none")
+  if (!containerId) {
+    return;
+  }
+  document.getElementById(containerId).classList.add("d-none");
 }
 
 //riceve l'input da cui prende il testo e l'id della dropdown da filtrare
 function filterDropdown(input, dropdownId) {
-    const value = input.value
-    const dropdown = document.getElementById(dropdownId)
-    const elements = Array.from(dropdown.children)
+  const value = input.value;
+  const dropdown = document.getElementById(dropdownId);
+  const elements = Array.from(dropdown.children);
 
-    elements.forEach(el => {
-        const elementText = el.innerText.toUpperCase().replaceAll(" ", "")
+  elements.forEach((el) => {
+    const elementText = el.innerText.toUpperCase().replaceAll(" ", "");
 
-        if (!elementText.includes(value.toUpperCase().replaceAll(" ", ""))) {
-            el.classList.add("d-none")
-        } else {
-            el.classList.remove("d-none")
-        }
-    })
-
-    //filtra le opzioni della dropdown, se non ne trova significa che il valore dell'input non è presente nella dropdown quindi fa il bordo rosso
-    const isValueAccepted = elements.filter(x => x.getAttribute("valore") == value)
-    if (isValueAccepted.length < 1) {
-        input.classList.add("bad-field")
+    if (!elementText.includes(value.toUpperCase().replaceAll(" ", ""))) {
+      el.classList.add("d-none");
     } else {
-        input.classList.remove("bad-field")
+      el.classList.remove("d-none");
     }
+  });
 
-    //aggiunge l'hover al primo elemento di quelli visibili
-    addHoverClassToOpt(elements.find(x => !x.classList.contains("d-none")))
+  //filtra le opzioni della dropdown, se non ne trova significa che il valore dell'input non è presente nella dropdown quindi fa il bordo rosso
+  const isValueAccepted = elements.filter((x) => x.getAttribute("valore") == value);
+  if (isValueAccepted.length < 1) {
+    input.classList.add("bad-field");
+  } else {
+    input.classList.remove("bad-field");
+  }
+
+  //aggiunge l'hover al primo elemento di quelli visibili
+  addHoverClassToOpt(elements.find((x) => !x.classList.contains("d-none")));
 }
 
 //gestisce freccia su, giu e invio sulla dropdown
 function handleKeys(e, dropdownId, inputId, inputIdToSet) {
-    const dropdown = document.getElementById(dropdownId)
-    const input = document.getElementById(inputId)
-    const shownElements = Array.from(dropdown.querySelectorAll(".dropdown-opt:not(.d-none)"))
+  const dropdown = document.getElementById(dropdownId);
+  const input = document.getElementById(inputId);
+  const shownElements = Array.from(dropdown.querySelectorAll(".dropdown-opt:not(.d-none)"));
 
-    //se non ci sono elementi visibili esce
-    if (shownElements < 1) {
-        return
+  //se non ci sono elementi visibili esce
+  if (shownElements < 1) {
+    return;
+  }
+  const optionHeight = shownElements[0].getBoundingClientRect().height;
+  let selectedIndex = 0;
+  if (e.keyCode == 40) {
+    //freccia giu
+    for (let i = 0; i < shownElements.length; i++) {
+      if (i == shownElements.length - 1) {
+        selectedIndex = i;
+        break;
+      }
+      if (shownElements[i].classList.contains("opt-hover")) {
+        addHoverClassToOpt(shownElements[i + 1]);
+        selectedIndex = i + 1;
+        break;
+      }
     }
-    const optionHeight = shownElements[0].getBoundingClientRect().height
-    let selectedIndex = 0;
-
-    if (e.keyCode == 40) { //freccia giu
-        for (let i = 0; i < shownElements.length; i++) {
-
-            if (i == shownElements.length - 1) {
-                selectedIndex = i
-                break
-            }
-            if (shownElements[i].classList.contains("opt-hover")) {
-                addHoverClassToOpt(shownElements[i + 1])
-                selectedIndex = i + 1
-                break
-            }
-        }
-
-    } else if (e.keyCode == 38) { //freccia su
-        for (let i = shownElements.length - 1; i > 0; i--) {
-
-            if (i == 0) {
-                selectedIndex = 0
-                break
-            }
-            if (shownElements[i].classList.contains("opt-hover")) {
-                addHoverClassToOpt(shownElements[i - 1])
-                selectedIndex = i - 1
-                break
-            }
-        }
-
-    } else if (e.keyCode == 13) { //invio
-        e.preventDefault();
-        const value = shownElements.find(x => x.classList.contains("opt-hover")).getAttribute("valore")
-        input.value = value
-        document.getElementById(inputIdToSet).value = value
-        filterDropdown(e.target, dropdownId)
-        hideDropdown(dropdownId)
+  } else if (e.keyCode == 38) {
+    //freccia su
+    for (let i = shownElements.length - 1; i > 0; i--) {
+      if (i == 0) {
+        selectedIndex = 0;
+        break;
+      }
+      if (shownElements[i].classList.contains("opt-hover")) {
+        addHoverClassToOpt(shownElements[i - 1]);
+        selectedIndex = i - 1;
+        break;
+      }
     }
+  } else if (e.keyCode == 13) {
+    //invio
+    e.preventDefault();
+    const value = shownElements.find((x) => x.classList.contains("opt-hover")).getAttribute("valore");
+    input.value = value;
+    document.getElementById(inputIdToSet).value = value;
+    filterDropdown(e.target, dropdownId);
+    hideDropdown(dropdownId);
+  }
+  //else if (e.keyCode == 9) {
+  //    //invio
+  //    e.preventDefault();
+  //    const value = shownElements.find((x) => x.classList.contains("opt-hover")).getAttribute("valore");
+  //    input.value = value;
+  //    document.getElementById(inputIdToSet).value = value;
+  //    filterDropdown(e.target, dropdownId);
+  //    hideDropdown(dropdownId);
+  //}
 
-    //fa scorrere in giù la scrollbar se l'opzione selezionata è sotto
-    const selectedOptionOffset = selectedIndex * optionHeight;
-    const containerHeight = dropdown.offsetHeight;
+  //fa scorrere in giù la scrollbar se l'opzione selezionata è sotto
+  const selectedOptionOffset = selectedIndex * optionHeight;
+  const containerHeight = dropdown.offsetHeight;
 
-    if (selectedOptionOffset < dropdown.scrollTop) {
-        dropdown.scrollTop = selectedOptionOffset;
-    } else if (selectedOptionOffset + optionHeight > dropdown.scrollTop + containerHeight) {
-        dropdown.scrollTop = selectedOptionOffset + optionHeight - containerHeight;
-    }
+  if (selectedOptionOffset < dropdown.scrollTop) {
+    dropdown.scrollTop = selectedOptionOffset;
+  } else if (selectedOptionOffset + optionHeight > dropdown.scrollTop + containerHeight) {
+    dropdown.scrollTop = selectedOptionOffset + optionHeight - containerHeight;
+  }
 }
 
 //per creare le options delle commesse che vengono create quando viene inserito il cliente
 function createOpt(cliData, i) {
-    const opt = document.createElement("p")
-    opt.className = "m-0 customDropdown-group dropdown-opt"
-    opt.setAttribute("valore", `${cliData.orpbTstDoc}/${cliData.orpbPrfDoc}/${cliData.orpbADoc}/${cliData.orpbNDoc}`)
-    opt.innerText = cliData.commDescDd
-    opt.addEventListener("mousedown", async () => {
-        document.getElementById("ComDropdownInput").value = opt.getAttribute("valore")
-        document.getElementById("CommCode").value = opt.getAttribute("valore")
-        document.getElementById("dropdown-commesse").classList.add("d-none")
-        await CommChanged()
-    })
-    return opt
+  const opt = document.createElement("p");
+  opt.className = "m-0 customDropdown-group dropdown-opt";
+  opt.setAttribute("valore", `${cliData.orpbTstDoc}/${cliData.orpbPrfDoc}/${cliData.orpbADoc}/${cliData.orpbNDoc}`);
+  opt.innerText = cliData.commDescDd;
+  opt.addEventListener("mousedown", async () => {
+    document.getElementById("ComDropdownInput").value = opt.getAttribute("valore");
+    document.getElementById("ComDropdownInput").value = opt.getAttribute("valore");
+    document.getElementById("dropdown-commesse").classList.add("d-none");
+      await CommChanged();
+      const input = document.getElementById("ComDropdownInput")
+      filterDropdown(input, "dropdown-commesse");
+  });
+  return opt;
 }
 
-//per gestire le options dei clienti che vengono create direttamente da c# alla creazione della pagina 
-function cliOpt(value) {
-    document.getElementById("CliDropdownInput").value = value
-    document.getElementById("ComCCli").value = value
-    document.getElementById("dropdown-clienti").classList.add("d-none")
-    const fn = async () => await CliListChanged("modCli")
-    fn()
+//per gestire le options dei clienti che vengono create direttamente da c# alla creazione della pagina
+function cliOpt(value, description) {
+  document.getElementById("cli-description").value = description;
+  document.getElementById("CliDropdownInput").value = value;
+  //document.getElementById("CliDropdownInput").value = value;
+  document.getElementById("dropdown-clienti").classList.add("d-none");
+  (async () => await CliListChanged("modCli"))();
+    const input = document.getElementById("CliDropdownInput")
+    filterDropdown(input, "dropdown-clienti");
 }
 
-async function CommListChanged() {    
-    await LoadTOper(document.getElementById("CommCode").value);
+async function CommListChanged() {
+  await LoadTOper(document.getElementById("ComDropdownInput").value);
 }
-
 
 async function CommChanged() {
-    var com = document.getElementById("CommCode").value;
-    if (com.match(/^[0-9]+$/) != null) {
-        var url = "/api/Tbcp/GetCommByNumAsync/" + com
+  var com = document.getElementById("ComDropdownInput").value;
+  if (com.match(/^[0-9]+$/) != null) {
+    var url = "/api/Tbcp/GetCommByNumAsync/" + com;
+  } else {
+    var url = "/api/Tbcp/GetCommByCompCode1Async/" + com;
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    if (response.status == 200) {
+      let comData = await response.json();
+      if (com.match(/^[0-9]+$/) != null) {
+        document.getElementById("ComDropdownInput").value = comData.commCompCode;
+        document.getElementById("CommDesc").value = comData.commDesc;
+      } else {
+        document.getElementById("CommDesc").value = comData.commMasterData.tbcpDesc;
+      }
+      if (com[4] == "B") {
+          document.getElementById("CrrgCmaatt").value = "3";
+      } else {
+          document.getElementById("CrrgCmaatt").value = "0";
+      }
+      await LoadTOper(document.getElementById("ComDropdownInput").value);
     } else {
-        var url = "/api/Tbcp/GetCommByCompCode1Async/" + com
-    }    
-    
-    try {
-        const response = await fetch(url, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        })
-
-        if (response.status == 200) {
-            let comData = await response.json()
-            if (com.match(/^[0-9]+$/) != null) {
-                document.getElementById("CommCode").value = comData.commCompCode;
-                document.getElementById("CommDesc").value = comData.commDesc;
-            } else {
-                document.getElementById("CommDesc").value = comData.commMasterData.tbcpDesc;
-            }            
-            await LoadTOper(document.getElementById("CommCode").value);
-        }
-        else {
-            document.getElementById("CommDesc").value = "";
-            return {
-                res: null,
-                statusCode: response.status,
-                message: "Commessa non trovata"
-            }
-        }
-
-
-    } catch (ex) {
-        console.log(ex)
+      document.getElementById("CommDesc").value = "";
+      return {
+        res: null,
+        statusCode: response.status,
+        message: "Commessa non trovata",
+      };
     }
+  } catch (ex) {
+    console.log(ex);
+  }
 }
 
+async function LoadTOper(ComDropdownInput) {
+  var url = "/api/Olca/GetOlcaCitoByCommAsync/" + ComDropdownInput;
+  try {
+    const response = await fetch(url, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
 
-async function LoadTOper(commCode) {    
-    var url = "/api/Olca/GetOlcaCitoByCommAsync/" + commCode;    
-    try {
-        const response = await fetch(url, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        })
-
-        if (response.status == 200) {            
-            let operData = await response.json();
-            let operList = operData.olcaCitoList;
-            let operNumber = operList.length            
-            document.getElementById("NTOper").empty;
-            if (operNumber > 1) {
-                options = '<option value=""></option>';
-            } else {
-                options = "";
-            }
-            for (var i = 0; i < operNumber; i++) {
-                options += '<option value="' + operList[i].flussoOlca.olcaNOper + '-' + operList[i].flussoOlca.olcaTOper + '">' + operList[i].flussoOlca.olcaNOper + ' - ' + operList[i].flussoOlca.olcaTOper + ' - ' + operList[i].flussoCito.citoDescrizione + '</option>';
-            };
-            document.getElementById("NTOper").innerHTML = options;
-            document.getElementById("NTOper").value = document.getElementById("operazione").innerHTML
+    if (response.status == 200) {
+      let operData = await response.json();
+      let operList = operData.olcaCitoList;
+      let operNumber = operList.length;
+      document.getElementById("NTOper").empty;
+      if (operNumber > 1) {
+        options = '<option value=""></option>';
+        for (var i = 0; i < operNumber; i++) {
+          options += '<option value="' + operList[i].flussoOlca.olcaNOper + "-" + operList[i].flussoOlca.olcaTOper + '">' + operList[i].flussoOlca.olcaNOper + " - " + operList[i].flussoOlca.olcaTOper + " - " + operList[i].flussoCito.citoDescrizione + "</option>";
         }
-        else {
-            return {
-                res: null,
-                statusCode: response.status,
-                message: "Operazioni non trovate per la commessa"
-            }
-        }
+      } else {
+        options = `<option value="${operList[0].flussoOlca.olcaNOper}-${operList[0].flussoOlca.olcaTOper}">${operList[0].flussoOlca.olcaNOper}-${operList[0].flussoOlca.olcaTOper}-${operList[0].flussoCito.citoDescrizione}</option>`;
+        document.getElementById("NTOper").innerHTML = options;
+        document.getElementById("NTOper").value = `${operList[0].flussoOlca.olcaNOper}-${operList[0].flussoOlca.olcaTOper}`;
+        return;
+      }
 
-    } catch (ex) {
-        console.log(ex)
+      document.getElementById("NTOper").innerHTML = options;
+      document.getElementById("NTOper").value = document.getElementById("operazione").innerHTML;
+    } else {
+      return {
+        res: null,
+        statusCode: response.status,
+        message: "Operazioni non trovate per la commessa",
+      };
     }
+  } catch (ex) {
+    console.log(ex);
+  }
 }
-
 
 MomoModalita = document.getElementById("MemoModalita").value;
 switch (true) {
-    case MomoModalita == "modIsl":
-        document.getElementById("modIsl").checked = true; break;
-    case MomoModalita == "modCli":
-        document.getElementById("modCli").checked = true; break;
-    case MomoModalita == "modCom":
-        document.getElementById("modCom").checked = true; break;
-    case MomoModalita == "modSvilInt":
-        document.getElementById("modSvilInt").checked = true; break;
-    case MomoModalita == "modGestInt":
-        document.getElementById("modGestInt").checked = true; break;
+  case MomoModalita == "modIsl":
+    document.getElementById("modIsl").checked = true;
+    break;
+  case MomoModalita == "modCli":
+    document.getElementById("modCli").checked = true;
+    break;
+  case MomoModalita == "modCom":
+    document.getElementById("modCom").checked = true;
+    break;
+  case MomoModalita == "modSvilInt":
+    document.getElementById("modSvilInt").checked = true;
+    break;
+  case MomoModalita == "modGestInt":
+    document.getElementById("modGestInt").checked = true;
+    break;
 }
 
-document.addEventListener("DOMContentLoaded", async function () {        
-    document.getElementById("modIsl").addEventListener("change", async () => await Modalita())
-    document.getElementById("modCli").addEventListener("change", async () => await Modalita())
-    document.getElementById("modGestInt").addEventListener("change", async () => await Modalita())
-    document.getElementById("modSvilInt").addEventListener("change", async () => await Modalita())
-    document.getElementById("modCom").addEventListener("change", async () => await Modalita())
+document.addEventListener("DOMContentLoaded", async function () {
+  document.getElementById("modIsl").addEventListener("change", async () => await Modalita());
+  document.getElementById("modCli").addEventListener("change", async () => await Modalita());
+  document.getElementById("modGestInt").addEventListener("change", async () => await Modalita());
+  document.getElementById("modSvilInt").addEventListener("change", async () => await Modalita());
+  document.getElementById("modCom").addEventListener("change", async () => await Modalita());
+  document.getElementById("input-risorsa").addEventListener("input", (e) => {
+    e.target.value = e.target.value.toUpperCase();
+  });
 
-    //gli viene passato l'input su cui fare la ricerca, il container che conterrà le opzioni e l'input 'vero' che verrà valorizzato
-    //setta gli event listener necessari per far funzionare la dropdown ma non gestisce la funzione per la creazione delle opzioni
-    setupCustomDropdowns("ComDropdownInput", "dropdown-commesse", "CommCode")
-    setupCustomDropdowns("CliDropdownInput", "dropdown-clienti", "ComCCli")
+  //gli viene passato l'input su cui fare la ricerca, il container che conterrà le opzioni e l'input 'vero' che verrà valorizzato
+  //setta gli event listener necessari per far funzionare la dropdown ma non gestisce la funzione per la creazione delle opzioni
+  setupCustomDropdowns("ComDropdownInput", "dropdown-commesse", "ComDropdownInput");
+  setupCustomDropdowns("CliDropdownInput", "dropdown-clienti", "CliDropdownInput");
 
-    await Modalita();
+  await Modalita();
 });
-
-

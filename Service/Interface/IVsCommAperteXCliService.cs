@@ -7,5 +7,7 @@ namespace MepWeb.Service.Interface
 	{
 		Task<ResponseBase<List<CliXOpenCommResponse>>> GetCustOfOpenCommAsync();
 		Task<ResponseBase<List<OpenCommByCustResponse>>> GetOpenCommByCustAsync(string codiceCliente);
-	}
+		Task<ResponseBase<List<OpenCommByCustResponse>>> GetAllOpenComm();
+
+    }
 }
