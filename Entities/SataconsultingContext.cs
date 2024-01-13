@@ -58,9 +58,11 @@ public partial class SataconsultingContext : DbContext
 
 	public virtual DbSet<PscQual> PscQuals { get; set; }
 
+    public virtual DbSet<VsPpCalendarRi> VsPpCalendarRis { get; set; }
 
-	// Views
-	public virtual DbSet<Mvxpa01> Mvxpa01s { get; set; }
+
+    // Views
+    public virtual DbSet<Mvxpa01> Mvxpa01s { get; set; }
     public virtual DbSet<VsPpMonitorIsl> VsPpMonitorIsl { get; set; }
     public virtual DbSet<Mvxzz12> Mvxzz12s { get; set; }
     public virtual DbSet<VsConsXComm> VsConsXComms { get; set; }
@@ -5228,7 +5230,26 @@ public partial class SataconsultingContext : DbContext
 				.HasColumnName("USR1_DESC");
 		});
 
-		OnModelCreatingPartial(modelBuilder);
+        modelBuilder.Entity<VsPpCalendarRi>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vs_pp_calendar_ris", "dba");
+
+            entity.Property(e => e.CrrpDtt)
+                .HasColumnType("date")
+                .HasColumnName("crrp_dtt");
+            entity.Property(e => e.CrrpDttW).HasColumnName("crrp_dtt_w");
+            entity.Property(e => e.CrrpHhTot)
+                .HasColumnType("numeric(38, 2)")
+                .HasColumnName("crrp_hh_tot");
+            entity.Property(e => e.CrrpMaccCMatricola)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("crrp_macc_c_matricola");
+        });
+
+        OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

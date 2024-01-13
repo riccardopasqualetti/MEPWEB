@@ -50,9 +50,11 @@ GRANT SELECT ON dba.vs_pp_monitor_ISL                   TO mepweb
 GRANT SELECT ON dba.mvxzz12                             TO mepweb 
 GRANT SELECT ON dba.vs_cons_x_comm                      TO mepweb 
 GRANT SELECT ON dba.vs_pp_comm_aperte_x_cli             TO mepweb 
+GRANT SELECT ON dba.vs_pp_calendar_ris                  TO mepweb 
 GRANT VIEW DEFINITION ON dba.vs_pp_monitor_ISL          TO mepweb 
 GRANT VIEW DEFINITION ON dba.mvxpa01                    TO mepweb 
 GRANT VIEW DEFINITION ON dba.mvxzz12                    TO mepweb 
 GRANT VIEW DEFINITION ON dba.vs_cons_x_comm             TO mepweb
 GRANT VIEW DEFINITION ON dba.vs_pp_comm_aperte_x_cli    TO mepweb
+GRANT VIEW DEFINITION ON dba.vs_pp_calendar_ris         TO mepweb
 go
