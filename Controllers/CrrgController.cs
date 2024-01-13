@@ -10,6 +10,7 @@ using MepWeb.Service.Interface;
 using MepWeb.DTO.Request;
 using MepWeb.Costants;
 using System.Globalization;
+using System.Reflection;
 
 namespace Mep01Web.Controllers
 {
@@ -44,8 +45,8 @@ namespace Mep01Web.Controllers
             obj.FilterHidden = "Y";
             IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
                 .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
+                .OrderByDescending(c => c.CrrgDtt)
                 .OrderByDescending(c => c.CrrgDtIns)
-                .OrderByDescending(c => c.CrrgDttIni)
                 .ToList();
 
 			obj.CrrgList = objCrrgList;
@@ -74,12 +75,13 @@ namespace Mep01Web.Controllers
             IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
                 .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
                 .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente))
-                .OrderByDescending(c => c.CrrgDttIni);
-            obj.CrrgList = objCrrgList;
+				.OrderByDescending(c => c.CrrgDtt)
+				.OrderByDescending(c => c.CrrgDtIns);
+			obj.CrrgList = objCrrgList;
             return View(obj);
         }
 
-        //GET
+        //GET        
         public async Task<IActionResult> Create()
         {
 			CrrgCreateRequest obj = new CrrgCreateRequest();
@@ -157,9 +159,39 @@ namespace Mep01Web.Controllers
 		}
 
 
+        //GET Create con parametro csrl        
+        [HttpGet("[controller]/[action]/{crrgCSrl}")]
+        public async Task<IActionResult> Duplicate(int? crrgCSrl)
+        {
+            if (crrgCSrl == null || crrgCSrl == 0)
+            {
+                return NotFound();
+            }
+            CrrgCreateRequest obj = new CrrgCreateRequest((decimal)crrgCSrl);
+            await _crrgService.AddCrrgPrepareDataAsync(obj);
+            await _crrgService.DeleteCrrgPrepareDataAsync(obj);
+            if (obj.CrrgRifCliente == null) {
+                obj.MemoModalita = "modCom";
+			} else
+            {
+				obj.MemoModalita = "modIsl";
+			}
 
-        //GET Update
-        public async Task<IActionResult> Edit(int? crrgCSrl)
+            return View("Create", obj);			
+        }
+
+		//POST
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> Duplicate(CrrgCreateRequest obj)
+        {
+            await Create(obj);
+            return View("Create",obj);
+        }
+
+
+		//GET Update
+		public async Task<IActionResult> Edit(int? crrgCSrl)
         {
             if (crrgCSrl == null || crrgCSrl == 0)
             {
