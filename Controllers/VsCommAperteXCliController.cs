@@ -49,5 +49,34 @@ namespace MepWeb.Controllers
 				);
 			}
 		}
-	}
+
+        [HttpGet("GetAllComm")]
+        public async Task<IActionResult> GetAllOpenComm()
+        {
+            try
+            {
+                var res = await _vsCommAperteXCliService.GetAllOpenComm();
+
+                if (res.Succeeded)
+                {
+                    return Ok(res.Body);
+                }
+                else
+                {
+                    return Problem(
+                          detail: res.Errors[res.Errors.Count - 1].Code + " | " + res.Errors[res.Errors.Count - 1].Message,
+                        statusCode: res.Errors[res.Errors.Count - 1].Code == "-2" ? StatusCodes.Status404NotFound : StatusCodes.Status400BadRequest
+                    );
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
+            }
+        }
+    }
 }

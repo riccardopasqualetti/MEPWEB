@@ -7,5 +7,6 @@
 		public string OrpbPrfDoc { get; set; } = null!;
 		public decimal OrpbADoc { get; set; }
 		public decimal OrpbNDoc { get; set; }
+		public string? DescrizioneRidotta { get; set; }
 	}
 }

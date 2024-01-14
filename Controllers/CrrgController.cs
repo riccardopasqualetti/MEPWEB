@@ -33,7 +33,7 @@ namespace Mep01Web.Controllers
 			_oreQualificaService = oreQualificaService;
 		}
 		public IActionResult Index()
-        {            
+        {
             DateTime dd2 = DateTime.Now;
             DateTime dd1 = dd2.Subtract(TimeSpan.FromDays(90));
             
@@ -42,10 +42,13 @@ namespace Mep01Web.Controllers
             obj.FilterCrrgDttStart = dd1;
             obj.FilterCrrgDttEnd = dd2;
             obj.FilterHidden = "Y";
-            IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs.ToList()
+            IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
                 .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
-                .OrderByDescending(c=> c.CrrgDttIni);
-            obj.CrrgList = objCrrgList;
+                .OrderByDescending(c => c.CrrgDtIns)
+                .OrderByDescending(c => c.CrrgDttIni)
+                .ToList();
+
+			obj.CrrgList = objCrrgList;
 
 			//var results = _db.FlussoCrrgs
 			//	.GroupBy(x => CultureInfo.CurrentCulture.DateTimeFormat.Calendar

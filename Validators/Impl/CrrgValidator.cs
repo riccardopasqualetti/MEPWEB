@@ -68,8 +68,8 @@ namespace Mep01Web.Validators.Impl
 				{
 					return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCCaus, $"Causale non ammessa");
 				}
-
-				if (ISL.TatvFlgOfferta > 0 && crrgRequest.CrrgCmaatt != "3")
+				
+				if ((ISL.TatvPrfComm == "B" || ISL.TatvFlgOfferta > 0) && crrgRequest.CrrgCmaatt != "3")
 				{
 					return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCmaatt, $"Verbale obbligatorio per ISL con offerta");
 				}
@@ -93,6 +93,11 @@ namespace Mep01Web.Validators.Impl
 					if (crrgRequest.CrrgCCaus != "CORI")
 					{
 						return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCCaus, $"Causale non ammessa");
+					}
+
+					if (crrgRequest.CrrgPrfDoc == "B" && crrgRequest.CrrgCmaatt != "3")
+					{
+						return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCmaatt, $"Verbale obbligatorio per il tipo di commessa");
 					}
 
 				}

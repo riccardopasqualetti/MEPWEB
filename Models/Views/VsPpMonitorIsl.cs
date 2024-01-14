@@ -94,4 +94,6 @@ public partial class VsPpMonitorIsl
 	public string? TatvCPartApp { get; set; }
 
 	public string? TatvCPart { get; set; }
+
+	public decimal TatvFlgOfferta { get; set; }
 }

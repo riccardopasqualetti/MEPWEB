@@ -42,11 +42,31 @@ namespace MepWeb.Service.Impl
 					OrpbTstDoc = x.OrpbTstDoc,
 					OrpbPrfDoc = x.OrpbPrfDoc,
 					OrpbADoc = x.OrpbADoc,
-					OrpbNDoc = x.OrpbNDoc
+					OrpbNDoc = x.OrpbNDoc,
+					DescrizioneRidotta = x.DescrizioneRidotta
 				})
+				.OrderBy(x => x.DescrizioneRidotta)
 				.ToListAsync();
 
 			return ResponseBase<List<OpenCommByCustResponse>>.Success(res);
 		}
-	}
+
+        public async Task<ResponseBase<List<OpenCommByCustResponse>>> GetAllOpenComm()
+        {
+            var res = await _dbContext.VsPpCommAperteXClis
+                .Select(x => new OpenCommByCustResponse
+                {
+                    CommDescDd = x.CommDescDd,
+                    OrpbTstDoc = x.OrpbTstDoc,
+                    OrpbPrfDoc = x.OrpbPrfDoc,
+                    OrpbADoc = x.OrpbADoc,
+                    OrpbNDoc = x.OrpbNDoc,
+					DescrizioneRidotta = x.DescrizioneRidotta
+				})
+				.OrderBy(x => x.DescrizioneRidotta)
+				.ToListAsync();
+
+            return ResponseBase<List<OpenCommByCustResponse>>.Success(res);
+        }
+    }
 }

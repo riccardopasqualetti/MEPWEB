@@ -191,6 +191,7 @@ footer {
 /*  scrollbar per ricerca dropdown  */
 
 .border-style {
+  position: absolute;
   overflow: hidden;
   border-radius: 0.5rem;
   /*border: 1px solid #858585;*/
@@ -397,11 +398,36 @@ footer {
   max-height: 0rem;
   transition: 0.3s max-height;
   overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 .opens-opened {
-  max-height: 35rem;
+  max-height: fit-content;
   overflow: auto;
+}
+
+.white-icona-wrapper {
+  height: 40px;
+  display: block !important;
+  width: fit-content;
+  display: flex !important;
+  justify-content: center !important;
+  font-size: 26px;
+  height: fit-content;
+  margin-bottom: 10px;
+}
+
+.radio2 {
+  border-left: 1px solid;
+}
+
+.white-icona-wrapper i {
+  height: 26px;
+  width: 26px;
+}
+
+.white-icona-wrapper:hover {
+  color: white;
 }
 
 /*table th:nth-last-child(0) {
