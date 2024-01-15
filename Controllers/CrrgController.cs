@@ -11,6 +11,8 @@ using MepWeb.DTO.Request;
 using MepWeb.Costants;
 using System.Globalization;
 using System.Reflection;
+using Microsoft.VisualBasic;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Mep01Web.Controllers
 {
@@ -36,7 +38,7 @@ namespace Mep01Web.Controllers
 		public IActionResult Index()
         {
             DateTime dd2 = DateTime.Now;
-            DateTime dd1 = dd2.Subtract(TimeSpan.FromDays(90));
+            DateTime dd1 = dd2.Subtract(TimeSpan.FromDays(((int)dd2.DayOfWeek + 6) % 7 ));
             
             CrrgGetRequest obj = new CrrgGetRequest();
             obj.FilterCrrgCRis = _userScope.SV_USR_SIGLA;
@@ -44,9 +46,9 @@ namespace Mep01Web.Controllers
             obj.FilterCrrgDttEnd = dd2;
             obj.FilterHidden = "Y";
             IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
-                .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
-                .OrderByDescending(c => c.CrrgDtt)
+                .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)                
                 .OrderByDescending(c => c.CrrgDtIns)
+                .OrderByDescending(c => c.CrrgDtt)
                 .ToList();
 
 			obj.CrrgList = objCrrgList;
@@ -75,9 +77,9 @@ namespace Mep01Web.Controllers
             IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
                 .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
                 .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente))
-				.OrderByDescending(c => c.CrrgDtt)
-				.OrderByDescending(c => c.CrrgDtIns);
-			obj.CrrgList = objCrrgList;
+                .OrderByDescending(c => c.CrrgDtIns)
+                .OrderByDescending(c => c.CrrgDtt);
+            obj.CrrgList = objCrrgList;
             return View(obj);
         }
 

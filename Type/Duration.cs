@@ -25,8 +25,14 @@
             _mm = (_seconds - _hh * 3600) / 60;
             _ss = _seconds - _hh * 3600 - _mm * 60;
             _hms = _hh.ToString("00") + ":" + _mm.ToString("00") + ":" + _ss.ToString("00");
-			_datetime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, _hh, _mm, _ss);
-		}
+            try { 
+			   _datetime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, _hh, _mm, _ss);
+            } catch
+            {
+                _datetime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            }
+
+        }
         public int GetSeconds()
         {
             return _seconds;

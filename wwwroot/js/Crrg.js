@@ -32,19 +32,21 @@ async function Modalita() {
       if (document.getElementById("MemoModalita").value == "modIsl") {        
           RefreshIslData();
       } else {
-          document.getElementById("ComDropdownInput").value = "";
-          document.getElementById("NTOper").innerHTML = "";
-          document.getElementById("CommDesc").innerHTML = "";
-          document.getElementById("dropdown-commesse").innerHTML = "";
-          Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
-          document.getElementById("CrrgApp").value = ""; 
-          document.getElementById("cli-description").value = "";
-          document.getElementById("CrrgMod").value = "";
-          document.getElementById("CrrgNote").value = "";
-          //console.log("qui")
+          // divCrrgRifCliente
           document.getElementById("CrrgRifCliente").value = "";
           document.getElementById("DescrIsl").value = "";
           document.getElementById("ISLCommDesc").value = "";
+
+          // divComCli
+          //document.getElementById("CliDropdownInput").value = "";
+          //document.getElementById("cli-description").value = "";
+
+          // divComm
+          //document.getElementById("ComDropdownInput").value = "";          
+          //document.getElementById("CommDesc").innerHTML = "";
+          //document.getElementById("dropdown-commesse").innerHTML = "";
+
+          DefaultCleanFields();
           }
 
       document.getElementById("MemoModalita").value = "modIsl";
@@ -69,16 +71,21 @@ async function Modalita() {
           await LoadTOper(document.getElementById("ComDropdownInput").value);
           await RefreshCommData("modCli")
       } else {
+          // divCrrgRifCliente
+          //document.getElementById("CrrgRifCliente").value = "";
+          //document.getElementById("DescrIsl").value = "";
+          //document.getElementById("ISLCommDesc").value = "";
+
+          // divComCli         
           document.getElementById("CliDropdownInput").value = "";
+          document.getElementById("cli-description").value = "";
+
+          // divComm
           document.getElementById("ComDropdownInput").value = "";
           document.getElementById("CommDesc").value = "";
-          document.getElementById("NTOper").innerHTML = "";
-          document.getElementById("CliDropdownInput").value = "";
-          Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
-          document.getElementById("CrrgApp").value = "";
-          document.getElementById("cli-description").value = "";
-          document.getElementById("CrrgMod").value = "";
-          document.getElementById("CrrgNote").value = "";
+          //document.getElementById("dropdown-commesse").innerHTML = "";
+
+          DefaultCleanFields();
       }
 
       document.getElementById("MemoModalita").value = "modCli";
@@ -104,14 +111,21 @@ async function Modalita() {
           await LoadTOper(document.getElementById("ComDropdownInput").value);
           await RefreshCommData("modGestInt")
       } else {
-          document.getElementById("ComDropdownInput").value = "";
+          // divCrrgRifCliente
+          //document.getElementById("CrrgRifCliente").value = "";
+          //document.getElementById("DescrIsl").value = "";
+          //document.getElementById("ISLCommDesc").value = "";
+
+          // divComCli
+          //document.getElementById("CliDropdownInput").value = "";
+          //document.getElementById("cli-description").value = "";
+
+          // divComm          
           document.getElementById("ComDropdownInput").value = "";
           document.getElementById("CommDesc").value = "";
-          document.getElementById("NTOper").innerHTML = "";
-          Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
-          document.getElementById("CrrgApp").value = "";
-          document.getElementById("CrrgMod").value = "";
-          document.getElementById("CrrgNote").value = "";
+          //document.getElementById("dropdown-commesse").innerHTML = "";
+
+          DefaultCleanFields();
       }
 
       document.getElementById("MemoModalita").value = "modGestInt";
@@ -138,14 +152,21 @@ async function Modalita() {
           await LoadTOper(document.getElementById("ComDropdownInput").value);
           await RefreshCommData("modSvilInt") 
       } else {
-          document.getElementById("ComDropdownInput").value = "";
-          document.getElementById("ComDropdownInput").value = "";
+          // divCrrgRifCliente
+          //document.getElementById("CrrgRifCliente").value = "";
+          //document.getElementById("DescrIsl").value = "";
+          //document.getElementById("ISLCommDesc").value = "";
+
+          // divComCli
+          //document.getElementById("CliDropdownInput").value = "";
+          //document.getElementById("cli-description").value = "";
+
+          // divComm          
+          document.getElementById("ComDropdownInput").value = "";          
           document.getElementById("CommDesc").value = "";
-          document.getElementById("NTOper").innerHTML = "";
-          Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
-          document.getElementById("CrrgApp").value = "";
-          document.getElementById("CrrgMod").value = "";
-          document.getElementById("CrrgNote").value = "";
+          //document.getElementById("dropdown-commesse").innerHTML = "";
+
+          DefaultCleanFields();
       }
 
       document.getElementById("MemoModalita").value = "modSvilInt";
@@ -158,8 +179,9 @@ async function Modalita() {
       // disabilita divComCli
       document.getElementById("divComCli").classList.add("d-none");
       // abilita divComm
-      document.getElementById("ComDropdownInput").hidden = false;
       document.getElementById("divComm").classList.remove("d-none");
+      document.getElementById("ComDropdownInput").classList.remove("d-none");
+      //document.getElementById("ComDropdownInput").hidden = false;
       CliListChanged("modCom")
 
       if (document.getElementById("CrrgCSrl").value > 0) {                    
@@ -176,22 +198,36 @@ async function Modalita() {
       if (document.getElementById("MemoModalita").value == "modCom") {
           await RefreshCommData("modCom");
       } else {
+          // divCrrgRifCliente
+          //document.getElementById("CrrgRifCliente").value = "";
+          //document.getElementById("DescrIsl").value = "";
+          //document.getElementById("ISLCommDesc").value = "";
+
+          // divComCli
           document.getElementById("CliDropdownInput").value = "";
-          document.getElementById("ComDropdownInput").value = "";
-          document.getElementById("ComDropdownInput").classList.remove("d-none");
-          document.getElementById("dropdown-commesse").innerHTML = "";
-          document.getElementById("CommDesc").value = "";
-          document.getElementById("NTOper").innerHTML = "";
-          Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
-          document.getElementById("CrrgApp").value = "";
           document.getElementById("cli-description").value = "";
-          document.getElementById("CrrgMod").value = "";
-          document.getElementById("CrrgNote").value = "";
+
+          // divComm   
+          document.getElementById("ComDropdownInput").value = "";
+          document.getElementById("CommDesc").value = "";          
+          //document.getElementById("dropdown-commesse").innerHTML = "";
+
+          DefaultCleanFields();
       }
 
       document.getElementById("MemoModalita").value = "modCom";
       break;
   }
+}
+
+function DefaultCleanFields() {
+    document.getElementById("NTOper").innerHTML = "";
+    //CrrgCmaatt
+    //CrrgCCaus
+    document.getElementById("CrrgApp").value = "";
+    document.getElementById("CrrgMod").value = "";
+    document.getElementById("CrrgNote").value = "";
+    Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
 }
 
 function ReloadCrrgCreateForm() {
@@ -320,12 +356,10 @@ async function CommChanged() {
     if (risposta.statusCode == 200) {
         comData = risposta.res;
 
-        if (com.match(/^[0-9]+$/) != null) {
-            console.log("1")
+        if (com.match(/^[0-9]+$/) != null) {            
             document.getElementById("ComDropdownInput").value = comData.commCompCode;
             document.getElementById("CommDesc").value = comData.commDesc;
-        } else {
-            console.log("2")
+        } else {            
             document.getElementById("CommDesc").value = comData.commMasterData.tbcpDesc;
         }
         if (com[4] == "B") {
@@ -404,11 +438,7 @@ async function CliListChanged(modalita) {
     if (response.status == 200) {
       let cliData = await response.json();
       let cliNumber = cliData.length;
-
-      console.log(cli)
-      clitest = document.getElementById("CliDropdownInput").value
-      console.log(clitest)
-
+     
       document.getElementById("dropdown-commesse").innerHTML = "";
       const opt = document.createElement("p");
       opt.className = "m-0 dropdown-opt";
@@ -469,7 +499,7 @@ function setupCustomDropdowns(dropdownInputId, dropdownContainerId, realInput) {
   });
 
   //se viene scritto qualcosa nell'input delle commesse della dropdown, il valore viene scritto anche nei veri input delle commesse
-  document.getElementById(dropdownInputId).addEventListener("input", async (e) => {
+  document.getElementById(dropdownInputId).addEventListener("input", async (e) => {      
     //e.target.value = e.target.value.toUpperCase()
     document.getElementById(realInput).value = e.target.value;
     filterDropdown(e.target, dropdownContainerId);
@@ -686,16 +716,17 @@ async function LoadTOper(ComDropdownInput) {
   }
 }
 
+document.getElementById("modCom").checked = true;
 MomoModalita = document.getElementById("MemoModalita").value;
-switch (true) {
+switch (true) {    
   case MomoModalita == "modIsl":
     document.getElementById("modIsl").checked = true;
     break;
-  case MomoModalita == "modCli":
-    document.getElementById("modCli").checked = true;
-    break;
   case MomoModalita == "modCom":
     document.getElementById("modCom").checked = true;
+    break;
+  case MomoModalita == "modCli":
+    document.getElementById("modCli").checked = true;
     break;
   case MomoModalita == "modSvilInt":
     document.getElementById("modSvilInt").checked = true;
