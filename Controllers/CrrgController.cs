@@ -10,6 +10,9 @@ using MepWeb.Service.Interface;
 using MepWeb.DTO.Request;
 using MepWeb.Costants;
 using System.Globalization;
+using System.Reflection;
+using Microsoft.VisualBasic;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Mep01Web.Controllers
 {
@@ -34,8 +37,8 @@ namespace Mep01Web.Controllers
 		}
 		public IActionResult Index()
         {
-            DateTime dd2 = DateTime.Now;
-            DateTime dd1 = dd2.Subtract(TimeSpan.FromDays(90));
+            DateTime dd2 = DateTime.Now.Date;
+            DateTime dd1 = dd2.Subtract(TimeSpan.FromDays(((int)dd2.DayOfWeek + 6) % 7 ));
             
             CrrgGetRequest obj = new CrrgGetRequest();
             obj.FilterCrrgCRis = _userScope.SV_USR_SIGLA;
@@ -43,26 +46,26 @@ namespace Mep01Web.Controllers
             obj.FilterCrrgDttEnd = dd2;
             obj.FilterHidden = "Y";
             IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
-                .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
+                .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)                
                 .OrderByDescending(c => c.CrrgDtIns)
-                .OrderByDescending(c => c.CrrgDttIni)
+                .OrderByDescending(c => c.CrrgDtt)
                 .ToList();
 
 			obj.CrrgList = objCrrgList;
 
-			//var results = _db.FlussoCrrgs
-			//	.GroupBy(x => CultureInfo.CurrentCulture.DateTimeFormat.Calendar
-			//                    .GetWeekOfYear((DateTime)x.CrrgDtt, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday))
-		 //       .SelectMany(gx => gx, (gx, x) => new
-		 //       {
-			//        Week = gx.Key,
-			//        DateTime = x,
-			//        Count = gx.Count(),
-		 //       });
+            //var results = _db.FlussoCrrgs
+            //	.GroupBy(x => CultureInfo.CurrentCulture.DateTimeFormat.Calendar
+            //                    .GetWeekOfYear((DateTime)x.CrrgDtt, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday))
+            //       .SelectMany(gx => gx, (gx, x) => new
+            //       {
+            //        Week = gx.Key,
+            //        DateTime = x,
+            //        Count = gx.Count(),
+            //       });
 
-   //         var re = results.ToList();
+            //         var re = results.ToList();
 
-			return View(obj);           
+            return View(obj);           
         }
 
         //POST
@@ -74,12 +77,13 @@ namespace Mep01Web.Controllers
             IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
                 .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
                 .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente))
-                .OrderByDescending(c => c.CrrgDttIni);
+                .OrderByDescending(c => c.CrrgDtIns)
+                .OrderByDescending(c => c.CrrgDtt);
             obj.CrrgList = objCrrgList;
             return View(obj);
         }
 
-        //GET
+        //GET        
         public async Task<IActionResult> Create()
         {
 			CrrgCreateRequest obj = new CrrgCreateRequest();
@@ -157,9 +161,39 @@ namespace Mep01Web.Controllers
 		}
 
 
+        //GET Create con parametro csrl        
+        [HttpGet("[controller]/[action]/{crrgCSrl}")]
+        public async Task<IActionResult> Duplicate(int? crrgCSrl)
+        {
+            if (crrgCSrl == null || crrgCSrl == 0)
+            {
+                return NotFound();
+            }
+            CrrgCreateRequest obj = new CrrgCreateRequest((decimal)crrgCSrl);
+            await _crrgService.AddCrrgPrepareDataAsync(obj);
+            await _crrgService.DeleteCrrgPrepareDataAsync(obj);
+            if (obj.CrrgRifCliente == null) {
+                obj.MemoModalita = "modCom";
+			} else
+            {
+				obj.MemoModalita = "modIsl";
+			}
 
-        //GET Update
-        public async Task<IActionResult> Edit(int? crrgCSrl)
+            return View("Create", obj);			
+        }
+
+		//POST
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> Duplicate(CrrgCreateRequest obj)
+        {
+            await Create(obj);
+            return View("Create",obj);
+        }
+
+
+		//GET Update
+		public async Task<IActionResult> Edit(int? crrgCSrl)
         {
             if (crrgCSrl == null || crrgCSrl == 0)
             {

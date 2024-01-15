@@ -345,10 +345,16 @@ namespace Mep01Web.Service.Impl
 			crrgCreateRequest.CrrgTmRunIncrHMS = (new Duration(flussoCrrg.CrrgTmRunIncr)).GetDatetime();
 			crrgCreateRequest.CrrgRifCliente = flussoCrrg.CrrgRifCliente;
 			crrgCreateRequest.CommCode = flussoCrrg.CrrgTstDoc + "/" + flussoCrrg.CrrgPrfDoc + "/" + flussoCrrg.CrrgADoc + "/" + flussoCrrg.CrrgNDoc.ToString("000000"); ;
-            crrgCreateRequest.CrrgNote = flussoCrrg.CrrgNote;
+            
+			crrgCreateRequest.CrrgCCaus = flussoCrrg.CrrgCCaus;
+			crrgCreateRequest.CrrgNOper = flussoCrrg.CrrgNOper;
+			crrgCreateRequest.CrrgTOper = flussoCrrg.CrrgTOper;			
+			crrgCreateRequest.CrrgCmaatt = flussoCrrg.CrrgCmaatt;
+			crrgCreateRequest.CrrgApp = flussoCrrg.CrrgApp;
+			crrgCreateRequest.CrrgMod = flussoCrrg.CrrgMod;
+			crrgCreateRequest.CrrgNote = flussoCrrg.CrrgNote;
 
-
-            var tbcpGetRequest = new TbcpGetRequest();
+			var tbcpGetRequest = new TbcpGetRequest();
             tbcpGetRequest.CommPrfDoc = flussoCrrg.CrrgPrfDoc;
 			tbcpGetRequest.CommTstDoc = flussoCrrg.CrrgTstDoc;
 			tbcpGetRequest.CommADoc = flussoCrrg.CrrgADoc;

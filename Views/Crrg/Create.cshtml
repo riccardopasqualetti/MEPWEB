@@ -10,9 +10,9 @@
 			<div class="p-3">
 
 				<div class="row">
-					<div class="col-4">
+					<div class="col-8">
 						<h2 class="text-primary d-inline-block">
-							Inserimento consuntivo
+							Inserimento consuntivo @(Model.CrrgCSrl > 0 ? " - duplicato da: " + Decimal.ToInt32(Model.CrrgCSrl) : "")
 						</h2>
 					</div>
 					<div class="col-4 text-center">
@@ -27,6 +27,30 @@
 				</div>
 				@*<div asp-validation-summary="All"></div>*@ @*Riporta qui gli stessi errori che mostra sotto i componenti che hanno asp-validation-for*@
 				@* <p>Utente : @_userScope.SV_USR_SIGLA</p>  *@
+
+
+				@* Modalità *@
+				<input asp-for="CrrgCSrl" hidden />
+				<input asp-for="MemoModalita" id="MemoModalita" type="hidden" />
+				<div>
+					<input tabindex="1" type="radio" class="btn-check" id="modIsl" name="modalita" value="modIsl" checked="@(Model.MemoModalita == "modIsl" ? "true" : "false")">
+					<label for="modIsl" class="btn btn-medio btn-outline-primary">x ISL</label>
+					<input type="radio" class="btn-check" id="modCom" name="modalita" value="modCom" checked="@(Model.MemoModalita == "modCom" ? "true" : "false")">
+					<label for="modCom" class="btn btn-medio btn-outline-primary">x Commessa</label>					<input type="radio" class="btn-check" id="modCli" name="modalita" value="modCli" checked="@(Model.MemoModalita == "modCli" ? "true" : "false")">
+					@if (string.IsNullOrEmpty(Model.MemoModalita))
+					{
+						<label for="modCli" class="btn btn-medio btn-outline-primary">x Cliente</label>
+						<input type="radio" class="btn-check" id="modGestInt" name="modalita" value="modGestInt" checked="true">
+
+					} else
+					{
+						<label for="modCli" class="btn btn-medio btn-outline-primary">x Cliente</label>
+						<input type="radio" class="btn-check" id="modGestInt" name="modalita" value="modGestInt" checked="@(Model.MemoModalita == "modGestInt" ? "true" : "false")">
+					}
+					<label for="modGestInt" class="btn btn-medio btn-outline-primary">Gest Int</label>
+					<input type="radio" class="btn-check" id="modSvilInt" name="modalita" value="modSvilInt" checked="@(Model.MemoModalita == "modSvilInt" ? "true" : "false")">
+					<label for="modSvilInt" class="btn btn-medio btn-outline-primary">Svil Int</label>
+				</div>
 				
 				<div class="mb-3 d-flex">
 					<div class="form-group">
@@ -46,28 +70,6 @@
 					</div>
 				</div>
 
-				@* Modalità *@
-				<input asp-for="MemoModalita" id="MemoModalita" type="hidden" />
-				<div>
-					<input tabindex="1" type="radio" class="btn-check" id="modIsl" name="modalita" value="modIsl" checked="@(Model.MemoModalita == "modIsl" ? "true" : "false")">
-					<label for="modIsl" class="btn btn-medio btn-outline-primary">x ISL</label>
-					<input type="radio" class="btn-check" id="modCli" name="modalita" value="modCli" checked="@(Model.MemoModalita == "modCli" ? "true" : "false")">
-					@if (string.IsNullOrEmpty(Model.MemoModalita))
-					{
-						<label for="modCli" class="btn btn-medio btn-outline-primary">x Cliente</label>
-						<input type="radio" class="btn-check" id="modGestInt" name="modalita" value="modGestInt" checked="true">
-
-					} else
-					{
-						<label for="modCli" class="btn btn-medio btn-outline-primary">x Cliente</label>
-						<input type="radio" class="btn-check" id="modGestInt" name="modalita" value="modGestInt" checked="@(Model.MemoModalita == "modGestInt" ? "true" : "false")">
-					}
-					<label for="modGestInt" class="btn btn-medio btn-outline-primary">Gest Int</label>
-					<input type="radio" class="btn-check" id="modSvilInt" name="modalita" value="modSvilInt" checked="@(Model.MemoModalita == "modSvilInt" ? "true" : "false")">
-					<label for="modSvilInt" class="btn btn-medio btn-outline-primary">Svil Int</label>
-					<input type="radio" class="btn-check" id="modCom" name="modalita" value="modCom" checked="@(Model.MemoModalita == "modCom" ? "true" : "false")">
-					<label for="modCom" class="btn btn-medio btn-outline-primary">x Commessa</label>
-				</div>
 
 				@* ISL *@
 				<div id="divCrrgRifCliente" class="mt-1">
@@ -165,6 +167,7 @@
 				</div>
 
 				<p class="d-none" id="operazione">@Model.NTOper</p>
+				<p class="d-none" id="operazione1">@Model.CrrgNOper-@Model.CrrgTOper</p>
 
 				@* Macroattività - n.d., Garanzia, Assistenza, Verbale *@
 				<div class="form-group" style="margin-top:5px;">
@@ -288,7 +291,7 @@
 
 		
 	</script>
-	<script src="~/js/Crrg.js"></script>
+	<script src="~/js/Crrg.js?v=1.139"></script>
 	<script src="~/js/isl.js"></script>
 
 }

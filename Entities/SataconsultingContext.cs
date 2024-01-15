@@ -58,7 +58,7 @@ public partial class SataconsultingContext : DbContext
 
 	public virtual DbSet<PscQual> PscQuals { get; set; }
 
-    public virtual DbSet<VsPpCalendarRi> VsPpCalendarRis { get; set; }
+    public virtual DbSet<VsPpCalendarRis> VsPpCalendarRis { get; set; }
 
 
     // Views
@@ -5230,7 +5230,7 @@ public partial class SataconsultingContext : DbContext
 				.HasColumnName("USR1_DESC");
 		});
 
-        modelBuilder.Entity<VsPpCalendarRi>(entity =>
+        modelBuilder.Entity<VsPpCalendarRis>(entity =>
         {
             entity
                 .HasNoKey()
