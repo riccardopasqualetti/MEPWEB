@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MepWeb.Models.Views;
 
-public partial class VsPpCalendarRi
+public partial class VsPpCalendarRis
 {
     public string CrrpMaccCMatricola { get; set; } = null!;
 

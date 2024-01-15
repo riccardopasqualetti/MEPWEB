@@ -1,11 +1,15 @@
 ﻿@using Mep01Web.DTO.Request;
 @using System.Globalization;
 @using Mep01Web.Type;
+@using Mep01Web.Infrastructure;
+@inject SataconsultingContext _db;
 @model CrrgGetRequest;
 
 @{
     Decimal seconds_tot = 0;
     DateTime? crrg_dtt_prev = null;
+    Decimal? cal_hh = 8;
+    var _db1 = _db;
 }
 
 @{
@@ -121,9 +125,18 @@
                                 <td width="10%" align="left">
                                     @crrg_dtt_prev?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
                                 </td>
+                                @if (seconds_tot < 3600 * cal_hh)
+                                {
+                                <td width="10%" align="left" class="text-danger">
+                                    @duration_tot.GetDuration()
+                                </td>
+                                }
+                                else
+                                {
                                 <td width="10%" align="left">
                                     @duration_tot.GetDuration()
                                 </td>
+                                }
                                 <td width="10%" align="left">                        
                                 </td>
                                 <td width="10%" align="left">                        
@@ -136,6 +149,11 @@
                                 </td>                    
                             </tr>
                         }
+
+                        DateTime dd2 = DateTime.Now.Date;
+                        var q = _db.VsPpCalendarRis.FirstOrDefault(c => c.CrrpMaccCMatricola == @obj.CrrgCRis && c.CrrpDtt == @obj.CrrgDtt);
+                        cal_hh = q.CrrpHhTot;
+
 
                         seconds_tot = 0;
                         crrg_dtt_prev = obj.CrrgDtt;
@@ -186,7 +204,7 @@
                             <td width="10%" align="left">
                                 @crrg_dtt_prev?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
                             </td>
-                            @if (seconds_tot < 3600 * 8) {
+                            @if (seconds_tot < 3600 * cal_hh) {
                             <td width="10%" align="left" class="text-danger">
                                 @duration_tot.GetDuration()
                             </td>

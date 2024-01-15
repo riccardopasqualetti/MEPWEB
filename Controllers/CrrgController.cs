@@ -37,7 +37,7 @@ namespace Mep01Web.Controllers
 		}
 		public IActionResult Index()
         {
-            DateTime dd2 = DateTime.Now;
+            DateTime dd2 = DateTime.Now.Date;
             DateTime dd1 = dd2.Subtract(TimeSpan.FromDays(((int)dd2.DayOfWeek + 6) % 7 ));
             
             CrrgGetRequest obj = new CrrgGetRequest();
@@ -53,19 +53,19 @@ namespace Mep01Web.Controllers
 
 			obj.CrrgList = objCrrgList;
 
-			//var results = _db.FlussoCrrgs
-			//	.GroupBy(x => CultureInfo.CurrentCulture.DateTimeFormat.Calendar
-			//                    .GetWeekOfYear((DateTime)x.CrrgDtt, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday))
-		 //       .SelectMany(gx => gx, (gx, x) => new
-		 //       {
-			//        Week = gx.Key,
-			//        DateTime = x,
-			//        Count = gx.Count(),
-		 //       });
+            //var results = _db.FlussoCrrgs
+            //	.GroupBy(x => CultureInfo.CurrentCulture.DateTimeFormat.Calendar
+            //                    .GetWeekOfYear((DateTime)x.CrrgDtt, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday))
+            //       .SelectMany(gx => gx, (gx, x) => new
+            //       {
+            //        Week = gx.Key,
+            //        DateTime = x,
+            //        Count = gx.Count(),
+            //       });
 
-   //         var re = results.ToList();
+            //         var re = results.ToList();
 
-			return View(obj);           
+            return View(obj);           
         }
 
         //POST
