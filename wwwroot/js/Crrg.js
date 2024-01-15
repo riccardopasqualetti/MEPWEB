@@ -18,41 +18,41 @@ async function Modalita() {
       // disabilita divComm
       document.getElementById("divComm").classList.add("d-none");
 
-      if (document.getElementById("CrrgCSrl").value > 0) {          
-          document.getElementById("MemoModalita").value = "modIsl";
-          document.getElementById("modIsl").disabled = false;
-          document.getElementById("modCli").disabled = true;
-          document.getElementById("modGestInt").disabled = true;
-          document.getElementById("modSvilInt").disabled = true;
-          document.getElementById("modCom").disabled = true;          
+      if (document.getElementById("CrrgCSrl").value > 0) {
+        document.getElementById("MemoModalita").value = "modIsl";
+        document.getElementById("modIsl").disabled = false;
+        document.getElementById("modCli").disabled = true;
+        document.getElementById("modGestInt").disabled = true;
+        document.getElementById("modSvilInt").disabled = true;
+        document.getElementById("modCom").disabled = true;
       }
 
       // se la modalità è sempre la stessa significa che sta gestendo un errore
       // e ricarica la commessa nel campo descrizione che è protetto e non eredita il valore.
-      if (document.getElementById("MemoModalita").value == "modIsl") {        
-          RefreshIslData();
+      if (document.getElementById("MemoModalita").value == "modIsl") {
+        RefreshIslData();
       } else {
-          // divCrrgRifCliente
-          document.getElementById("CrrgRifCliente").value = "";
-          document.getElementById("DescrIsl").value = "";
-          document.getElementById("ISLCommDesc").value = "";
+        // divCrrgRifCliente
+        document.getElementById("CrrgRifCliente").value = "";
+        document.getElementById("DescrIsl").value = "";
+        document.getElementById("ISLCommDesc").value = "";
 
-          // divComCli
-          //document.getElementById("CliDropdownInput").value = "";
-          //document.getElementById("cli-description").value = "";
+        // divComCli
+        //document.getElementById("CliDropdownInput").value = "";
+        //document.getElementById("description-clienti").value = "";
 
-          // divComm
-          //document.getElementById("ComDropdownInput").value = "";          
-          //document.getElementById("CommDesc").innerHTML = "";
-          //document.getElementById("dropdown-commesse").innerHTML = "";
+        // divComm
+        //document.getElementById("ComDropdownInput").value = "";
+        //document.getElementById("description-commesse").innerHTML = "";
+        //document.getElementById("dropdown-commesse").innerHTML = "";
 
-          DefaultCleanFields();
-          }
+        DefaultCleanFields();
+      }
 
       document.getElementById("MemoModalita").value = "modIsl";
       break;
 
-    case document.getElementById("modCli").checked:      
+    case document.getElementById("modCli").checked:
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // abilita divComCli
@@ -65,40 +65,43 @@ async function Modalita() {
       document.getElementById("divComm").classList.remove("d-none");
       document.getElementById("ComDropdownInput").classList.remove("d-none");
       document.getElementById("ComDropdownInput").classList.remove("bad-field");
+      Array.from(document.getElementById("dropdown-clienti").children).forEach((x) => {
+        x.classList.remove("d-none");
+      });
 
       if (document.getElementById("MemoModalita").value == "modCli") {
-          await CliListChanged("modCli");
-          await LoadTOper(document.getElementById("ComDropdownInput").value);
-          await RefreshCommData("modCli")
+        await CliListChanged("modCli");
+        await LoadTOper(document.getElementById("ComDropdownInput").value);
+        await RefreshCommData("modCli");
       } else {
-          // divCrrgRifCliente
-          //document.getElementById("CrrgRifCliente").value = "";
-          //document.getElementById("DescrIsl").value = "";
-          //document.getElementById("ISLCommDesc").value = "";
+        // divCrrgRifCliente
+        //document.getElementById("CrrgRifCliente").value = "";
+        //document.getElementById("DescrIsl").value = "";
+        //document.getElementById("ISLCommDesc").value = "";
 
-          // divComCli         
-          document.getElementById("CliDropdownInput").value = "";
-          document.getElementById("cli-description").value = "";
+        // divComCli
+        document.getElementById("CliDropdownInput").value = "";
+        document.getElementById("description-clienti").value = "";
 
-          // divComm
-          document.getElementById("ComDropdownInput").value = "";
-          document.getElementById("CommDesc").value = "";
-          //document.getElementById("dropdown-commesse").innerHTML = "";
+        // divComm
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("description-commesse").value = "";
+        //document.getElementById("dropdown-commesse").innerHTML = "";
 
-          DefaultCleanFields();
+        DefaultCleanFields();
       }
 
       document.getElementById("MemoModalita").value = "modCli";
       break;
 
-    case document.getElementById("modGestInt").checked:      
+    case document.getElementById("modGestInt").checked:
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // abilita divComCli
       document.getElementById("divComCli").classList.remove("d-none");
       document.getElementById("CliDropdownInput").classList.remove("d-none");
       document.getElementById("CliDropdownInput").value = "0153S018";
-      document.getElementById("cli-description").value = "0153S018 - Sata Consulting S.r.l.";
+      document.getElementById("description-clienti").value = "0153S018 - Sata Consulting S.r.l.";
       document.getElementById("CliDropdownInput").disabled = true;
       document.getElementById("CliDropdownInput").hidden = false;
       // abilita divComm
@@ -108,24 +111,24 @@ async function Modalita() {
 
       await CliListChanged("modGestInt");
       if (document.getElementById("MemoModalita").value == "modGestInt") {
-          await LoadTOper(document.getElementById("ComDropdownInput").value);
-          await RefreshCommData("modGestInt")
+        await LoadTOper(document.getElementById("ComDropdownInput").value);
+        await RefreshCommData("modGestInt");
       } else {
-          // divCrrgRifCliente
-          //document.getElementById("CrrgRifCliente").value = "";
-          //document.getElementById("DescrIsl").value = "";
-          //document.getElementById("ISLCommDesc").value = "";
+        // divCrrgRifCliente
+        //document.getElementById("CrrgRifCliente").value = "";
+        //document.getElementById("DescrIsl").value = "";
+        //document.getElementById("ISLCommDesc").value = "";
 
-          // divComCli
-          //document.getElementById("CliDropdownInput").value = "";
-          //document.getElementById("cli-description").value = "";
+        // divComCli
+        //document.getElementById("CliDropdownInput").value = "";
+        //document.getElementById("description-clienti").value = "";
 
-          // divComm          
-          document.getElementById("ComDropdownInput").value = "";
-          document.getElementById("CommDesc").value = "";
-          //document.getElementById("dropdown-commesse").innerHTML = "";
+        // divComm
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("description-commesse").value = "";
+        //document.getElementById("dropdown-commesse").innerHTML = "";
 
-          DefaultCleanFields();
+        DefaultCleanFields();
       }
 
       document.getElementById("MemoModalita").value = "modGestInt";
@@ -139,7 +142,7 @@ async function Modalita() {
       document.getElementById("divComCli").classList.remove("d-none");
       document.getElementById("CliDropdownInput").classList.remove("d-none");
       document.getElementById("CliDropdownInput").value = "0153S018";
-      document.getElementById("cli-description").value = "0153S018 - Sata Consulting S.r.l.";
+      document.getElementById("description-clienti").value = "0153S018 - Sata Consulting S.r.l.";
       document.getElementById("CliDropdownInput").disabled = true;
       document.getElementById("CliDropdownInput").hidden = false;
       // abilita divComm
@@ -149,31 +152,31 @@ async function Modalita() {
 
       await CliListChanged("modSvilInt");
       if (document.getElementById("MemoModalita").value == "modSvilInt") {
-          await LoadTOper(document.getElementById("ComDropdownInput").value);
-          await RefreshCommData("modSvilInt") 
+        await LoadTOper(document.getElementById("ComDropdownInput").value);
+        await RefreshCommData("modSvilInt");
       } else {
-          // divCrrgRifCliente
-          //document.getElementById("CrrgRifCliente").value = "";
-          //document.getElementById("DescrIsl").value = "";
-          //document.getElementById("ISLCommDesc").value = "";
+        // divCrrgRifCliente
+        //document.getElementById("CrrgRifCliente").value = "";
+        //document.getElementById("DescrIsl").value = "";
+        //document.getElementById("ISLCommDesc").value = "";
 
-          // divComCli
-          //document.getElementById("CliDropdownInput").value = "";
-          //document.getElementById("cli-description").value = "";
+        // divComCli
+        //document.getElementById("CliDropdownInput").value = "";
+        //document.getElementById("description-clienti").value = "";
 
-          // divComm          
-          document.getElementById("ComDropdownInput").value = "";          
-          document.getElementById("CommDesc").value = "";
-          //document.getElementById("dropdown-commesse").innerHTML = "";
+        // divComm
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("description-commesse").value = "";
+        //document.getElementById("dropdown-commesse").innerHTML = "";
 
-          DefaultCleanFields();
+        DefaultCleanFields();
       }
 
       document.getElementById("MemoModalita").value = "modSvilInt";
 
       break;
 
-    case document.getElementById("modCom").checked:      
+    case document.getElementById("modCom").checked:
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // disabilita divComCli
@@ -182,37 +185,37 @@ async function Modalita() {
       document.getElementById("divComm").classList.remove("d-none");
       document.getElementById("ComDropdownInput").classList.remove("d-none");
       //document.getElementById("ComDropdownInput").hidden = false;
-      CliListChanged("modCom")
+      CliListChanged("modCom");
 
-      if (document.getElementById("CrrgCSrl").value > 0) {                    
-          document.getElementById("MemoModalita").value = "modCom";
-          document.getElementById("modIsl").disabled = true;
-          document.getElementById("modCli").disabled = true;
-          document.getElementById("modGestInt").disabled = true;
-          document.getElementById("modSvilInt").disabled = true;
-          document.getElementById("modCom").disabled = false;          
+      if (document.getElementById("CrrgCSrl").value > 0) {
+        document.getElementById("MemoModalita").value = "modCom";
+        document.getElementById("modIsl").disabled = true;
+        document.getElementById("modCli").disabled = true;
+        document.getElementById("modGestInt").disabled = true;
+        document.getElementById("modSvilInt").disabled = true;
+        document.getElementById("modCom").disabled = false;
       }
 
       // se la modalità è sempre la stessa significa che sta gestendo un errore
       // e ricarica la commessa nel campo descrizione che è protetto e non eredita il valore.
       if (document.getElementById("MemoModalita").value == "modCom") {
-          await RefreshCommData("modCom");
+        await RefreshCommData("modCom");
       } else {
-          // divCrrgRifCliente
-          //document.getElementById("CrrgRifCliente").value = "";
-          //document.getElementById("DescrIsl").value = "";
-          //document.getElementById("ISLCommDesc").value = "";
+        // divCrrgRifCliente
+        //document.getElementById("CrrgRifCliente").value = "";
+        //document.getElementById("DescrIsl").value = "";
+        //document.getElementById("ISLCommDesc").value = "";
 
-          // divComCli
-          document.getElementById("CliDropdownInput").value = "";
-          document.getElementById("cli-description").value = "";
+        // divComCli
+        document.getElementById("CliDropdownInput").value = "";
+        document.getElementById("description-clienti").value = "";
 
-          // divComm   
-          document.getElementById("ComDropdownInput").value = "";
-          document.getElementById("CommDesc").value = "";          
-          //document.getElementById("dropdown-commesse").innerHTML = "";
+        // divComm
+        document.getElementById("ComDropdownInput").value = "";
+        document.getElementById("description-commesse").value = "";
+        //document.getElementById("dropdown-commesse").innerHTML = "";
 
-          DefaultCleanFields();
+        DefaultCleanFields();
       }
 
       document.getElementById("MemoModalita").value = "modCom";
@@ -221,13 +224,13 @@ async function Modalita() {
 }
 
 function DefaultCleanFields() {
-    document.getElementById("NTOper").innerHTML = "";
-    //CrrgCmaatt
-    //CrrgCCaus
-    document.getElementById("CrrgApp").value = "";
-    document.getElementById("CrrgMod").value = "";
-    document.getElementById("CrrgNote").value = "";
-    Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
+  document.getElementById("NTOper").innerHTML = "";
+  //CrrgCmaatt
+  //CrrgCCaus
+  document.getElementById("CrrgApp").value = "";
+  document.getElementById("CrrgMod").value = "";
+  document.getElementById("CrrgNote").value = "";
+  Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerHTML = ""));
 }
 
 function ReloadCrrgCreateForm() {
@@ -235,194 +238,188 @@ function ReloadCrrgCreateForm() {
   document.CrrgCreateForm.submit();
 }
 
-
 // ############################
 
 // Ricerca ISL e caricamento solo delle descrizioni e valorizzazione NTOper
 async function RefreshIslData() {
-    var ISL = document.getElementById("CrrgRifCliente").value;
-    var risposta = await LoadCommOfIsl(ISL);
-    if (risposta.statusCode == 200) {
-        islData = risposta.res;
-        comm = islData.tbcpTstComm + "/" + islData.tbcpPrfComm + "/" + islData.tbcpAComm + "/" + islData.tbcpNComm;
-        document.getElementById("ISLCommDesc").value = comm + " - " + islData.tbcpDesc;
-        document.getElementById("DescrIsl").value = islData.tatvDesc;
-        await LoadTOper(comm);        
-    }
+  var ISL = document.getElementById("CrrgRifCliente").value;
+  var risposta = await LoadCommOfIsl(ISL);
+  if (risposta.statusCode == 200) {
+    islData = risposta.res;
+    comm = islData.tbcpTstComm + "/" + islData.tbcpPrfComm + "/" + islData.tbcpAComm + "/" + islData.tbcpNComm;
+    document.getElementById("ISLCommDesc").value = comm + " - " + islData.tbcpDesc;
+    document.getElementById("DescrIsl").value = islData.tatvDesc;
+    await LoadTOper(comm);
+  }
 }
 
 // Valorizzazione di tutti i campi di dafault presi dalla ISL
 async function ISLChanged() {
-    var ISL = document.getElementById("CrrgRifCliente").value;
-    if (ISL == "") {
-        document.getElementById("ISLCommDesc").value = "";
-        document.getElementById("DescrIsl").value = "";
-        document.getElementById("CrrgApp").value = "";
-        document.getElementById("CrrgMod").value = "";
-        return;
-    }
-    var risposta = await LoadCommOfIsl(ISL);
-    if (risposta.statusCode == 200) {
-        islData = risposta.res;
-        comm = islData.tbcpTstComm + "/" + islData.tbcpPrfComm + "/" + islData.tbcpAComm + "/" + islData.tbcpNComm;
-        document.getElementById("ISLCommDesc").value = comm + " - " + islData.tbcpDesc;
-        document.getElementById("DescrIsl").value = islData.tatvDesc;
-        await LoadTOper(comm);
-        const tipo = {
-            "1-ANFU": "ANFU",
-            "2-SVIL": "SVIL",
-            "3-DELI": "DELI",
-            "7-NEW": "ANFU",
-            "8-SOSP": "ANFU",
-            "9-CLOSE": "DELI",
-        };
-        if (islData.tbcpPrfComm == "B" || islData.tatvFlgOfferta > 0) {
-            document.getElementById("CrrgCmaatt").value = "3";
-        } else {
-            document.getElementById("CrrgCmaatt").value = "0";
-        }
-        document.getElementById("CrrgCCaus").value = tipo[islData.flag];
-        document.getElementById("CrrgApp").value = islData.tatvCPartApp;
-        document.getElementById("CrrgMod").value = islData.tatvCPart;
-        document.getElementById("CrrgNote").value = islData.tatvDesc;
+  var ISL = document.getElementById("CrrgRifCliente").value;
+  if (ISL == "") {
+    document.getElementById("ISLCommDesc").value = "";
+    document.getElementById("DescrIsl").value = "";
+    document.getElementById("CrrgApp").value = "";
+    document.getElementById("CrrgMod").value = "";
+    return;
+  }
+  var risposta = await LoadCommOfIsl(ISL);
+  if (risposta.statusCode == 200) {
+    islData = risposta.res;
+    comm = islData.tbcpTstComm + "/" + islData.tbcpPrfComm + "/" + islData.tbcpAComm + "/" + islData.tbcpNComm;
+    document.getElementById("ISLCommDesc").value = comm + " - " + islData.tbcpDesc;
+    document.getElementById("DescrIsl").value = islData.tatvDesc;
+    await LoadTOper(comm);
+    const tipo = {
+      "1-ANFU": "ANFU",
+      "2-SVIL": "SVIL",
+      "3-DELI": "DELI",
+      "7-NEW": "ANFU",
+      "8-SOSP": "ANFU",
+      "9-CLOSE": "DELI",
+    };
+    if (islData.tbcpPrfComm == "B" || islData.tatvFlgOfferta > 0) {
+      document.getElementById("CrrgCmaatt").value = "3";
     } else {
-        return risposta;
+      document.getElementById("CrrgCmaatt").value = "0";
     }
+    document.getElementById("CrrgCCaus").value = tipo[islData.flag];
+    document.getElementById("CrrgApp").value = islData.tatvCPartApp;
+    document.getElementById("CrrgMod").value = islData.tatvCPart;
+    document.getElementById("CrrgNote").value = islData.tatvDesc;
+  } else {
+    return risposta;
+  }
 }
 
 // Caricamento record ISL da vista vs_pp_monitor_isl
 async function LoadCommOfIsl(ISL) {
-    var url = "api/VsPpMonitorIsl/GetByRifCli/" + ISL;
-    try {
-        const response = await fetch(url, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        });
+  var url = "api/VsPpMonitorIsl/GetByRifCli/" + ISL;
+  try {
+    const response = await fetch(url, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
 
-        if (response.status == 200) {
-            let islData = await response.json();            
-             return {
-                res: islData,
-                statusCode: response.status,
-                message: "ISL trovata",
-            };
-        } else {
-            return {
-                res: null,
-                statusCode: response.status,
-                message: "ISL non trovata", 
-            };
-        }
-    } catch (ex) {
-        console.log(ex);
+    if (response.status == 200) {
+      let islData = await response.json();
+      return {
+        res: islData,
+        statusCode: response.status,
+        message: "ISL trovata",
+      };
+    } else {
+      return {
+        res: null,
+        statusCode: response.status,
+        message: "ISL non trovata",
+      };
     }
+  } catch (ex) {
+    console.log(ex);
+  }
 }
-
-
 
 // ############################
 
 // Ricerca ISL e caricamento solo delle descrizioni e valorizzazione NTOper
 async function RefreshCommData(modalita) {
-    var com = document.getElementById("ComDropdownInput").value;        
-    var risposta = await LoadComm(com);
-    if (risposta.statusCode == 200) {
-        comData = risposta.res;
-        if (com.match(/^[0-9]+$/) != null) {
-            document.getElementById("ComDropdownInput").value = comData.commCompCode;
-            document.getElementById("CommDesc").value = comData.commDesc;
-        } else {
-            document.getElementById("CommDesc").value = comData.commMasterData.tbcpDesc;
-            if (modalita == "modCli") {
-                document.getElementById("CliDropdownInput").value = comData.commMasterData.tbcpCCli;
-                document.getElementById("cli-description").value = comData.commMasterData.tbcpCCli + " - " + comData.commMasterData.tbcpDesc;
-            }
-        }
-        await LoadTOper(com);
-        //document.getElementById("NTOper").value = document.getElementById("operazione1").innerHTML;
+  var com = document.getElementById("ComDropdownInput").value;
+  var risposta = await LoadComm(com);
+  if (risposta.statusCode == 200) {
+    comData = risposta.res;
+    if (com.match(/^[0-9]+$/) != null) {
+      document.getElementById("ComDropdownInput").value = comData.commCompCode;
+      document.getElementById("description-commesse").value = comData.commDesc;
+    } else {
+      document.getElementById("description-commesse").value = comData.commMasterData.tbcpDesc;
+      if (modalita == "modCli") {
+        document.getElementById("CliDropdownInput").value = comData.commMasterData.tbcpCCli;
+        document.getElementById("description-clienti").value = comData.commMasterData.tbcpCCli + " - " + comData.commMasterData.tbcpDesc;
+      }
     }
+    await LoadTOper(com);
+    //document.getElementById("NTOper").value = document.getElementById("operazione1").innerHTML;
+  }
 }
 
 // Valorizzazione di tutti i campi di default presi dalla Commessa
 async function CommChanged() {
-    var com = document.getElementById("ComDropdownInput").value;    
-    var risposta = await LoadComm(com);
-    if (risposta.statusCode == 200) {
-        comData = risposta.res;
+  var com = document.getElementById("ComDropdownInput").value;
+  var risposta = await LoadComm(com);
+  if (risposta.statusCode == 200) {
+    comData = risposta.res;
 
-        if (com.match(/^[0-9]+$/) != null) {            
-            document.getElementById("ComDropdownInput").value = comData.commCompCode;
-            document.getElementById("CommDesc").value = comData.commDesc;
-        } else {            
-            document.getElementById("CommDesc").value = comData.commMasterData.tbcpDesc;
-        }
-        if (com[4] == "B") {
-            document.getElementById("CrrgCmaatt").value = "3";
-        } else {
-            document.getElementById("CrrgCmaatt").value = "0";
-        }
-        await LoadTOper(document.getElementById("ComDropdownInput").value);
-    } else {
-        document.getElementById("CommDesc").value = "";
-        return risposta;
-    }
-}
-
-// Caricamento record Commessa da tabella flusso_tbcp 
-async function LoadComm(com) {
-    
     if (com.match(/^[0-9]+$/) != null) {
-        var url = "/api/Tbcp/GetCommByNumAsync/" + com;
+      document.getElementById("ComDropdownInput").value = comData.commCompCode;
+      document.getElementById("description-commesse").value = comData.commDesc;
     } else {
-        var url = "/api/Tbcp/GetCommByCompCode1Async/" + com;
+      document.getElementById("description-commesse").value = comData.commMasterData.tbcpDesc;
     }
-    
-    try {
-        const response = await fetch(url, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        });        
-        if (response.status == 200) {
-            let comData = await response.json();
-            
-            return {
-                res: comData,
-                statusCode: response.status,
-                message: "ISL trovata",
-            };
-        } else {
-            return {
-                res: null,
-                statusCode: response.status,
-                message: "ISL non trovata",
-            };
-        }
-    } catch (ex) {
-        console.log(ex);
+    if (com[4] == "B") {
+      document.getElementById("CrrgCmaatt").value = "3";
+    } else {
+      document.getElementById("CrrgCmaatt").value = "0";
     }
+    await LoadTOper(document.getElementById("ComDropdownInput").value);
+  } else {
+    document.getElementById("description-commesse").value = "";
+    return risposta;
+  }
 }
 
+// Caricamento record Commessa da tabella flusso_tbcp
+async function LoadComm(com) {
+  if (com.match(/^[0-9]+$/) != null) {
+    var url = "/api/Tbcp/GetCommByNumAsync/" + com;
+  } else {
+    var url = "/api/Tbcp/GetCommByCompCode1Async/" + com;
+  }
 
+  try {
+    const response = await fetch(url, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    if (response.status == 200) {
+      let comData = await response.json();
+
+      return {
+        res: comData,
+        statusCode: response.status,
+        message: "ISL trovata",
+      };
+    } else {
+      return {
+        res: null,
+        statusCode: response.status,
+        message: "ISL non trovata",
+      };
+    }
+  } catch (ex) {
+    console.log(ex);
+  }
+}
 
 async function CliListChanged(modalita) {
-    var cli = document.getElementById("CliDropdownInput").value
-    if (modalita == "modCom") {
-        var url = "/api/VsCommAperteXCli/GetAllComm"
-    } else {
-        var url = "/api/VsCommAperteXCli/GetCommAllByCliAsync/" + cli
-    }    
+  var cli = document.getElementById("CliDropdownInput").value;
+  if (modalita == "modCom") {
+    var url = "/api/VsCommAperteXCli/GetAllComm";
+  } else {
+    var url = "/api/VsCommAperteXCli/GetCommAllByCliAsync/" + cli;
+  }
   try {
     const response = await fetch(url, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -438,7 +435,7 @@ async function CliListChanged(modalita) {
     if (response.status == 200) {
       let cliData = await response.json();
       let cliNumber = cliData.length;
-     
+
       document.getElementById("dropdown-commesse").innerHTML = "";
       const opt = document.createElement("p");
       opt.className = "m-0 dropdown-opt";
@@ -450,7 +447,7 @@ async function CliListChanged(modalita) {
         document.getElementById("ComDropdownInput").value = opt.getAttribute("valore");
       });
       for (var i = 0; i < cliNumber; i++) {
-          if (modalita == "modCli" || (modalita == "modGestInt" && "FGZ".includes(cliData[i].orpbPrfDoc)) || (modalita == "modSvilInt" && "AH".includes(cliData[i].orpbPrfDoc)) || modalita == "modCom") {
+        if (modalita == "modCli" || (modalita == "modGestInt" && "FGZ".includes(cliData[i].orpbPrfDoc)) || (modalita == "modSvilInt" && "AH".includes(cliData[i].orpbPrfDoc)) || modalita == "modCom") {
           const opt = createOpt(cliData[i]);
           document.getElementById("dropdown-commesse").appendChild(opt);
         }
@@ -499,7 +496,7 @@ function setupCustomDropdowns(dropdownInputId, dropdownContainerId, realInput) {
   });
 
   //se viene scritto qualcosa nell'input delle commesse della dropdown, il valore viene scritto anche nei veri input delle commesse
-  document.getElementById(dropdownInputId).addEventListener("input", async (e) => {      
+  document.getElementById(dropdownInputId).addEventListener("input", async (e) => {
     //e.target.value = e.target.value.toUpperCase()
     document.getElementById(realInput).value = e.target.value;
     filterDropdown(e.target, dropdownContainerId);
@@ -512,9 +509,11 @@ function setupCustomDropdowns(dropdownInputId, dropdownContainerId, realInput) {
 }
 
 function showDropdown(containerId) {
-  document.getElementById(containerId).classList.remove("d-none");
-  document.getElementById(containerId).classList.add("active-custom-dropdown");
-  document.getElementById(containerId).addEventListener("mousemove", (e) => {
+  const dropdown = document.getElementById(containerId);
+  dropdown.classList.remove("d-none");
+  dropdown.classList.add("active-custom-dropdown");
+  addHoverClassToOpt(Array.from(dropdown.children).find((x) => !x.classList.contains("d-none")));
+  dropdown.addEventListener("mousemove", (e) => {
     if (e.target.classList.contains("dropdown-opt")) {
       addHoverClassToOpt(e.target);
     }
@@ -606,7 +605,11 @@ function handleKeys(e, dropdownId, inputId, inputIdToSet) {
   } else if (e.keyCode == 13) {
     //invio
     e.preventDefault();
-    const value = shownElements.find((x) => x.classList.contains("opt-hover")).getAttribute("valore");
+    const selected = shownElements.find((x) => x.classList.contains("opt-hover"));
+    const value = selected.getAttribute("valore");
+    if (selected.getAttribute("descrizione")) {
+      document.getElementById("description-" + dropdownId.split("-")[1]).value = selected.getAttribute("descrizione");
+    }
     input.value = value;
     document.getElementById(inputIdToSet).value = value;
     filterDropdown(e.target, dropdownId);
@@ -641,31 +644,28 @@ function createOpt(cliData, i) {
   opt.innerText = cliData.commDescDd;
   opt.addEventListener("mousedown", async () => {
     document.getElementById("ComDropdownInput").value = opt.getAttribute("valore");
-    document.getElementById("ComDropdownInput").value = opt.getAttribute("valore");
     document.getElementById("dropdown-commesse").classList.add("d-none");
-      await CommChanged();
-      const input = document.getElementById("ComDropdownInput")
-      filterDropdown(input, "dropdown-commesse");
+    await CommChanged();
+    const input = document.getElementById("ComDropdownInput");
+    filterDropdown(input, "dropdown-commesse");
   });
   return opt;
 }
 
 //per gestire le options dei clienti che vengono create direttamente da c# alla creazione della pagina
 function cliOpt(value, description) {
-  document.getElementById("cli-description").value = description;
+  document.getElementById("description-clienti").value = description;
   document.getElementById("CliDropdownInput").value = value;
   //document.getElementById("CliDropdownInput").value = value;
   document.getElementById("dropdown-clienti").classList.add("d-none");
   (async () => await CliListChanged("modCli"))();
-    const input = document.getElementById("CliDropdownInput")
-    filterDropdown(input, "dropdown-clienti");
+  const input = document.getElementById("CliDropdownInput");
+  filterDropdown(input, "dropdown-clienti");
 }
 
 async function CommListChanged() {
   await LoadTOper(document.getElementById("ComDropdownInput").value);
 }
-
-
 
 async function LoadTOper(ComDropdownInput) {
   var url = "/api/Olca/GetOlcaCitoByCommAsync/" + ComDropdownInput;
@@ -698,10 +698,10 @@ async function LoadTOper(ComDropdownInput) {
         return;
       }
 
-      if (document.getElementById("operazione").innerHTML == "") {          
-          document.getElementById("operazione").innerHTML = document.getElementById("operazione1").innerHTML;
+      if (document.getElementById("operazione").innerHTML == "") {
+        document.getElementById("operazione").innerHTML = document.getElementById("operazione1").innerHTML;
       }
-      
+
       document.getElementById("NTOper").innerHTML = options;
       document.getElementById("NTOper").value = document.getElementById("operazione").innerHTML;
     } else {
@@ -718,7 +718,7 @@ async function LoadTOper(ComDropdownInput) {
 
 document.getElementById("modCom").checked = true;
 MomoModalita = document.getElementById("MemoModalita").value;
-switch (true) {    
+switch (true) {
   case MomoModalita == "modIsl":
     document.getElementById("modIsl").checked = true;
     break;
@@ -736,13 +736,11 @@ switch (true) {
     break;
 }
 
-
-document.getElementById("modIsl").disabled = false; 
+document.getElementById("modIsl").disabled = false;
 document.getElementById("modCli").disabled = false;
 document.getElementById("modGestInt").disabled = false;
 document.getElementById("modSvilInt").disabled = false;
 document.getElementById("modCom").disabled = false;
-
 
 document.addEventListener("DOMContentLoaded", async function () {
   document.getElementById("modIsl").addEventListener("change", async () => await Modalita());
@@ -758,6 +756,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   //setta gli event listener necessari per far funzionare la dropdown ma non gestisce la funzione per la creazione delle opzioni
   setupCustomDropdowns("ComDropdownInput", "dropdown-commesse", "ComDropdownInput");
   setupCustomDropdowns("CliDropdownInput", "dropdown-clienti", "CliDropdownInput");
-  
+
   await Modalita();
 });
