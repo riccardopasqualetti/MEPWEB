@@ -107,11 +107,11 @@
 									{
 										if (i == 0)
 										{
-											<p class="m-0 customDropdown-group dropdown-opt opt-hover" valore="@Model.AcliList.Clienti[i].Value" onmousedown="cliOpt('@Model.AcliList.Clienti[i].Value', '@Model.AcliList.Clienti[i].Text')">@Model.AcliList.Clienti[i].Text</p>
+											<p class="m-0 customDropdown-group dropdown-opt opt-hover" valore="@Model.AcliList.Clienti[i].Value" descrizione="@Model.AcliList.Clienti[i].Text" onmousedown="cliOpt('@Model.AcliList.Clienti[i].Value', '@Model.AcliList.Clienti[i].Text')">@Model.AcliList.Clienti[i].Text</p>
 										}
 										else
 										{
-											<p class="m-0 customDropdown-group dropdown-opt" valore="@Model.AcliList.Clienti[i].Value" onmousedown="cliOpt('@Model.AcliList.Clienti[i].Value', '@Model.AcliList.Clienti[i].Text')">@Model.AcliList.Clienti[i].Text</p>
+											<p class="m-0 customDropdown-group dropdown-opt" valore="@Model.AcliList.Clienti[i].Value" descrizione="@Model.AcliList.Clienti[i].Text" onmousedown="cliOpt('@Model.AcliList.Clienti[i].Value', '@Model.AcliList.Clienti[i].Text')">@Model.AcliList.Clienti[i].Text</p>
 										}
 									}
 								</div>
@@ -119,8 +119,8 @@
 						</div>
 					</div>
 					<div class="form-group ms-3 w-100">
-						<label for="cli-description">Ragione Sociale</label>
-						<input id="cli-description" disabled autocomplete="off" type="text" class="form-control">
+						<label for="description-clienti">Ragione Sociale</label>
+						<input id="description-clienti" disabled autocomplete="off" type="text" class="form-control">
 					</div>
 
 				</div>
@@ -145,7 +145,7 @@
 					</div>
 					<div class="form-group ms-3 w-100">
 						<label>Descrizione</label>
-						<input class="form-control" id="CommDesc" disabled="disabled" />
+						<input class="form-control" id="description-commesse" disabled="disabled" />
 					</div>
 
 					@*<div style="margin-top:5px;">
@@ -291,7 +291,7 @@
 
 		
 	</script>
-	<script src="~/js/Crrg.js?v=1.139"></script>
+	<script src="~/js/Crrg.js"></script>
 	<script src="~/js/isl.js"></script>
 
 }
