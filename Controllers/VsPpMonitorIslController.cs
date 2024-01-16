@@ -11,6 +11,7 @@ namespace MepWeb.Controllers
 	[Authorize]
 	[Route("Crrg/api/[controller]")]
 	[Route("Crrg/Duplicate/api/[controller]")]
+	[Route("Crrg/Update/api/[controller]")]
 	[ApiController]
 	public class VsPpMonitorIslController : ControllerBase
 	{

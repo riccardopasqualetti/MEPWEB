@@ -16,7 +16,7 @@ async function Modalita() {
       // disabilita divComCli
       document.getElementById("divComCli").classList.add("d-none");
       // disabilita divComm
-      document.getElementById("divComm").classList.add("d-none");
+          document.getElementById("divComm").classList.add("d-none");
 
       if (document.getElementById("CrrgCSrl").value > 0) {
         document.getElementById("MemoModalita").value = "modIsl";
@@ -29,7 +29,7 @@ async function Modalita() {
 
       // se la modalità è sempre la stessa significa che sta gestendo un errore
       // e ricarica la commessa nel campo descrizione che è protetto e non eredita il valore.
-      if (document.getElementById("MemoModalita").value == "modIsl") {
+      if (document.getElementById("MemoModalita").value == "modIsl" || document.getElementById("IsUpdate").value == "True") {
         RefreshIslData();
       } else {
         // divCrrgRifCliente
@@ -620,7 +620,7 @@ function handleKeys(e, dropdownId, inputId, inputIdToSet) {
     hideDropdown(dropdownId);
   }
   //else if (e.keyCode == 9) {
-  //    //invio
+  //    //tab
   //    e.preventDefault();
   //    const value = shownElements.find((x) => x.classList.contains("opt-hover")).getAttribute("valore");
   //    input.value = value;
@@ -758,6 +758,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   //gli viene passato l'input su cui fare la ricerca, il container che conterrà le opzioni e l'input 'vero' che verrà valorizzato
   //setta gli event listener necessari per far funzionare la dropdown ma non gestisce la funzione per la creazione delle opzioni
+  //update: il terzo parametro è uguale al primo perchè non usa piu l'input falso popolando quello vero ma usa direttamente quello vero
   setupCustomDropdowns("ComDropdownInput", "dropdown-commesse", "ComDropdownInput");
   setupCustomDropdowns("CliDropdownInput", "dropdown-clienti", "CliDropdownInput");
 
