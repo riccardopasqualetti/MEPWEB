@@ -696,7 +696,14 @@ public partial class SataconsultingContext : DbContext
         {
             entity.HasKey(e => new { e.TatvId, e.TatvCDitta }).HasName("tatv_chiave");
 
-            entity.ToTable("flusso_tatv");
+            entity.ToTable("flusso_tatv", tb =>
+            {
+                tb.HasTrigger("t_flusso_tatv_ai");
+                tb.HasTrigger("t_flusso_tatv_dt_rich_cli_ins");
+                tb.HasTrigger("t_flusso_tatv_dt_rich_cli_upd");
+            });
+
+            entity.HasIndex(e => e.TatvCPartApp, "tatv_chiave_alt_1");
 
             entity.Property(e => e.TatvId)
                 .ValueGeneratedOnAdd()

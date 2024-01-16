@@ -155,7 +155,14 @@
 
                         DateTime dd2 = DateTime.Now.Date;
                         var q = _db.VsPpCalendarRis.FirstOrDefault(c => c.CrrpMaccCMatricola == @obj.CrrgCRis && c.CrrpDtt == @obj.CrrgDtt);
-                        cal_hh = q.CrrpHhTot;
+                        if (q != null)
+                        {
+                            cal_hh = q.CrrpHhTot;
+                        } 
+                        else
+                        {
+                            cal_hh = 0;
+                        }
 
 
                         seconds_tot = 0;

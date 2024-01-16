@@ -11,6 +11,7 @@ namespace Mep01Web.Service.Interface
         Task<ResponseBase<List<ConsXCommResponse>>?> GetAllConsAsync();
         Task<ResponseBase<CrrgResponse>?> GetCrrgAsync(CrrgCreateRequest crrgRequest);
         Task<ResponseBase<CrrgResponse>?> AddCrrgAsync(CrrgCreateRequest crrgRequest);
+        Task<ResponseBase<CrrgResponse>?> UpdateCrrgAsync(CrrgCreateRequest crrgRequest);
         Task<ResponseBase<CrrgResponse>?> DeleteCrrgAsync(CrrgCreateRequest crrgRequest);
         Task<CrrgCreateRequest> AddCrrgPrepareDataAsync(CrrgCreateRequest crrgCreateRequest);
         Task<CrrgCreateRequest> DeleteCrrgPrepareDataAsync(CrrgCreateRequest crrgCreateRequest);

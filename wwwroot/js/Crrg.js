@@ -52,7 +52,8 @@ async function Modalita() {
       document.getElementById("MemoModalita").value = "modIsl";
       break;
 
-    case document.getElementById("modCli").checked:
+      case document.getElementById("modCli").checked:
+          document.getElementById("CrrgCCaus").value = "CORI"
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // abilita divComCli
@@ -94,7 +95,8 @@ async function Modalita() {
       document.getElementById("MemoModalita").value = "modCli";
       break;
 
-    case document.getElementById("modGestInt").checked:
+      case document.getElementById("modGestInt").checked:
+          document.getElementById("CrrgCCaus").value = "CORI"
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // abilita divComCli
@@ -135,7 +137,8 @@ async function Modalita() {
 
       break;
 
-    case document.getElementById("modSvilInt").checked:
+      case document.getElementById("modSvilInt").checked:
+          document.getElementById("CrrgCCaus").value = "CORI"
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // abilita divComCli
@@ -176,7 +179,8 @@ async function Modalita() {
 
       break;
 
-    case document.getElementById("modCom").checked:
+      case document.getElementById("modCom").checked:
+          document.getElementById("CrrgCCaus").value = "CORI"
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // disabilita divComCli

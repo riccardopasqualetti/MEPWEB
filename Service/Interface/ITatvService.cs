@@ -7,6 +7,7 @@ namespace Mep01Web.Service.Interface
     public interface ITatvService
     {
         Task<ResponseBase<TatvResponse?>> GetTatvAsync(TatvGetRequest tatvRequest);
+        Task<ResponseBase<TatvResponse?>> UpdateTatvAsync(string islCode, string unit, decimal ggDiff);
 
     }
 }

@@ -5,6 +5,7 @@ using Mep01Web.DTO.Request;
 using Mep01Web.DTO.Response;
 using Mep01Web.DTO;
 using Mep01Web.Service.Interface;
+using Mep01Web.Type;
 
 namespace Mep01Web.Service.Impl
 {
@@ -58,5 +59,37 @@ namespace Mep01Web.Service.Impl
 			return ResponseBase<TatvResponse?>.Success(tatvResponse);
 
 		}
+
+        public async Task<ResponseBase<TatvResponse?>> UpdateTatvAsync(string islCode, string unit, decimal ggDiff)
+        {
+            var tatv = await _db.FlussoTatvs.FirstOrDefaultAsync(x => x.TatvRifCliente == islCode.ToString());
+            
+            if (unit == "SVIL")
+            {
+                if (tatv.TatvResiduoGg - ggDiff > 0)
+                {
+                    tatv.TatvResiduoGg = tatv.TatvResiduoGg - ggDiff;
+                }
+                else
+                {
+                    tatv.TatvResiduoGg = 0;
+                }
+            }
+            else if (unit == "DELI")
+            {
+                if (tatv.TatvResiduoGgTest - ggDiff > 0)
+                {
+                    tatv.TatvResiduoGgTest = tatv.TatvResiduoGgTest - ggDiff;
+                }
+                else
+                {
+                    tatv.TatvResiduoGgTest = 0;
+                }
+            }
+
+            await _db.SaveChangesAsync();
+
+            return ResponseBase<TatvResponse?>.Success();
+        }
     }
 }

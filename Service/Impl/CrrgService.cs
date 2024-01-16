@@ -226,7 +226,12 @@ namespace Mep01Web.Service.Impl
             } 
             else
             {
-			    _dbContext.FlussoCrrgs.Add(flussoCrrg);
+                var diff = (decimal)hms / (3600 * 8);
+                if (crrgRequest.CrrgRifCliente != null && (crrgRequest.CrrgCCaus == "DELI" || crrgRequest.CrrgCCaus == "SVIL"))
+                {
+                    await _tatvService.UpdateTatvAsync(crrgRequest.CrrgRifCliente, crrgRequest.CrrgCCaus, diff);
+                }
+                _dbContext.FlussoCrrgs.Add(flussoCrrg);
             }
 
             var affected = await _dbContext.SaveChangesAsync();
@@ -254,6 +259,8 @@ namespace Mep01Web.Service.Impl
             var hms = crrgTmRunIncr.GetSeconds();
 
             var record = await _dbContext.FlussoCrrgs.FirstOrDefaultAsync(x => x.CrrgCSrl == crrgRequest.CrrgCSrl);
+            var hmsNew = record.CrrgTmRunIncr;
+            var hmsDiff = (decimal)hms - hmsNew;
 
             record.CrrgTstDoc = crrgRequest.CrrgTstDoc;
             record.CrrgPrfDoc = crrgRequest.CrrgPrfDoc;
@@ -296,6 +303,13 @@ namespace Mep01Web.Service.Impl
             record.CrrgGrpcdlPrev = grpRes.Body.CrrgGrpcdlPrev;
 
             var affected = await _dbContext.SaveChangesAsync();
+
+            var ggDiff = (decimal)hmsDiff / (3600 * 8);
+
+            {
+            if (crrgRequest.CrrgRifCliente != null && (crrgRequest.CrrgCCaus == "DELI" || crrgRequest.CrrgCCaus == "SVIL"))
+                await _tatvService.UpdateTatvAsync(crrgRequest.CrrgRifCliente, crrgRequest.CrrgCCaus, ggDiff);
+            }
 
             var crrgResponse = new CrrgResponse();
             crrgResponse.FlussoCrrg = record;
