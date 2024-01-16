@@ -106,6 +106,7 @@
                 </th>
                 <th></th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -146,7 +147,9 @@
                                 <td>
                                 </td>
                                 <td>
-                                </td>                    
+                                </td>
+                                <td>
+                                </td>
                             </tr>
                         }
 
@@ -189,9 +192,15 @@
                         <td>
                             <div class="w-75 btn-group" role="group">
                                 @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>*@
-                                <a asp-controller="Crrg" asp-action="Delete" asp-route-id="@obj.CrrgCSrl" ><i class="bi bi-trash-fill"></i></a>
+                                <a asp-controller="Crrg" asp-action="Update" asp-route-id="@obj.CrrgCSrl"><i class="bi bi-pencil-fill"></i></a>
                             </div>
-                        </td>                    
+                        </td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>*@
+                                <a asp-controller="Crrg" asp-action="Delete" asp-route-id="@obj.CrrgCSrl"><i class="bi bi-trash-fill"></i></a>
+                            </div>
+                        </td>
                     </tr>        
                 }
 
@@ -222,7 +231,9 @@
                             <td>
                             </td>
                             <td>
-                            </td>                    
+                            </td>
+                            <td>
+                            </td> 
                         </tr>
                 }
 

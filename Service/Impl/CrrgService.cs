@@ -127,6 +127,10 @@ namespace Mep01Web.Service.Impl
 
             var grpRes = await GetGrpCdlsAsync(grpCdlRequest);
 
+//            tatv_residuo_gg
+//              tatv_residuo_gg_test
+//              tatv_stima_gg
+//                tatv_stima_gg_test
             var m = _dbContext.FlussoCrrgs.Max(c => c.CrrgCSrl) + 1;
             var crrgTmRunIncr = new Duration(crrgRequest.CrrgTmRunIncrHMS);
             var hms = crrgTmRunIncr.GetSeconds();
@@ -215,7 +219,16 @@ namespace Mep01Web.Service.Impl
                 CrrgGrpcdlPrev = grpRes.Body.CrrgGrpcdlPrev
                 
 			};
-            _dbContext.FlussoCrrgs.Add(flussoCrrg);
+
+			if (crrgRequest.IsUpdate)
+			{
+                return await UpdateCrrgAsync(crrgRequest);
+            } 
+            else
+            {
+			    _dbContext.FlussoCrrgs.Add(flussoCrrg);
+            }
+
             var affected = await _dbContext.SaveChangesAsync();
 
             var crrgResponse = new CrrgResponse();
@@ -223,7 +236,75 @@ namespace Mep01Web.Service.Impl
             return ResponseBase<CrrgResponse?>.Success(crrgResponse);
         }
 
-		public async Task<ResponseBase<CrrgResponse>?> DeleteCrrgAsync(CrrgCreateRequest crrgRequest)
+        public async Task<ResponseBase<CrrgResponse>?> UpdateCrrgAsync(CrrgCreateRequest crrgRequest)
+        {
+            var grpCdlRequest = new CrrgGrpCdlsRequest
+            {
+                CrrgCdl = crrgRequest.CrrgCdl,
+                CrrgCRis = crrgRequest.CrrgCRis,
+                CrrgTstDoc = crrgRequest.CrrgTstDoc,
+                CrrgPrfDoc = crrgRequest.CrrgPrfDoc,
+                CrrgADoc = crrgRequest.CrrgADoc,
+                CrrgNDoc = crrgRequest.CrrgNDoc
+            };
+
+            var grpRes = await GetGrpCdlsAsync(grpCdlRequest);
+
+            var crrgTmRunIncr = new Duration(crrgRequest.CrrgTmRunIncrHMS);
+            var hms = crrgTmRunIncr.GetSeconds();
+
+            var record = await _dbContext.FlussoCrrgs.FirstOrDefaultAsync(x => x.CrrgCSrl == crrgRequest.CrrgCSrl);
+
+            record.CrrgTstDoc = crrgRequest.CrrgTstDoc;
+            record.CrrgPrfDoc = crrgRequest.CrrgPrfDoc;
+            record.CrrgADoc = crrgRequest.CrrgADoc;
+            record.CrrgNDoc = crrgRequest.CrrgNDoc;
+            record.CrrgPosDoc = crrgRequest.CrrgPosDoc;
+            record.CrrgPrgDoc = crrgRequest.CrrgPrgDoc;
+            record.CrrgNOper = crrgRequest.CrrgNOper;
+            record.CrrgTRis = "3";
+            record.CrrgCRis = crrgRequest.CrrgCRis;
+            record.CrrgDtt = crrgRequest.CrrgDtt;
+            record.CrrgCDitta = "01";
+            record.CrrgTOperFdc = "S";
+            record.CrrgFlgDomina = "S";
+            record.CrrgCCaus = crrgRequest.CrrgCCaus;
+            record.CrrgCSeq = "18";
+            record.CrrgNOperOlca = crrgRequest.CrrgNOper;
+            record.CrrgTOper = crrgRequest.CrrgTOper;
+            record.CrrgCdl = crrgRequest.CrrgCdl;
+            record.CrrgTmRunIncr = hms;
+            record.CrrgDttApertura = DateTime.Now.Date;
+            record.CrrgDttIni = DateTime.Now.Date;
+            record.CrrgDttFine = DateTime.Now.Date;
+            record.CrrgNTerm = "$SERVER$";
+            record.CrrgCSrlPadre = crrgRequest.CrrgCSrl;
+            record.CrrgCSrlFiglio = crrgRequest.CrrgCSrl;
+            record.CrrgFlgElab = "S";
+            record.Crrg01Ac = 4;
+            record.CrrgAComp = DateTime.Now.Year;
+            record.CrrgMeseComp = DateTime.Now.Month;
+            record.CrrgDtUm = DateTime.Now;
+            record.CrrgUtenteUm = crrgRequest.CrrgCRis;
+            record.CrrgCmaatt = crrgRequest.CrrgCmaatt;
+            record.CrrgNote = crrgRequest.CrrgNote;
+            record.CrrgRifCliente = crrgRequest.CrrgRifCliente;
+            record.CrrgTmRunIncrProd = hms;
+            record.CrrgApp = crrgRequest.CrrgApp;
+            record.CrrgMod = crrgRequest.CrrgMod;
+            record.CrrgGrpcdlEff = grpRes.Body.CrrgGrpcdlEff;
+            record.CrrgGrpcdlPrev = grpRes.Body.CrrgGrpcdlPrev;
+
+            var affected = await _dbContext.SaveChangesAsync();
+
+            var crrgResponse = new CrrgResponse();
+            crrgResponse.FlussoCrrg = record;
+
+            return ResponseBase<CrrgResponse?>.Success(crrgResponse);
+        }
+
+
+        public async Task<ResponseBase<CrrgResponse>?> DeleteCrrgAsync(CrrgCreateRequest crrgRequest)
         {
 			FlussoCrrg flussoCrrg = await _dbContext.FlussoCrrgs.SingleOrDefaultAsync(e => e.CrrgCSrl == crrgRequest.CrrgCSrl && e.CrrgCDitta == "01");
             if (flussoCrrg == null)

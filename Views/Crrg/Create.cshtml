@@ -6,19 +6,19 @@
 
 <div class="main-mep-container scrolling-container">
 	<div class="container">
-		<form method="post" name="CrrgCreateForm">
+		<form method="post"  name="CrrgCreateForm">
 			<div class="p-3">
 
 				<div class="row">
 					<div class="col-8">
 						<h2 class="text-primary d-inline-block">
-							Inserimento consuntivo @(Model.CrrgCSrl > 0 ? " - duplicato da: " + Decimal.ToInt32(Model.CrrgCSrl) : "")
+							Inserimento consuntivo @(Model.CrrgCSrl > 0 && !Model.IsUpdate ? " - duplicato da: " + Decimal.ToInt32(Model.CrrgCSrl) : "") @(Model.CrrgCSrl > 0 && Model.IsUpdate ? " - Modifica: " + Decimal.ToInt32(Model.CrrgCSrl) : "")
 						</h2>
 					</div>
 					<div class="col-4 text-center">
 						@if (Model.Succeeded == "S")
 						{
-							<p id="result-p" class="mb-2">Inserimento Effettuato</p>
+							<p id="result-p" class="mb-2">@(Model.IsUpdate ? "Aggiornamento Effettuato" : "Inserimento Effettuato")</p>
 						}
 					</div>
 					<div class="col-4">
@@ -208,7 +208,7 @@
 				<a asp-controller="Crrg" asp-action="Index" class="btn btn-secondary" style="width:150px">
 					Back to List
 				</a>
-
+				<input asp-for="IsUpdate" hidden value="@Model.IsUpdate" />
 
 			</div>
 		</form>

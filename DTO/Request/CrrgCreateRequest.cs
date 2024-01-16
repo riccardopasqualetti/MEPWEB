@@ -98,6 +98,7 @@ namespace Mep01Web.DTO.Request
         public string? MemoModalita { get; set; }
 
         public string Succeeded { get; set; } = "";
+        public bool IsUpdate { get; set; } = false;
 
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

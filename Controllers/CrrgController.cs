@@ -107,6 +107,7 @@ namespace Mep01Web.Controllers
         {
 			//if (ModelState.IsValid)
 			//{ 
+
 			ModelState.Clear();
 			var addCrrgResponse = await _crrgService.AddCrrgAsync(obj);
 
@@ -154,10 +155,13 @@ namespace Mep01Web.Controllers
 				obj.Succeeded = "S";
 			}
 			//}
+
 			await _crrgService.AddCrrgPrepareDataAsync(obj);
 			return View(obj);
+
 			//return RedirectToAction("Create");
 			//return RedirectToAction("Index");
+
 		}
 
 
@@ -182,8 +186,8 @@ namespace Mep01Web.Controllers
             return View("Create", obj);			
         }
 
-		//POST
-		[HttpPost]
+        //POST
+        [HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Duplicate(CrrgCreateRequest obj)
         {
@@ -191,9 +195,40 @@ namespace Mep01Web.Controllers
             return View("Create",obj);
         }
 
+        [HttpGet("[controller]/[action]/{crrgCSrl}")]
+        public async Task<IActionResult> Update(int crrgCSrl)
+        {
+            if (crrgCSrl == null || crrgCSrl == 0)
+            {
+                return NotFound();
+            }
+            CrrgCreateRequest obj = new CrrgCreateRequest((decimal)crrgCSrl);
+            obj.IsUpdate = true;
+            await _crrgService.AddCrrgPrepareDataAsync(obj);
+            await _crrgService.DeleteCrrgPrepareDataAsync(obj);
+            if (obj.CrrgRifCliente == null)
+            {
+                obj.MemoModalita = "modCom";
+            }
+            else
+            {
+                obj.MemoModalita = "modIsl";
+            }
 
-		//GET Update
-		public async Task<IActionResult> Edit(int? crrgCSrl)
+            return View("Create", obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Update(CrrgCreateRequest obj)
+        {
+            await Create(obj);
+            return View("Create", obj);
+        }
+
+
+        //GET Update
+        public async Task<IActionResult> Edit(int? crrgCSrl)
         {
             if (crrgCSrl == null || crrgCSrl == 0)
             {
