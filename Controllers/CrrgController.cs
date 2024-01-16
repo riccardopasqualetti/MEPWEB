@@ -105,9 +105,9 @@ namespace Mep01Web.Controllers
         public async Task<ActionResult> Create(CrrgCreateRequest obj)
         //public ActionResult Create(FlussoCrrg obj)
         {
-			//if (ModelState.IsValid)
-			//{ 
-
+            //if (ModelState.IsValid)
+            //{ 
+            obj.CrrgCRis = obj.CrrgCRis.ToUpper();
 			ModelState.Clear();
 			var addCrrgResponse = await _crrgService.AddCrrgAsync(obj);
 
