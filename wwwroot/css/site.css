@@ -1,5 +1,8 @@
 :root {
   --whiter-text-color: rgba(255, 255, 255, 0.7);
+  --anfu-color: rgba(255, 255, 204, 1);
+  --svil-color: rgba(102, 255, 51, 1);
+  --deli-color: rgba(51, 204, 255, 1);
 }
 
 html {
@@ -143,7 +146,7 @@ footer {
   }
 }
 
-#NTOper {
+.crrgCreateContainer #NTOper {
   width: 22rem;
 }
 
@@ -508,10 +511,9 @@ footer {
   border: 1px solid var(--whiter-text-color);
   border-radius: 0.3rem;
   width: fit-content;
-  height: 5vh;
   display: flex;
   align-items: center;
-  height: 3vh;
+  height: 2rem;
   margin-top: 1vh;
 }
 
@@ -523,6 +525,8 @@ footer {
 #filter-btn i {
   font-size: 24px;
   color: var(--whiter-text-color);
+  display: block;
+  height: 2rem;
 }
 
 #filters-container {
@@ -636,6 +640,6 @@ footer {
   color: red;
 }
 
-.tgen-margin{
-    margin-top: 10vh;
+.tgen-margin {
+  margin-top: 10vh;
 }

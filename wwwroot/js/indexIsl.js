@@ -3,9 +3,10 @@ Array.from(document.getElementsByClassName("open-btn")).forEach((x) => {
     const rowIsl = x.parentElement.getAttribute("rowIsl");
     const accordionBody = document.getElementById(`accordion-${rowIsl}`);
     accordionBody.classList.toggle("opens-opened");
+
     if (accordionBody.classList.contains("opens-opened")) {
       accordionBody.style.maxHeight = "92.84px";
-      const res = await fetchApi(`MepWeb_Isl/${rowIsl}`);
+      const res = await fetchApi(`api/MepWeb_Isl/${rowIsl}`);
       const height = generateRows(res, rowIsl);
       accordionBody.style.maxHeight = 92.84 + height + 1 + "px";
     } else {
@@ -15,7 +16,7 @@ Array.from(document.getElementsByClassName("open-btn")).forEach((x) => {
 });
 
 async function fetchApi(url) {
-  const res = await fetch(url);
+  const res = await fetch(`${window.location.origin}/${url}`);
   console.log(res);
   try {
     if (res.status === 200) {
@@ -90,25 +91,71 @@ function generateRows(res, isl) {
   tr.appendChild(td);
   body.appendChild(tr);
 
-  iconaAdd.addEventListener("click", (e) => {
-    const rowN = e.target.getAttribute("riga");
-
-    document.getElementById("crrgCSrl").value = res[rowN][crrgCSrl];
-    document.getElementById("crrgCRis").value = res[rowN][crrgCRis];
-    document.getElementById("crrgCdl").value = res[rowN][crrgCdl];
-    document.getElementById("crrgRifCliente").value = res[rowN][crrgRifCliente];
-    document.getElementById("crrgTstDoc").value = res[rowN][crrgTstDoc];
-    document.getElementById("crrgPrfDoc").value = res[rowN][crrgPrfDoc];
-    document.getElementById("crrgADoc").value = res[rowN][crrgADoc];
-    document.getElementById("crrgNDoc").value = res[rowN][crrgNDoc];
-    document.getElementById("crrgNOper").value = res[rowN][crrgNOper];
-    document.getElementById("crrgTOper").value = res[rowN][crrgTOper];
-    document.getElementById("crrgCmaatt").value = res[rowN][crrgCmaatt];
-    document.getElementById("crrgCCaus").value = res[rowN][crrgCCaus];
-    document.getElementById("crrgApp").value = res[rowN][crrgApp];
-    document.getElementById("crrgMod").value = res[rowN][crrgMod];
-    document.getElementById("crrgMod").value = res[rowN][crrgMod];
+  iconaAdd.addEventListener("click", async (e) => {
+    await addConsuntivoToIsl(e, isl, res);
   });
 
   return height;
+}
+
+async function addConsuntivoToIsl(e, isl, res) {
+  const opers = await fetchApi(`Crrg/api/VsPpMonitorIsl/GetByRifCli/${isl}`);
+  const islData = document.getElementById(`accordion-${isl}`);
+
+  const tbcpTstComm = islData.getAttribute("TbcpTstComm");
+  const tbcpPrfComm = islData.getAttribute("TbcpPrfComm");
+  const tbcpAComm = islData.getAttribute("TbcpAComm");
+  const tbcpNComm = islData.getAttribute("TbcpNComm");
+  const tatvFlgOfferta = islData.getAttribute("TatvFlgOfferta");
+
+  const comm = `${tbcpTstComm}/${tbcpPrfComm}/${tbcpAComm}/${tbcpNComm}`;
+  const flagCausale = document.getElementById(`accordion-${isl}`).getAttribute("flag");
+  const islDesc = document.getElementById(`accordion-${isl}`).getAttribute("islDesc");
+  const tipoOperazione = await fetchApi(`api/Olca/GetOlcaCitoByCommAsync/${comm}`);
+
+  const rowN = e.target.getAttribute("riga");
+
+  document.getElementById("NTOper").innerHTML = "";
+  for (const oper of tipoOperazione.olcaCitoList) {
+    const option = document.createElement("option");
+    option.value = `${oper.flussoOlca.olcaNOper}-${oper.flussoOlca.olcaTOper}`;
+    option.innerText = `${oper.flussoOlca.olcaNOper} - ${oper.flussoOlca.olcaTOper} - ${oper.flussoCito.citoDescrizione}`;
+    document.getElementById("NTOper").appendChild(option);
+  }
+
+  const causali = {
+    "1-ANFU": "ANFU",
+    "2-SVIL": "SVIL",
+    "3-DELI": "DELI",
+    "7-NEW": "ANFU",
+    "8-SOSP": "ANFU",
+    "9-CLOSE": "DELI",
+  };
+  document.getElementById("crrgCCaus").value = causali[flagCausale];
+  document.getElementById("crrgNote").value = islDesc;
+
+  console.log(tatvFlgOfferta + "     " + tbcpPrfComm);
+
+  if (tbcpPrfComm == "B" || tatvFlgOfferta > 0) {
+    console.log(Array.from(document.querySelectorAll("#CrrgCmaatt input")).find((x) => x.value == "3"));
+    document.getElementById("crrgCmaatt4").checked = true;
+  } else {
+    document.getElementById("crrgCmaatt1").checked = true;
+  }
+
+  /* document.getElementById("crrgCSrl").value = res[rowN]["crrgCSrl"];
+  document.getElementById("crrgCRis").value = res[rowN]["crrgCRis"];
+  document.getElementById("crrgCdl").value = res[rowN]["crrgCdl"];
+  document.getElementById("crrgRifCliente").value = res[rowN]["crrgRifCliente"];
+  document.getElementById("crrgTstDoc").value = res[rowN]["crrgTstDoc"];
+  document.getElementById("crrgPrfDoc").value = res[rowN]["crrgPrfDoc"];
+  document.getElementById("crrgADoc").value = res[rowN]["crrgADoc"];
+  document.getElementById("crrgNDoc").value = res[rowN]["crrgNDoc"];
+  document.getElementById("crrgNOper").value = res[rowN]["crrgNOper"];
+  document.getElementById("crrgTOper").value = res[rowN]["crrgTOper"];
+  document.getElementById("crrgCmaatt").value = res[rowN]["crrgCmaatt"];
+  document.getElementById("crrgCCaus").value = res[rowN]["crrgCCaus"];
+  document.getElementById("crrgApp").value = res[rowN]["crrgApp"];
+  document.getElementById("crrgMod").value = res[rowN]["crrgMod"];
+  document.getElementById("crrgMod").value = res[rowN]["crrgMod"]; */
 }

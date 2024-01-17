@@ -16,7 +16,7 @@ async function Modalita() {
       // disabilita divComCli
       document.getElementById("divComCli").classList.add("d-none");
       // disabilita divComm
-          document.getElementById("divComm").classList.add("d-none");
+      document.getElementById("divComm").classList.add("d-none");
 
       if (document.getElementById("CrrgCSrl").value > 0) {
         document.getElementById("MemoModalita").value = "modIsl";
@@ -52,8 +52,8 @@ async function Modalita() {
       document.getElementById("MemoModalita").value = "modIsl";
       break;
 
-      case document.getElementById("modCli").checked:
-          document.getElementById("CrrgCCaus").value = "CORI"
+    case document.getElementById("modCli").checked:
+      document.getElementById("CrrgCCaus").value = "CORI";
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // abilita divComCli
@@ -95,8 +95,8 @@ async function Modalita() {
       document.getElementById("MemoModalita").value = "modCli";
       break;
 
-      case document.getElementById("modGestInt").checked:
-          document.getElementById("CrrgCCaus").value = "CORI"
+    case document.getElementById("modGestInt").checked:
+      document.getElementById("CrrgCCaus").value = "CORI";
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // abilita divComCli
@@ -137,8 +137,8 @@ async function Modalita() {
 
       break;
 
-      case document.getElementById("modSvilInt").checked:
-          document.getElementById("CrrgCCaus").value = "CORI"
+    case document.getElementById("modSvilInt").checked:
+      document.getElementById("CrrgCCaus").value = "CORI";
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // abilita divComCli
@@ -179,8 +179,8 @@ async function Modalita() {
 
       break;
 
-      case document.getElementById("modCom").checked:
-          document.getElementById("CrrgCCaus").value = "CORI"
+    case document.getElementById("modCom").checked:
+      document.getElementById("CrrgCCaus").value = "CORI";
       // disabilita divCrrgRifCliente
       document.getElementById("divCrrgRifCliente").classList.add("d-none");
       // disabilita divComCli
@@ -274,7 +274,7 @@ async function ISLChanged() {
     document.getElementById("ISLCommDesc").value = comm + " - " + islData.tbcpDesc;
     document.getElementById("DescrIsl").value = islData.tatvDesc;
     await LoadTOper(comm);
-    const tipo = {
+    const causali = {
       "1-ANFU": "ANFU",
       "2-SVIL": "SVIL",
       "3-DELI": "DELI",
@@ -287,7 +287,7 @@ async function ISLChanged() {
     } else {
       document.getElementById("CrrgCmaatt").value = "0";
     }
-    document.getElementById("CrrgCCaus").value = tipo[islData.flag];
+    document.getElementById("CrrgCCaus").value = causali[islData.flag];
     document.getElementById("CrrgApp").value = islData.tatvCPartApp;
     document.getElementById("CrrgMod").value = islData.tatvCPart;
     document.getElementById("CrrgNote").value = islData.tatvDesc;

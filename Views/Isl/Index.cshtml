@@ -126,7 +126,10 @@ ViewData["Title"] = "Isl";
                                 </tr>
                                 <tr>
                                     <td colspan="8" class="p-0">
-                                        <div id="accordion-@obj.RifCli" class="opens">
+                                        <div id="accordion-@obj.RifCli" flag="@obj.Flag" TbcpTstComm="@obj.TbcpTstComm"
+                                            TbcpPrfComm="@obj.TbcpPrfComm" TbcpAComm="@obj.TbcpAComm"
+                                            TbcpNComm="@obj.TbcpNComm" TatvFlgOfferta="@obj.TatvFlgOfferta"
+                                            islDesc="@obj.TatvDesc" class="opens">
 
                                             <table class="table table-borderer table-striped mb-0" style="width:100%">
                                                 <thead>
@@ -317,87 +320,59 @@ ViewData["Title"] = "Isl";
             </div>
             <div class="modal-body">
                 <form id="create-app-form" method="post" asp-page-handler="create">
-                    <div class="mb-3 d-flex">
+                    <div class="mb-2 d-flex">
                         <div class="form-group">
                             <label for="data">Data:</label>
-                            <input name="crrgDtt" id="data" type="date" class="form-control" aria-describedby="Data">
+                            <input name="crrgDtt" value='@DateTime.Now.ToString("yyyy-MM-dd")' id="data" type="date"
+                                class="form-control" aria-describedby="Data">
                         </div>
                         <div class="form-group ms-3">
-                            <label for="ora">Ora:</label>
+                            <label for="ora">Tempo:</label>
                             <input name="crrgTmRunIncrHMS" id="ora" type="time" class="form-control"
                                 aria-describedby="Data">
                         </div>
-                        <div class="form-group ms-3">
-                            <label for="crrgCCaus">Causale:</label>
-                            <select name="crrgCCaus" id="crrgCCaus">
-                                <option value="CORI">CORI</option>
-                                <option value="ANFU">ANFU</option>
-                                <option value="SVIL">SVIL</option>
-                                <option value="DELI">DELI</option>
-                            </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="NTOper">Operazione:</label>
+                        <select class="form-select" name="NTOper" id="NTOper">
+                        </select>
+                    </div>
+
+                    <div class="form-group mt-2" id="crrgCmaatt">
+                        <h5>Macroattività</h5>
+                        <div class="form-check">
+                            <label class="form-check-label" for="crrgCmaatt1">n.d.</label>
+                            <input class="form-check-input" type="radio" value="0" name="crrgCmaatt" id="crrgCmaatt1"
+                                checked="true">
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="crrgCmaatt2">Garanzia</label>
+                            <input class="form-check-input" type="radio" value="1" name="crrgCmaatt" id="crrgCmaatt2">
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="crrgCmaatt3">Assistenza</label>
+                            <input class="form-check-input" type="radio" value="2" name="crrgCmaatt" id="crrgCmaatt3">
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label" for="crrgCmaatt4">Verbale</label>
+                            <input class="form-check-input" type="radio" value="3" name="crrgCmaatt" id="crrgCmaatt4">
                         </div>
                     </div>
-                    <div class="mb-3 row">
-                        <div class="form-group col-6">
-                            <h5>Operazione</h5>
-                            <div class="form-check">
-                                <label class="form-check-label" for="crrgTOper1">Test</label>
-                                <input class="form-check-input" type="radio" value="0-TE01" name="crrgTOper"
-                                    id="crrgTOper1">
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" for="crrgTOper2">Programmazione</label>
-                                <input class="form-check-input" type="radio" value="20-PR01" name="crrgTOper"
-                                    id="crrgTOper2">
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" for="crrgTOper3">Analisi</label>
-                                <input class="form-check-input" type="radio" value="30-AN01" name="crrgTOper"
-                                    id="crrgTOper3">
-                            </div>
-                        </div>
-                        <div class="form-group col-6 radio2">
-                            <h5>Macroattività</h5>
-                            <div class="form-check">
-                                <label class="form-check-label" for="crrgCmaatt1">n.d.</label>
-                                <input class="form-check-input" type="radio" value="0-TE01" name="crrgCmaatt"
-                                    id="crrgCmaatt1">
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" for="crrgCmaatt2">Garanzia</label>
-                                <input class="form-check-input" type="radio" value="20-PR01" name="crrgCmaatt"
-                                    id="crrgCmaatt2">
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" for="crrgCmaatt3">Assistenza</label>
-                                <input class="form-check-input" type="radio" value="30-AN01" name="crrgCmaatt"
-                                    id="crrgCmaatt3">
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" for="crrgCmaatt4">Verbale</label>
-                                <input class="form-check-input" type="radio" value="30-AN01" name="crrgCmaatt"
-                                    id="crrgCmaatt4">
-                            </div>
-                        </div>
+
+                    <div class="form-group">
+                        <label for="crrgCCaus">Causale:</label>
+                        <select class="form-select" name="crrgCCaus" id="crrgCCaus">
+                            <option value="CORI">CORI</option>
+                            <option value="ANFU">ANFU</option>
+                            <option value="SVIL">SVIL</option>
+                            <option value="DELI">DELI</option>
+                        </select>
                     </div>
-                    <select name="crrgApp" id="crrgApp">
-                        <option value=""></option>
-                        <option value="APP_DEPSOL">APP_DEPSOL</option>
-                        <option value="APP_MAKINGONE">APP_MAKINGONE</option>
-                        <option value="APP_MEP">APP_MEP</option>
-                        <option value="APP_NICIM">APP_NICIM</option>
-                        <option value="APP_QLIKVIEW">APP_QLIKVIEW</option>
-                        <option value="APP_QUARTA">APP_QUARTA</option>
-                        <option value="APP_SAPB1">APP_SAPB1</option>
-                        <option value="APP_SUPPORT">APP_SUPPORT</option>
-                        <option value="APP_WEB_PORTAL">APP_WEB_PORTAL</option>
-                        <option value="APP_WEB_SERVICES">APP_WEB_SERVICES</option>
-                        <option value="APP_WEB_WM">APP_WEB_WM</option>
-                    </select>
-                    <select name="CrrgMod" id="CrrgMod"></select>
+
                     <div class="mb-3">
                         <label for="description">Descrizione</label>
-                        <textarea name="crrgNote" id="description" type="text" class="form-control"
+                        <textarea name="crrgNote" id="crrgNote" type="text" rows="6" class="form-control"
                             aria-describedby="description"></textarea>
                     </div>
                     <input type="hidden" name="crrgCSrl" id="crrgCSrl">
