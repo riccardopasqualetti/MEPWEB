@@ -644,7 +644,9 @@ function handleKeys(e, dropdownId, inputId, inputIdToSet) {
 function createOpt(cliData, i) {
   const opt = document.createElement("p");
   opt.className = "m-0 customDropdown-group dropdown-opt";
-  opt.setAttribute("valore", `${cliData.orpbTstDoc}/${cliData.orpbPrfDoc}/${cliData.orpbADoc}/${cliData.orpbNDoc}`);
+  let ndoc = cliData.orpbNDoc.toString();
+  ndoc = ndoc.padStart(6, "0");
+  opt.setAttribute("valore", `${cliData.orpbTstDoc}/${cliData.orpbPrfDoc}/${cliData.orpbADoc}/${ndoc}`);
   opt.innerText = cliData.commDescDd;
   opt.addEventListener("mousedown", async () => {
     document.getElementById("ComDropdownInput").value = opt.getAttribute("valore");

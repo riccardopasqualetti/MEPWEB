@@ -6,7 +6,7 @@ using Mep01Web.Type.Dropdown;
 
 namespace Mep01Web.DTO.Request
 {
-    public class CrrgCreateRequest : IValidatableObject
+    public class CrrgCreateRequest // : IValidatableObject
     {
         public CrrgCreateRequest()
         {            
@@ -101,14 +101,14 @@ namespace Mep01Web.DTO.Request
         public bool IsUpdate { get; set; } = false;
 
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            throw new NotImplementedException();
-        }
+        //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static implicit operator CrrgCreateRequest(Task<CrrgCreateRequest> v)
-        {
-            throw new NotImplementedException();
-        }
+        //public static implicit operator CrrgCreateRequest(Task<CrrgCreateRequest> v)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

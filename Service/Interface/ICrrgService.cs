@@ -9,6 +9,7 @@ namespace Mep01Web.Service.Interface
     public interface ICrrgService
     {
         Task<ResponseBase<List<ConsXCommResponse>>?> GetAllConsAsync();
+        Task<ResponseBase<List<FlussoCrrg?>>> GetConsuntiviByIslAsync(string isl);
         Task<ResponseBase<CrrgResponse>?> GetCrrgAsync(CrrgCreateRequest crrgRequest);
         Task<ResponseBase<CrrgResponse>?> AddCrrgAsync(CrrgCreateRequest crrgRequest);
         Task<ResponseBase<CrrgResponse>?> UpdateCrrgAsync(CrrgCreateRequest crrgRequest);

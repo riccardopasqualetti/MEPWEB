@@ -54,26 +54,5 @@ namespace Mep01Web.Controllers
             return View(obj);
         }
 
-        [HttpGet("{isl}")]
-        public async Task<IActionResult> GetConsuntiviByIsl(string isl)
-        {
-            try
-            {
-                var res = await _db.FlussoCrrgs
-                    .Where(c => c.CrrgRifCliente == isl)
-                    .OrderByDescending(c => c.CrrgDttIni)
-                    .ToListAsync();
-
-                    return Ok(res);
-            }
-            catch (Exception ex)
-            {
-                return Problem(
-                    detail: ex.Message,
-                    statusCode: StatusCodes.Status500InternalServerError
-                );
-            }
-        }
-
     }
 }

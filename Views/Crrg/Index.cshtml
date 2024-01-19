@@ -110,11 +110,11 @@
             </tr>
         </thead>
         <tbody>
-                @foreach (var obj in Model.CrrgList)                
+                @foreach (var obj in Model.CrrgList)      
                 {
             
                 var duration = new Duration(@obj.CrrgTmRunIncr);
-                var com = string.Concat(@obj.CrrgTstDoc, "/", @obj.CrrgPrfDoc, "/", @obj.CrrgADoc, "/", @obj.CrrgNDoc);
+                var com = string.Concat(@obj.CrrgTstDoc, "/", @obj.CrrgPrfDoc, "/", @obj.CrrgADoc, "/", @obj.CrrgNDoc.ToString("000000"));
 
                     @if (crrg_dtt_prev != obj.CrrgDtt)
                     {

@@ -21,6 +21,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_CO03    TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_macc TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_tcdl TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_QUAL    TO mepweb
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_NMDT	TO mepweb
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_NMDC	TO mepweb
 
 
 GRANT VIEW DEFINITION ON dba.flusso_acli                TO mepweb 
@@ -43,6 +45,8 @@ GRANT VIEW DEFINITION ON dba.PSC_CO03                   TO mepweb
 GRANT VIEW DEFINITION ON dba.flusso_macc                TO mepweb 
 GRANT VIEW DEFINITION ON dba.flusso_tcdl                TO mepweb 
 GRANT VIEW DEFINITION ON dba.PSC_QUAL                   TO mepweb 
+GRANT VIEW DEFINITION ON dba.PSC_NMDT					TO mepweb
+GRANT VIEW DEFINITION ON dba.PSC_NMDC					TO mepweb
 
 
 GRANT SELECT ON dba.mvxpa01                             TO mepweb
@@ -57,4 +61,10 @@ GRANT VIEW DEFINITION ON dba.mvxzz12                    TO mepweb
 GRANT VIEW DEFINITION ON dba.vs_cons_x_comm             TO mepweb
 GRANT VIEW DEFINITION ON dba.vs_pp_comm_aperte_x_cli    TO mepweb
 GRANT VIEW DEFINITION ON dba.vs_pp_calendar_ris         TO mepweb
+
+
+GRANT EXECUTE ON dba.sp_status							TO mepweb
+GRANT EXECUTE ON dba.sp_raiserror						TO mepweb
+GRANT VIEW DEFINITION ON dba.sp_status					TO mepweb
+GRANT VIEW DEFINITION ON dba.sp_raiserror				TO mepweb
 go

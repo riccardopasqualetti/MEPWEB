@@ -262,6 +262,7 @@ namespace Mep01Web.Service.Impl
             var hmsNew = record.CrrgTmRunIncr;
             var hmsDiff = (decimal)hms - hmsNew;
 
+
             record.CrrgTstDoc = crrgRequest.CrrgTstDoc;
             record.CrrgPrfDoc = crrgRequest.CrrgPrfDoc;
             record.CrrgADoc = crrgRequest.CrrgADoc;
@@ -269,28 +270,15 @@ namespace Mep01Web.Service.Impl
             record.CrrgPosDoc = crrgRequest.CrrgPosDoc;
             record.CrrgPrgDoc = crrgRequest.CrrgPrgDoc;
             record.CrrgNOper = crrgRequest.CrrgNOper;
-            record.CrrgTRis = "3";
             record.CrrgCRis = crrgRequest.CrrgCRis;
             record.CrrgDtt = crrgRequest.CrrgDtt;
-            record.CrrgCDitta = "01";
-            record.CrrgTOperFdc = "S";
-            record.CrrgFlgDomina = "S";
             record.CrrgCCaus = crrgRequest.CrrgCCaus;
-            record.CrrgCSeq = "18";
             record.CrrgNOperOlca = crrgRequest.CrrgNOper;
             record.CrrgTOper = crrgRequest.CrrgTOper;
             record.CrrgCdl = crrgRequest.CrrgCdl;
             record.CrrgTmRunIncr = hms;
-            record.CrrgDttApertura = DateTime.Now.Date;
-            record.CrrgDttIni = DateTime.Now.Date;
-            record.CrrgDttFine = DateTime.Now.Date;
-            record.CrrgNTerm = "$SERVER$";
             record.CrrgCSrlPadre = crrgRequest.CrrgCSrl;
             record.CrrgCSrlFiglio = crrgRequest.CrrgCSrl;
-            record.CrrgFlgElab = "S";
-            record.Crrg01Ac = 4;
-            record.CrrgAComp = DateTime.Now.Year;
-            record.CrrgMeseComp = DateTime.Now.Month;
             record.CrrgDtUm = DateTime.Now;
             record.CrrgUtenteUm = crrgRequest.CrrgCRis;
             record.CrrgCmaatt = crrgRequest.CrrgCmaatt;
@@ -325,6 +313,13 @@ namespace Mep01Web.Service.Impl
             {
 				return ResponseBase<CrrgResponse?>.Failed("-2", $"Non sono stati trovati record in flusso_acli");
 			}
+
+            var hms = new Duration(flussoCrrg.CrrgTmRunIncr).GetSeconds();
+            var diff = -(decimal)hms / (3600 * 8);
+            if (crrgRequest.CrrgRifCliente != null && (crrgRequest.CrrgCCaus == "DELI" || crrgRequest.CrrgCCaus == "SVIL"))
+            {
+                await _tatvService.UpdateTatvAsync(crrgRequest.CrrgRifCliente, crrgRequest.CrrgCCaus, diff);
+            }
             _dbContext.FlussoCrrgs.Remove(flussoCrrg);
 			var affected = await _dbContext.SaveChangesAsync();
 
@@ -561,6 +556,15 @@ namespace Mep01Web.Service.Impl
 			return ResponseBase<CrrgGrpCdlsResponse>.Success(res);
 		}
 
-	}
+        public async Task<ResponseBase<List<FlussoCrrg?>>> GetConsuntiviByIslAsync(string isl)
+        {
+            var res = await _dbContext.FlussoCrrgs
+                .Where(c => c.CrrgRifCliente == isl)
+                .OrderByDescending(c => c.CrrgDttIni)
+                .ToListAsync();
+
+            return ResponseBase<List<FlussoCrrg?>>.Success(res);
+        }
+    }
 }
 

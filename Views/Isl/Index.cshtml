@@ -1,6 +1,8 @@
 ﻿@using Mep01Web.DTO.Request;
+@using MepWeb.Service;
 @model IslGetRequest;
 @inject IHttpContextAccessor _contextAccessor;
+@inject UserScope _userScope;
 
 
 @{
@@ -13,14 +15,14 @@ ViewData["Title"] = "Isl";
 
         <h1>Gestione ISL in corso</h1>
 
-        <div class="p-1 mb-2 btn-group" id="filter-btn" role="group">
+        <div class="p-1 btn-group" id="filter-btn" role="group">
             <a onclick="NascondiFiltro()"><i class="bi bi-filter"></i></a>
         </div>
 
         <div id="divGetFilterForm" @(Model.FilterHidden=="Y" ? "style=&#39;display:none;&#39;"
             : "style=&#39;display:block;&#39;" )>
             <form method="post" name="IslGetFilterForm">
-                <div class="border p-3 my-4">
+                <div class="border p-3 mt-3">
                     <div class="row pb-2">
                         <h2 class="text-primary">
                             Filtri
@@ -28,10 +30,10 @@ ViewData["Title"] = "Isl";
                         <hr />
                     </div>
 
-                    <div class="mb-3">
+                    <div>
                         <label asp-for="FilterIslCRis">Risorsa</label>
                         <div class="d-flex align-items-center">
-                            <input asp-for="FilterIslCRis" class="form-control" style="width:50px" />
+                            <input asp-for="FilterIslCRis" id="FilterIslCRis" class="form-control" style="width:50px" />
                             <button type="submit" class="btn btn-primary ms-3" style="width:150px">Reload</button>
                         </div>
                     </div>
@@ -39,19 +41,161 @@ ViewData["Title"] = "Isl";
             </form>
         </div>
 
-        <div class="accordion mb-5" id="accordionISL">
+
+
+        <div class="accordion mb-5 mt-3" id="accordionISL">
+
+            <!----------------------  Accordion 1 ANFU  ----------------------->
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#accordionAnfu" aria-expanded="false" aria-controls="accordionAnfu">
+                        <div class="row">
+                            <div class="col-12">
+                                <h2 class="text-primary">Attività in Analisi Funzionale @* @(Model.IslList.Where(x =>
+                                    x.Flag=="1-ANFU").Count() == 0 ? "(Vuoto)" : "") *@</h2>
+                            </div>
+                        </div>
+                    </button>
+                </h2>
+                <div id="accordionAnfu" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <table class="table table-borderer table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th class="isl-th-color3 text-start">
+                                        Codice ISL
+                                    </th>
+                                    <th class="isl-th-color3 text-start">
+                                        Descrizione
+                                    </th>
+                                    <th class="isl-th-color3 text-start">
+                                        Stato
+                                    </th>
+                                    <th class="isl-th-color3 text-start">
+                                        Cambio stato
+                                    </th>
+                                    <th class="isl-th-color3 text-start">
+                                        Scadenza Task
+                                    </th>
+                                    <th class="isl-th-color3 text-start">
+                                        CdL
+                                    </th>
+                                    <th class="isl-th-color3 text-start">
+                                        Commessa
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model.IslList.Where(x => x.Flag=="1-ANFU"))
+                                {
+                                //var duration = new Duration(@obj.CrrgTmRunIncr);
+                                var com = string.Concat(@obj.TbcpTstComm, "/", @obj.TbcpPrfComm, "/", @obj.TbcpAComm,
+                                "/",
+                                @obj.TbcpNComm);
+                                <tr>
+                                    <td style="width: 10%;">
+                                        <div>@obj.RifCli</div>
+                                    </td>
+                                    <td style="width: 35%;" class="custom-tooltip-color text-wrapper"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="@obj.TatvDesc">
+                                        <div>
+                                            @obj.TatvDesc
+                                            @*@obj.TatvDesc.Substring(0, Math.Min(obj.TatvDesc.Length, 50)-1)...*@
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>@obj.Stato</div>
+                                    </td>
+                                    <td>
+                                        <div>@obj.CambioStato</div>
+                                    </td>
+                                    <td>
+                                        <div>@obj.CurrDt</div>
+                                    </td>
+                                    <td>
+                                        <div>@obj.CurrCdl</div>
+                                    </td>
+                                    <td>
+                                        <div>@com</div>
+                                    </td>
+                                    <td class="isl-row-btns p-0">
+                                        <div class="w-100 btn-group d-flex justify-content-center"
+                                            style="padding-top:3px;" role="group">
+                                            <a class="openAccordion pointer-pointer" rowIsl="@obj.RifCli"
+                                                islStato="anfu"><i class="bi bi-filter open-btn fs-4"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="8" class="p-0">
+                                        <div id="accordion-@obj.RifCli-anfu" flag="@obj.Flag"
+                                            TbcpTstComm="@obj.TbcpTstComm" TbcpPrfComm="@obj.TbcpPrfComm"
+                                            TbcpAComm="@obj.TbcpAComm" TbcpNComm="@obj.TbcpNComm"
+                                            TatvFlgOfferta="@obj.TatvFlgOfferta" islDesc="@obj.TatvDesc"
+                                            CrrgApp="@obj.TatvCPartApp" CrrgMod="@obj.TatvCPart" class="opens">
+
+                                            <table class="table table-borderer mb-0" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            Ris.
+                                                        </th>
+                                                        <th>
+                                                            Data
+                                                        </th>
+                                                        <th>
+                                                            Effort
+                                                        </th>
+                                                        <th>
+                                                            Codice ISL
+                                                        </th>
+                                                        <th>
+                                                            Commessa
+                                                        </th>
+                                                        <th>
+                                                            Description
+                                                        </th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbody-@obj.RifCli-anfu">
+
+                                                </tbody>
+
+                                            </table>
+
+
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!----------------------  Accordion 2 SVIL  ----------------------->
+
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#accordionSvil" aria-expanded="false" aria-controls="accordionSvil">
                         <div class="row">
                             <div class="col-12">
-                                <h2 class="text-primary">Attività in Sviluppo</h2>
+                                <h2 class="text-primary">
+                                    Attività in Sviluppo @* @(Model.IslList.Where(x =>
+                                    x.Flag == "1-ANFU").Count() == 0 ? "(Vuoto)" : "") *@
+                                </h2>
                             </div>
                         </div>
                     </button>
                 </h2>
-                <div id="accordionSvil" class="accordion-collapse collapse" data-bs-parent="#accordionISL">
+                <div id="accordionSvil" class="accordion-collapse collapse">
                     <div class="accordion-body">
                         <table class="table table-borderer table-striped" style="width:100%">
                             <thead>
@@ -84,17 +228,19 @@ ViewData["Title"] = "Isl";
                                 @foreach (var obj in Model.IslList.Where(x => x.Flag=="2-SVIL"))
                                 {
                                 //var duration = new Duration(@obj.CrrgTmRunIncr);
-                                var com = string.Concat(@obj.TbcpTstComm, "/", @obj.TbcpPrfComm, "/", @obj.TbcpAComm,
+                                var com = string.Concat(@obj.TbcpTstComm, "/", @obj.TbcpPrfComm, "/",
+                                @obj.TbcpAComm,
                                 "/",
                                 @obj.TbcpNComm);
                                 <tr>
-                                    <td>
+                                    <td style="width: 10%;">
                                         <div>@obj.RifCli</div>
                                     </td>
-                                    <td class="custom-tooltip-color" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        data-bs-title="@obj.TatvDesc">
+                                    <td style="width: 35%;" class="custom-tooltip-color text-wrapper"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="@obj.TatvDesc">
                                         <div>
-                                            @obj.TatvDesc.Substring(0, Math.Min(obj.TatvDesc.Length, 50)-1)...</div>
+
+                                            @obj.TatvDesc</div>
                                     </td>
                                     <td>
                                         <div>@obj.Stato</div>
@@ -111,27 +257,23 @@ ViewData["Title"] = "Isl";
                                     <td>
                                         <div>@com</div>
                                     </td>
-                                    <td class="isl-row-btns">
-                                        <div class="w-100 btn-group d-flex justify-content-center" role="group">
-                                            @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl"
-                                                class="btn btn-primary mx-2"><i
-                                                    class="bi bi-pencil-square"></i>Edit</a>*@
-                                            <a asp-controller="Isl" asp-action="Index"
-                                                asp-route-id="@Model.FilterIslCRis" onclick="alert('Consuntivo')"><i
-                                                    class="bi bi-clock-fill"></i></a>
-                                            <a class="openAccordion pointer-pointer" rowIsl="@obj.RifCli"><i
-                                                    class="bi bi-list-check open-btn"></i></a>
+                                    <td class="isl-row-btns p-0">
+                                        <div class="w-100 btn-group d-flex justify-content-center"
+                                            style="padding-top:3px;" role="group">
+                                            <a class="openAccordion pointer-pointer" rowIsl="@obj.RifCli"
+                                                islStato="svil"><i class="bi bi-filter open-btn fs-4"></i></a>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="8" class="p-0">
-                                        <div id="accordion-@obj.RifCli" flag="@obj.Flag" TbcpTstComm="@obj.TbcpTstComm"
-                                            TbcpPrfComm="@obj.TbcpPrfComm" TbcpAComm="@obj.TbcpAComm"
-                                            TbcpNComm="@obj.TbcpNComm" TatvFlgOfferta="@obj.TatvFlgOfferta"
-                                            islDesc="@obj.TatvDesc" class="opens">
+                                        <div id="accordion-@obj.RifCli-svil" flag="@obj.Flag"
+                                            TbcpTstComm="@obj.TbcpTstComm" TbcpPrfComm="@obj.TbcpPrfComm"
+                                            TbcpAComm="@obj.TbcpAComm" TbcpNComm="@obj.TbcpNComm"
+                                            TatvFlgOfferta="@obj.TatvFlgOfferta" islDesc="@obj.TatvDesc"
+                                            CrrgApp="@obj.TatvCPartApp" CrrgMod="@obj.TatvCPart" class="opens">
 
-                                            <table class="table table-borderer table-striped mb-0" style="width:100%">
+                                            <table class="table table-borderer mb-0" style="width:100%">
                                                 <thead>
                                                     <tr>
                                                         <th>
@@ -155,7 +297,7 @@ ViewData["Title"] = "Isl";
                                                         <th></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="tbody-@obj.RifCli">
+                                                <tbody id="tbody-@obj.RifCli-svil">
 
                                                 </tbody>
 
@@ -173,7 +315,7 @@ ViewData["Title"] = "Isl";
                 </div>
             </div>
 
-            <!-- accordion 2 -->
+            <!----------------------  Accordion 3 DELI  ----------------------->
 
             <div class="accordion-item">
                 <h2 class="accordion-header">
@@ -181,12 +323,15 @@ ViewData["Title"] = "Isl";
                         data-bs-target="#accordionDeli" aria-expanded="false" aria-controls="accordionDeli">
                         <div class="row">
                             <div class="col-12">
-                                <h2 class="text-primary">Attività in Delivery</h2>
+                                <h2 class="text-primary">
+                                    Attività in Delivery @* @(Model.IslList.Where(x =>
+                                    x.Flag == "1-ANFU").Count() == 0 ? "(Vuoto)" : "") *@
+                                </h2>
                             </div>
                         </div>
                     </button>
                 </h2>
-                <div id="accordionDeli" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div id="accordionDeli" class="accordion-collapse collapse">
                     <div class="accordion-body">
                         <table class="table table-borderer table-striped" style="width:100%">
                             <thead>
@@ -195,7 +340,7 @@ ViewData["Title"] = "Isl";
                                         Codice ISL
                                     </th>
                                     <th class="isl-th-color2 text-start">
-                                        Flag
+                                        Descrizione
                                     </th>
                                     <th class="isl-th-color2 text-start">
                                         Stato
@@ -204,10 +349,10 @@ ViewData["Title"] = "Isl";
                                         Cambio stato
                                     </th>
                                     <th class="isl-th-color2 text-start">
-                                        CdL
+                                        Scadenza Task
                                     </th>
                                     <th class="isl-th-color2 text-start">
-                                        Date Current Task
+                                        CdL
                                     </th>
                                     <th class="isl-th-color2 text-start">
                                         Commessa
@@ -216,20 +361,21 @@ ViewData["Title"] = "Isl";
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var obj in Model.IslList.Where(x => x.Flag == "3-DELI"))
+                                @foreach (var obj in Model.IslList.Where(x => x.Flag=="3-DELI"))
                                 {
                                 //var duration = new Duration(@obj.CrrgTmRunIncr);
-                                var com = string.Concat(@obj.TbcpTstComm, "/", @obj.TbcpPrfComm, "/", @obj.TbcpAComm,
+                                var com = string.Concat(@obj.TbcpTstComm, "/", @obj.TbcpPrfComm, "/",
+                                @obj.TbcpAComm,
                                 "/",
                                 @obj.TbcpNComm);
                                 <tr>
-                                    <td>
+                                    <td style="width: 10%;">
                                         <div>@obj.RifCli</div>
                                     </td>
-                                    <td class="custom-tooltip-color" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        data-bs-title="@obj.TatvDesc">
+                                    <td style="width: 35%;" class="custom-tooltip-color text-wrapper"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="@obj.TatvDesc">
                                         <div>
-                                            @obj.TatvDesc.Substring(0, Math.Min(obj.TatvDesc.Length, 50)-1)...</div>
+                                            @obj.TatvDesc</div>
                                     </td>
                                     <td>
                                         <div>@obj.Stato</div>
@@ -246,24 +392,23 @@ ViewData["Title"] = "Isl";
                                     <td>
                                         <div>@com</div>
                                     </td>
-                                    <td class="isl-row-btns">
-                                        <div class="w-100 btn-group d-flex justify-content-center" role="group">
-                                            @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl"
-                                                class="btn btn-primary mx-2"><i
-                                                    class="bi bi-pencil-square"></i>Edit</a>*@
-                                            <a asp-controller="Isl" asp-action="Index"
-                                                asp-route-id="@Model.FilterIslCRis" onclick="alert('Consuntivo')"><i
-                                                    class="bi bi-clock-fill"></i></a>
-                                            <a class="openAccordion pointer-pointer" rowIsl="@obj.RifCli"><i
-                                                    class="bi bi-list-check open-btn"></i></a>
+                                    <td class="isl-row-btns p-0">
+                                        <div class="w-100 btn-group d-flex justify-content-center"
+                                            style="padding-top:3px;" role="group">
+                                            <a class="openAccordion pointer-pointer" rowIsl="@obj.RifCli"
+                                                islStato="deli"><i class="bi bi-filter open-btn fs-4"></i></a>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="8" class="p-0">
-                                        <div id="accordion-@obj.RifCli" class="opens">
+                                        <div id="accordion-@obj.RifCli-deli" flag="@obj.Flag"
+                                            TbcpTstComm="@obj.TbcpTstComm" TbcpPrfComm="@obj.TbcpPrfComm"
+                                            TbcpAComm="@obj.TbcpAComm" TbcpNComm="@obj.TbcpNComm"
+                                            TatvFlgOfferta="@obj.TatvFlgOfferta" islDesc="@obj.TatvDesc"
+                                            CrrgApp="@obj.TatvCPartApp" CrrgMod="@obj.TatvCPart" class="opens">
 
-                                            <table class="table table-borderer table-striped mb-0" style="width:100%">
+                                            <table class="table table-borderer mb-0" style="width:100%">
                                                 <thead>
                                                     <tr>
                                                         <th>
@@ -287,7 +432,7 @@ ViewData["Title"] = "Isl";
                                                         <th></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="tbody-@obj.RifCli">
+                                                <tbody id="tbody-@obj.RifCli-deli">
 
                                                 </tbody>
 
@@ -300,7 +445,6 @@ ViewData["Title"] = "Isl";
                                 </tr>
                                 }
                             </tbody>
-
                         </table>
                     </div>
                 </div>
@@ -319,17 +463,19 @@ ViewData["Title"] = "Isl";
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="create-app-form" method="post" asp-page-handler="create">
+                <form id="create-consuntivo-form">
                     <div class="mb-2 d-flex">
                         <div class="form-group">
                             <label for="data">Data:</label>
                             <input name="crrgDtt" value='@DateTime.Now.ToString("yyyy-MM-dd")' id="data" type="date"
                                 class="form-control" aria-describedby="Data">
+                            <div class="text-danger" id="crrgDtt-error"></div>
                         </div>
                         <div class="form-group ms-3">
                             <label for="ora">Tempo:</label>
-                            <input name="crrgTmRunIncrHMS" id="ora" type="time" class="form-control"
-                                aria-describedby="Data">
+                            <input name="crrgTmRunIncrHMS" id="ora" type="time" step="1" value="00:00:00"
+                                class="form-control" aria-describedby="Data">
+                            <div class="text-danger" id="crrgTmRunIncrHMS-error"></div>
                         </div>
                     </div>
 
@@ -337,6 +483,7 @@ ViewData["Title"] = "Isl";
                         <label for="NTOper">Operazione:</label>
                         <select class="form-select" name="NTOper" id="NTOper">
                         </select>
+                        <div class="text-danger" id="NTOper-error"></div>
                     </div>
 
                     <div class="form-group mt-2" id="crrgCmaatt">
@@ -358,6 +505,7 @@ ViewData["Title"] = "Isl";
                             <label class="form-check-label" for="crrgCmaatt4">Verbale</label>
                             <input class="form-check-input" type="radio" value="3" name="crrgCmaatt" id="crrgCmaatt4">
                         </div>
+                        <div class="text-danger" id="crrgCmaatt-error"></div>
                     </div>
 
                     <div class="form-group">
@@ -368,27 +516,30 @@ ViewData["Title"] = "Isl";
                             <option value="SVIL">SVIL</option>
                             <option value="DELI">DELI</option>
                         </select>
+                        <div class="text-danger" id="crrgCCaus-error"></div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="description">Descrizione</label>
-                        <textarea name="crrgNote" id="crrgNote" type="text" rows="6" class="form-control"
+                        <label for="crrgNote">Descrizione</label>
+                        <textarea name="crrgNote" id="crrgNote" type="text" rows="5" class="form-control"
                             aria-describedby="description"></textarea>
+                        <div class="text-danger" id="crrgNote-error"></div>
                     </div>
-                    <input type="hidden" name="crrgCSrl" id="crrgCSrl">
-                    <input type="hidden" name="crrgNOper" id="crrgNOper">
 
-                    <input type="hidden" name="crrgCdl" id="crrgCdl">
-                    <input type="hidden" name="crrgCRis" id="crrgCRis">
+                    <input type="hidden" name="crrgCRis" id="crrgCRis" value="@_userScope.SV_USR_SIGLA">
                     <input type="hidden" name="crrgRifCliente" id="crrgRifCliente">
-                    <input type="hidden" name="crrgTstDoc" id="crrgTstDoc">
-                    <input type="hidden" name="crrgPrfDoc" id="crrgPrfDoc">
-                    <input type="hidden" name="crrgADoc" id="crrgADoc">
-                    <input type="hidden" name="crrgNDoc" id="crrgNDoc">
+                    <input type="hidden" name="crrgApp" id="crrgApp">
+                    <input type="hidden" name="crrgMod" id="crrgMod">
 
-                    <div class="text-danger"></div>
-                    <button type="submit" class="btn btn-success">Aggiungi</button>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annulla</button>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <button type="submit" class="btn btn-success">Aggiungi</button>
+                            <button type="button" id="close-modal" class="btn btn-danger"
+                                data-bs-dismiss="modal">Annulla</button>
+                        </div>
+
+                        <div id="isl-error-container" class="text-succeeded"></div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -399,6 +550,10 @@ ViewData["Title"] = "Isl";
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl));
+
+    document.getElementById("FilterIslCRis").addEventListener("input", (e) => {
+        e.target.value = e.target.value.toUpperCase();
+    })
 </script>
 <script src="~/js/Filter.js?v=1.1"></script>
 <script src="~/js/indexIsl.js"></script>

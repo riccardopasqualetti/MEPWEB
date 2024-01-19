@@ -1,22 +1,74 @@
+// Variabili che contengono le informazioni sulla commessa corrente e l'accordion corrente
+let tbcpTstComm = "";
+let tbcpPrfComm = "";
+let tbcpAComm = "";
+let tbcpNComm = "";
+let comm = "";
+let currentAccordionId = "";
+let currentStato = "";
+let currentIsl = "";
+
+// Aggiunge un event listener su tutti i bottoni per aprire gli "accordion" interni (quando clicchi per aprire una isl e vedere i consuntivi)
 Array.from(document.getElementsByClassName("open-btn")).forEach((x) => {
-  x.addEventListener("click", async () => {
-    const rowIsl = x.parentElement.getAttribute("rowIsl");
-    const accordionBody = document.getElementById(`accordion-${rowIsl}`);
+  x.parentElement.addEventListener("mousedown", async (e) => {
+    if (e.buttons != 1) {
+      return;
+    }
+    currentIsl = x.parentElement.getAttribute("rowIsl");
+    const rowStato = x.parentElement.getAttribute("islStato");
+    currentAccordionId = `accordion-${currentIsl}-${rowStato}`;
+    currentStato = rowStato;
+    const accordionBody = document.getElementById(currentAccordionId);
     accordionBody.classList.toggle("opens-opened");
 
     if (accordionBody.classList.contains("opens-opened")) {
-      accordionBody.style.maxHeight = "92.84px";
-      const res = await fetchApi(`api/MepWeb_Isl/${rowIsl}`);
-      const height = generateRows(res, rowIsl);
-      accordionBody.style.maxHeight = 92.84 + height + 1 + "px";
+      await showConsuntivi();
     } else {
       accordionBody.style.maxHeight = "0px";
     }
   });
 });
 
-async function fetchApi(url) {
-  const res = await fetch(`${window.location.origin}/${url}`);
+// Event listener quando il form di aggiunta consuntivo viene inviato
+document.getElementById("create-consuntivo-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  await handleFormSubmit();
+});
+
+async function fetchGET(url) {
+  return await fetchApi(url, "GET");
+}
+
+async function fetchPOST(url, obj) {
+  return await fetchApi(url, "POST", obj);
+}
+
+async function fetchPUT(url, obj) {
+  return await fetchApi(url, "PUT", obj);
+}
+
+async function fetchDELETE(url) {
+  return await fetchApi(url, "DELETE");
+}
+
+// Funzione per le chiamate, se viene passato un oggetto oltre all'url allora non è una GET
+async function fetchApi(url, method, obj) {
+  const settings = {
+    method: method,
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  if (method != "GET" && method != "DELETE") {
+    if (!obj) {
+      throw new Error("No object passed");
+    }
+    settings.body = JSON.stringify(obj);
+  }
+
+  const res = await fetch(`${window.location.origin}/${url}`, settings);
   console.log(res);
   try {
     if (res.status === 200) {
@@ -24,16 +76,30 @@ async function fetchApi(url) {
       console.log(data);
       return data;
     } else {
-      console.log(res.statusCode);
-      return [];
+      console.log(res.status);
+      throw new Error("Error fetching data: " + res.detail);
     }
   } catch (err) {
     console.log(err);
   }
 }
 
-function generateRows(res, isl) {
-  const body = document.getElementById(`tbody-${isl}`);
+// Al click sul pulsante per vedere i consuntivi viene scatenata questa funzione che fa aprire l'accordion cambiandogli l'altezza massima in base
+// a quanti consuntivi arrivano dalla chiamata
+async function showConsuntivi() {
+  const accordionBody = document.getElementById(currentAccordionId);
+  //accordionBody.style.maxHeight = "92.84px";
+  const res = await fetchGET(`api/CrrgApi/GetAllByIsl/${currentIsl}`);
+  console.log(currentAccordionId);
+  console.log(currentStato);
+  const height = generateRows(res);
+  accordionBody.style.maxHeight = 92.84 + height + 1 + "px";
+}
+
+// Genera le righe con i consuntivi
+function generateRows(res) {
+  const body = document.getElementById(`tbody-${currentIsl}-${currentStato}`);
+  console.log(`tbody-${currentIsl}-${currentStato}`);
   body.innerHTML = "";
   let height = 0;
 
@@ -41,36 +107,71 @@ function generateRows(res, isl) {
     const row = res[i];
 
     const tr = document.createElement("tr");
+    tr.classList.add("riga");
+    tr.setAttribute("CrrgCSrl", row.crrgCSrl);
     body.appendChild(tr);
+    tr.addEventListener("mouseover", () => {
+      Array.from(document.getElementsByClassName("riga-hover")).forEach((td) => {
+        td.classList.remove("riga-hover");
+      });
+      Array.from(tr.children).forEach((td) => {
+        td.classList.add("riga-hover");
+      });
+    });
+    tr.addEventListener("mouseout", () => {
+      Array.from(tr.children).forEach((td) => {
+        td.classList.remove("riga-hover");
+      });
+    });
 
     const tdRis = document.createElement("td");
+    tdRis.style.width = "3%";
     tdRis.innerText = row.crrgCRis;
     tr.appendChild(tdRis);
 
     const tdData = document.createElement("td");
-    tdData.innerText = row.crrgDtt;
+    tdData.style.width = "8%";
+    const data = row.crrgDtt.split("T")[0].split("-");
+    tdData.innerText = `${data[2]}-${data[1]}-${data[0]}`;
     tr.appendChild(tdData);
 
     const tdEffort = document.createElement("td");
-    tdEffort.innerText = row.crrgTmRunIncr / 3600 == 1 ? row.crrgTmRunIncr / 3600 + " ora" : row.crrgTmRunIncr / 3600 + " ore";
+    tdEffort.style.width = "6%";
+    tdEffort.innerText = getDuration(row.crrgTmRunIncr);
     tr.appendChild(tdEffort);
 
     const tdIsl = document.createElement("td");
+    tdIsl.style.width = "10%";
     tdIsl.innerText = row.crrgRifCliente;
     tr.appendChild(tdIsl);
 
     const tdCommessa = document.createElement("td");
+    tdCommessa.style.width = "13%";
     tdCommessa.innerText = `${row.crrgTstDoc}/${row.crrgPrfDoc}/${row.crrgADoc}/${row.crrgNDoc}`;
     tr.appendChild(tdCommessa);
 
     const tdDescription = document.createElement("td");
+    tdDescription.style.width = "56%";
     tdDescription.innerText = row.crrgNote;
     tr.appendChild(tdDescription);
 
     const td = document.createElement("td");
+    td.style.width = "4%";
+    const divIcons = document.createElement("div");
+    divIcons.className = "icons-isl-btn";
+
+    const iconaUpdate = document.createElement("i");
+    iconaUpdate.className = "bi bi-pencil-fill pointer-pointer me-1";
+
     const iconaDelete = document.createElement("i");
-    iconaDelete.className = "bi bi-trash-fill";
-    td.appendChild(iconaDelete);
+    iconaDelete.className = "bi bi-trash-fill pointer-pointer";
+    iconaDelete.addEventListener("click", async () => {
+      await deleteConsuntivo(row.crrgCSrl);
+    });
+
+    //divIcons.appendChild(iconaUpdate);
+    divIcons.appendChild(iconaDelete);
+    td.appendChild(divIcons);
     tr.appendChild(td);
 
     height += tr.getBoundingClientRect().height;
@@ -89,33 +190,32 @@ function generateRows(res, isl) {
   div.appendChild(iconaAdd);
   td.appendChild(div);
   tr.appendChild(td);
+  tr.classList.add("last-row");
   body.appendChild(tr);
 
-  iconaAdd.addEventListener("click", async (e) => {
-    await addConsuntivoToIsl(e, isl, res);
+  iconaAdd.addEventListener("click", async () => {
+    cleanModalFields();
+    await populateForm();
   });
 
   return height;
 }
 
-async function addConsuntivoToIsl(e, isl, res) {
-  const opers = await fetchApi(`Crrg/api/VsPpMonitorIsl/GetByRifCli/${isl}`);
-  const islData = document.getElementById(`accordion-${isl}`);
-
-  const tbcpTstComm = islData.getAttribute("TbcpTstComm");
-  const tbcpPrfComm = islData.getAttribute("TbcpPrfComm");
-  const tbcpAComm = islData.getAttribute("TbcpAComm");
-  const tbcpNComm = islData.getAttribute("TbcpNComm");
-  const tatvFlgOfferta = islData.getAttribute("TatvFlgOfferta");
-
-  const comm = `${tbcpTstComm}/${tbcpPrfComm}/${tbcpAComm}/${tbcpNComm}`;
-  const flagCausale = document.getElementById(`accordion-${isl}`).getAttribute("flag");
-  const islDesc = document.getElementById(`accordion-${isl}`).getAttribute("islDesc");
-  const tipoOperazione = await fetchApi(`api/Olca/GetOlcaCitoByCommAsync/${comm}`);
-
-  const rowN = e.target.getAttribute("riga");
-
+async function populateForm() {
+  const islData = document.getElementById(`accordion-${currentIsl}-${currentStato}`);
+  //reset campi
   document.getElementById("NTOper").innerHTML = "";
+  document.getElementById("ora").value = "00:00:00";
+  document.getElementById("data").value = new Date().toISOString().split("T")[0];
+
+  tbcpTstComm = islData.getAttribute("TbcpTstComm");
+  tbcpPrfComm = islData.getAttribute("TbcpPrfComm");
+  tbcpAComm = islData.getAttribute("TbcpAComm");
+  tbcpNComm = islData.getAttribute("TbcpNComm");
+
+  comm = `${tbcpTstComm}/${tbcpPrfComm}/${tbcpAComm}/${tbcpNComm}`;
+  const tipoOperazione = await fetchGET(`api/Olca/GetOlcaCitoByCommAsync/${comm}`);
+
   for (const oper of tipoOperazione.olcaCitoList) {
     const option = document.createElement("option");
     option.value = `${oper.flussoOlca.olcaNOper}-${oper.flussoOlca.olcaTOper}`;
@@ -123,6 +223,7 @@ async function addConsuntivoToIsl(e, isl, res) {
     document.getElementById("NTOper").appendChild(option);
   }
 
+  const flagCausale = islData.getAttribute("flag");
   const causali = {
     "1-ANFU": "ANFU",
     "2-SVIL": "SVIL",
@@ -132,30 +233,90 @@ async function addConsuntivoToIsl(e, isl, res) {
     "9-CLOSE": "DELI",
   };
   document.getElementById("crrgCCaus").value = causali[flagCausale];
-  document.getElementById("crrgNote").value = islDesc;
+  document.getElementById("crrgNote").value = islData.getAttribute("islDesc");
+  document.getElementById("crrgApp").value = islData.getAttribute("crrgApp");
+  document.getElementById("crrgMod").value = islData.getAttribute("crrgMod");
+  document.getElementById("crrgRifCliente").value = currentIsl;
 
-  console.log(tatvFlgOfferta + "     " + tbcpPrfComm);
-
+  const tatvFlgOfferta = islData.getAttribute("TatvFlgOfferta");
   if (tbcpPrfComm == "B" || tatvFlgOfferta > 0) {
-    console.log(Array.from(document.querySelectorAll("#CrrgCmaatt input")).find((x) => x.value == "3"));
     document.getElementById("crrgCmaatt4").checked = true;
   } else {
     document.getElementById("crrgCmaatt1").checked = true;
   }
+}
 
-  /* document.getElementById("crrgCSrl").value = res[rowN]["crrgCSrl"];
-  document.getElementById("crrgCRis").value = res[rowN]["crrgCRis"];
-  document.getElementById("crrgCdl").value = res[rowN]["crrgCdl"];
-  document.getElementById("crrgRifCliente").value = res[rowN]["crrgRifCliente"];
-  document.getElementById("crrgTstDoc").value = res[rowN]["crrgTstDoc"];
-  document.getElementById("crrgPrfDoc").value = res[rowN]["crrgPrfDoc"];
-  document.getElementById("crrgADoc").value = res[rowN]["crrgADoc"];
-  document.getElementById("crrgNDoc").value = res[rowN]["crrgNDoc"];
-  document.getElementById("crrgNOper").value = res[rowN]["crrgNOper"];
-  document.getElementById("crrgTOper").value = res[rowN]["crrgTOper"];
-  document.getElementById("crrgCmaatt").value = res[rowN]["crrgCmaatt"];
-  document.getElementById("crrgCCaus").value = res[rowN]["crrgCCaus"];
-  document.getElementById("crrgApp").value = res[rowN]["crrgApp"];
-  document.getElementById("crrgMod").value = res[rowN]["crrgMod"];
-  document.getElementById("crrgMod").value = res[rowN]["crrgMod"]; */
+// Scatta quando viene inviato il form di aggiunta consuntivo, crea la request e la invia al controller, se ci sono errori li fa comparire nel campo che li ha causati
+async function handleFormSubmit() {
+  const request = getConsuntivoObj();
+
+  const res = await fetchPOST("api/CrrgApi/Create", request);
+
+  if (res.succeeded == "S") {
+    document.getElementById("isl-error-container").innerText = "Operazione Eseguita";
+    Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerText = ""));
+    document.getElementById("close-modal").click();
+    await showConsuntivi();
+    return;
+  }
+  cleanModalFields();
+
+  for (const error of res.errors) {
+    const key = Object.keys(error)[0];
+    const id = `${key[0].toLowerCase() + key.substring(1)}-error`;
+    document.getElementById(id).innerText = error[key];
+  }
+}
+
+function getConsuntivoObj() {
+  const form = document.getElementById("create-consuntivo-form");
+  const data = new FormData(form);
+  const value = Object.fromEntries(data.entries());
+  const time = value.crrgTmRunIncrHMS.toString().split(":");
+
+  value.isUpdate = false;
+  value.crrgPosDoc = 0;
+  value.crrgPrgDoc = 0;
+  value.crrgTstDoc = tbcpTstComm;
+  value.crrgPrfDoc = tbcpPrfComm;
+  value.crrgADoc = tbcpAComm;
+  value.crrgNDoc = tbcpNComm;
+  value.commCode = comm;
+  value.crrgTOper = "";
+  value.crrgTmRunIncrHMS = new Date(Date.UTC(2023, 1, 1, time[0], time[1], time[2])).toISOString();
+  value.crrgCSrl = 0;
+  value.crrgNOper = 0;
+  value.crrgCdl;
+  value.crrgCRis;
+  value.crrgCdl = "_" + value.crrgCRis;
+
+  console.log(value);
+  return value;
+}
+
+// Delete del consuntivo tramite CrrgCSrl
+async function deleteConsuntivo(crsl) {
+  console.log("Eliminazione consuntivo: " + crsl);
+  const res = await fetchDELETE(`api/CrrgApi/Delete/${crsl}`);
+
+  let height = 0;
+
+  Array.from(document.getElementById(`tbody-${currentIsl}-${currentStato}`).children).forEach((x) => {
+    if (x.getAttribute("CrrgCSrl") == crsl) {
+      x.remove();
+    } else {
+      height += x.getBoundingClientRect().height;
+    }
+  });
+  document.getElementById(currentAccordionId).style.maxHeight = 92.84 + height + 1 + "px";
+}
+
+//per pulire i campi di errore
+function cleanModalFields() {
+  document.getElementById("isl-error-container").innerText = "";
+  Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerText = ""));
+}
+
+function getDuration(duration) {
+  return new Date(duration * 1000).toISOString().substring(11, 19);
 }

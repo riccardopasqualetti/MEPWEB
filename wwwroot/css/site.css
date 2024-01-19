@@ -1,8 +1,8 @@
 :root {
   --whiter-text-color: rgba(255, 255, 255, 0.7);
   --anfu-color: rgba(255, 255, 204, 1);
-  --svil-color: rgba(102, 255, 51, 1);
-  --deli-color: rgba(51, 204, 255, 1);
+  --svil-color: rgba(51, 204, 255, 1);
+  --deli-color: rgba(102, 255, 51, 1);
 }
 
 html {
@@ -129,6 +129,10 @@ footer {
   font-weight: 600;
   animation: result-p-animate 3s ease-in-out;
   opacity: 0;
+}
+
+.text-succeeded {
+  color: #00ff00;
 }
 
 @keyframes result-p-animate {
@@ -330,6 +334,20 @@ footer {
   max-width: 20rem;
 }
 
+.text-wrapper {
+  max-width: 1px;
+}
+
+.text-wrapper div {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.riga-hover {
+  background-color: var(--bs-dark) !important;
+}
+
 /* .tooltip-arrow::before,
 .bs-tooltip-auto[data-popper-placement="top"] .tooltip-arrow::before {
   background-color: transparent;
@@ -380,10 +398,13 @@ footer {
 }
 
 .isl-th-color1 {
-  color: var(--bs-warning) !important;
+  color: var(--svil-color) !important;
 }
 .isl-th-color2 {
-  color: rgb(102, 255, 51) !important;
+  color: var(--deli-color) !important;
+}
+.isl-th-color3 {
+  color: var(--anfu-color) !important;
 }
 
 .isl-row-btns {
@@ -430,9 +451,23 @@ footer {
 }
 
 .white-icona-wrapper:hover {
-  color: white;
+  color: #084299;
 }
 
+.last-row {
+  box-shadow: 0 -1px 0 #839496;
+}
+.last-row td {
+  padding: 0.2rem 0.5rem;
+}
+
+.icons-isl-btn {
+  width: 2rem;
+  text-align: center;
+}
+.icons-isl-btn i:hover {
+  color: #084299;
+}
 /*table th:nth-last-child(0) {
     background-color: red;
 }
@@ -514,7 +549,10 @@ footer {
   display: flex;
   align-items: center;
   height: 2rem;
-  margin-top: 1vh;
+  width: 2rem;
+  margin-top: 0.5vh;
+  display: flex;
+  justify-content: center;
 }
 
 #filter-btn:hover {
