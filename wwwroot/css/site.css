@@ -3,6 +3,7 @@
   --anfu-color: rgba(255, 255, 204, 1);
   --svil-color: rgba(51, 204, 255, 1);
   --deli-color: rgba(102, 255, 51, 1);
+  --hover-btn-color: #084299;
 }
 
 html {
@@ -427,7 +428,7 @@ footer {
 
 .opens-opened {
   max-height: fit-content;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .white-icona-wrapper {
@@ -451,22 +452,37 @@ footer {
 }
 
 .white-icona-wrapper:hover {
-  color: #084299;
+  color: var(--hover-btn-color);
 }
 
-.last-row {
-  box-shadow: 0 -1px 0 #839496;
+.latest-row {
+  /* box-shadow: 0 -1px 0 #839496 !important; */
+  border-bottom: 1px #839496;
 }
 .last-row td {
   padding: 0.2rem 0.5rem;
 }
 
 .icons-isl-btn {
-  width: 2rem;
   text-align: center;
+  position: absolute;
+  width: fit-content;
+  padding: 0.25rem;
+  border-radius: 1rem;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  background-color: var(--bs-body-bg);
+  box-shadow: 0 0 10px 5px #002b3652;
+}
+.icons-isl-btn i {
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
 }
 .icons-isl-btn i:hover {
-  color: #084299;
+  color: var(--hover-btn-color);
 }
 /*table th:nth-last-child(0) {
     background-color: red;
@@ -477,7 +493,14 @@ footer {
 }
 */
 
-.isl-clock-btn div {
+#clear-text-btn {
+  position: absolute;
+  top: 1.4rem;
+  right: 0.15rem;
+  color: var(--bs-dark);
+  &:hover {
+    color: #dc3545;
+  }
 }
 
 /* indexConsuntivi */
@@ -557,7 +580,7 @@ footer {
 
 #filter-btn:hover {
   cursor: pointer !important;
-  background-color: rgba(255, 255, 255, 0.1);
+  /* background-color: rgba(255, 255, 255, 0.1); */
 }
 
 #filter-btn i {
@@ -565,6 +588,10 @@ footer {
   color: var(--whiter-text-color);
   display: block;
   height: 2rem;
+}
+
+#filter-btn:hover i {
+  color: var(--hover-btn-color);
 }
 
 #filters-container {

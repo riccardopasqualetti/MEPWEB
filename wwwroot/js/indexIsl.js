@@ -7,13 +7,15 @@ let comm = "";
 let currentAccordionId = "";
 let currentStato = "";
 let currentIsl = "";
+let currentConsuntivi = {};
+const modal = new bootstrap.Modal("#addConsuntivo");
 
 // Aggiunge un event listener su tutti i bottoni per aprire gli "accordion" interni (quando clicchi per aprire una isl e vedere i consuntivi)
 Array.from(document.getElementsByClassName("open-btn")).forEach((x) => {
-  x.parentElement.addEventListener("mousedown", async (e) => {
-    if (e.buttons != 1) {
+  x.parentElement.addEventListener("click", async (e) => {
+    /* if (e.buttons != 1) {
       return;
-    }
+    } */
     currentIsl = x.parentElement.getAttribute("rowIsl");
     const rowStato = x.parentElement.getAttribute("islStato");
     currentAccordionId = `accordion-${currentIsl}-${rowStato}`;
@@ -24,9 +26,15 @@ Array.from(document.getElementsByClassName("open-btn")).forEach((x) => {
     if (accordionBody.classList.contains("opens-opened")) {
       await showConsuntivi();
     } else {
+      accordionBody.style.overflowY = "hidden";
       accordionBody.style.maxHeight = "0px";
     }
   });
+});
+
+document.getElementById("clear-text-btn").addEventListener("click", () => {
+  document.getElementById("crrgNote").value = "";
+  document.getElementById("crrgNote").focus();
 });
 
 // Event listener quando il form di aggiunta consuntivo viene inviato
@@ -51,7 +59,7 @@ async function fetchDELETE(url) {
   return await fetchApi(url, "DELETE");
 }
 
-// Funzione per le chiamate, se viene passato un oggetto oltre all'url allora non è una GET
+// Funzione per le chiamate api, prende in ingresso l'url, il metodo e l'oggetto da passare nel body
 async function fetchApi(url, method, obj) {
   const settings = {
     method: method,
@@ -69,7 +77,6 @@ async function fetchApi(url, method, obj) {
   }
 
   const res = await fetch(`${window.location.origin}/${url}`, settings);
-  console.log(res);
   try {
     if (res.status === 200) {
       const data = await res.json();
@@ -88,25 +95,30 @@ async function fetchApi(url, method, obj) {
 // a quanti consuntivi arrivano dalla chiamata
 async function showConsuntivi() {
   const accordionBody = document.getElementById(currentAccordionId);
-  //accordionBody.style.maxHeight = "92.84px";
-  const res = await fetchGET(`api/CrrgApi/GetAllByIsl/${currentIsl}`);
+  accordionBody.style.maxHeight = "92.84px";
+  currentConsuntivi = await fetchGET(`api/CrrgApi/GetAllByIsl/${currentIsl}`);
   console.log(currentAccordionId);
   console.log(currentStato);
-  const height = generateRows(res);
+  const height = generateRows();
   accordionBody.style.maxHeight = 92.84 + height + 1 + "px";
+  setTimeout(() => {
+    accordionBody.style.overflowY = "auto";
+  }, 350);
 }
 
 // Genera le righe con i consuntivi
-function generateRows(res) {
+function generateRows() {
   const body = document.getElementById(`tbody-${currentIsl}-${currentStato}`);
   console.log(`tbody-${currentIsl}-${currentStato}`);
   body.innerHTML = "";
   let height = 0;
+  let lastRow;
 
-  for (let i = 0; i < res.length; i++) {
-    const row = res[i];
+  for (let i = 0; i < currentConsuntivi.length; i++) {
+    const row = currentConsuntivi[i];
 
     const tr = document.createElement("tr");
+    lastRow = tr;
     tr.classList.add("riga");
     tr.setAttribute("CrrgCSrl", row.crrgCSrl);
     body.appendChild(tr);
@@ -132,7 +144,7 @@ function generateRows(res) {
     const tdData = document.createElement("td");
     tdData.style.width = "8%";
     const data = row.crrgDtt.split("T")[0].split("-");
-    tdData.innerText = `${data[2]}-${data[1]}-${data[0]}`;
+    tdData.innerText = `${data[2]}/${data[1]}/${data[0]}`;
     tr.appendChild(tdData);
 
     const tdEffort = document.createElement("td");
@@ -151,30 +163,52 @@ function generateRows(res) {
     tr.appendChild(tdCommessa);
 
     const tdDescription = document.createElement("td");
-    tdDescription.style.width = "56%";
+    tdDescription.style.width = "53%";
     tdDescription.innerText = row.crrgNote;
     tr.appendChild(tdDescription);
 
     const td = document.createElement("td");
-    td.style.width = "4%";
+    td.classList.add("position-relative");
+    td.style.width = "7%";
     const divIcons = document.createElement("div");
-    divIcons.className = "icons-isl-btn";
+    divIcons.className = "icons-isl-btn d-flex";
 
     const iconaUpdate = document.createElement("i");
-    iconaUpdate.className = "bi bi-pencil-fill pointer-pointer me-1";
+    iconaUpdate.className = "bi bi-pencil-fill pointer-pointer border-secondary border-end px-1";
+    /* iconaUpdate.setAttribute("data-bs-toggle", "modal");
+    iconaUpdate.setAttribute("data-bs-target", "#addConsuntivo"); */
+    iconaUpdate.addEventListener("click", async () => {
+      await populateForm("Modifica Consuntivo");
+      await populateByConsuntivo(row.crrgCSrl, "update");
+      document.getElementById("crrgCSrl").value = srl;
+      modal.show();
+    });
 
     const iconaDelete = document.createElement("i");
-    iconaDelete.className = "bi bi-trash-fill pointer-pointer";
+    iconaDelete.className = "bi bi-trash-fill pointer-pointer px-1";
     iconaDelete.addEventListener("click", async () => {
       await deleteConsuntivo(row.crrgCSrl);
     });
 
-    //divIcons.appendChild(iconaUpdate);
+    const iconaDuplicate = document.createElement("i");
+    iconaDuplicate.className = "bi bi-trashbi bi-plus-circle pointer-pointer px-1 border-secondary border-end";
+    iconaDuplicate.addEventListener("click", async () => {
+      await populateForm("Duplica Consuntivo");
+      await populateByConsuntivo(row.crrgCSrl);
+      modal.show();
+    });
+
+    divIcons.appendChild(iconaDuplicate);
+    divIcons.appendChild(iconaUpdate);
     divIcons.appendChild(iconaDelete);
     td.appendChild(divIcons);
     tr.appendChild(td);
 
     height += tr.getBoundingClientRect().height;
+  }
+
+  if (lastRow) {
+    lastRow.classList.add("latest-row");
   }
 
   const tr = document.createElement("tr");
@@ -184,24 +218,26 @@ function generateRows(res) {
   div.className = "white-icona-wrapper";
   const iconaAdd = document.createElement("i");
   iconaAdd.className = "bi bi-plus-circle-fill pointer-pointer";
-  iconaAdd.setAttribute("data-bs-toggle", "modal");
-  iconaAdd.setAttribute("data-bs-target", "#addConsuntivo");
+  /* iconaAdd.setAttribute("data-bs-toggle", "modal");
+  iconaAdd.setAttribute("data-bs-target", "#addConsuntivo"); */
   //iconaAdd.setAttribute("riga");
   div.appendChild(iconaAdd);
   td.appendChild(div);
   tr.appendChild(td);
-  tr.classList.add("last-row");
+  /* tr.classList.add("last-row"); */
   body.appendChild(tr);
 
   iconaAdd.addEventListener("click", async () => {
     cleanModalFields();
-    await populateForm();
+    await populateForm("Aggiungi Consuntivo");
+    modal.show();
   });
 
   return height;
 }
 
-async function populateForm() {
+async function populateForm(modalTitle) {
+  document.getElementById("addConsuntivoModalLabel").innerHTML = modalTitle;
   const islData = document.getElementById(`accordion-${currentIsl}-${currentStato}`);
   //reset campi
   document.getElementById("NTOper").innerHTML = "";
@@ -237,6 +273,7 @@ async function populateForm() {
   document.getElementById("crrgApp").value = islData.getAttribute("crrgApp");
   document.getElementById("crrgMod").value = islData.getAttribute("crrgMod");
   document.getElementById("crrgRifCliente").value = currentIsl;
+  document.getElementById("crrgCSrl").value = 0;
 
   const tatvFlgOfferta = islData.getAttribute("TatvFlgOfferta");
   if (tbcpPrfComm == "B" || tatvFlgOfferta > 0) {
@@ -244,6 +281,22 @@ async function populateForm() {
   } else {
     document.getElementById("crrgCmaatt1").checked = true;
   }
+}
+
+async function populateByConsuntivo(srl, mode) {
+  cleanModalFields();
+  const consuntivo = currentConsuntivi.find((x) => x.crrgCSrl == srl);
+  console.log(consuntivo);
+  document.getElementById("ora").value = getDuration(consuntivo.crrgTmRunIncr);
+  if (mode == "update") {
+    document.getElementById("data").value = consuntivo.crrgDtt.split("T")[0];
+  }
+  for (const opt of document.getElementById("NTOper").options) {
+    opt.selected = opt.value.split("-")[1] == consuntivo.crrgTOper;
+  }
+  document.getElementById(`crrgCmaatt${+consuntivo.crrgCmaatt + 1}`).checked = true;
+  document.getElementById("crrgCCaus").value = consuntivo.crrgCCaus;
+  document.getElementById("crrgNote").value = consuntivo.crrgNote;
 }
 
 // Scatta quando viene inviato il form di aggiunta consuntivo, crea la request e la invia al controller, se ci sono errori li fa comparire nel campo che li ha causati
@@ -273,8 +326,9 @@ function getConsuntivoObj() {
   const data = new FormData(form);
   const value = Object.fromEntries(data.entries());
   const time = value.crrgTmRunIncrHMS.toString().split(":");
+  const srl = document.getElementById("crrgCSrl").value;
 
-  value.isUpdate = false;
+  value.isUpdate = srl != "0";
   value.crrgPosDoc = 0;
   value.crrgPrgDoc = 0;
   value.crrgTstDoc = tbcpTstComm;
@@ -284,7 +338,6 @@ function getConsuntivoObj() {
   value.commCode = comm;
   value.crrgTOper = "";
   value.crrgTmRunIncrHMS = new Date(Date.UTC(2023, 1, 1, time[0], time[1], time[2])).toISOString();
-  value.crrgCSrl = 0;
   value.crrgNOper = 0;
   value.crrgCdl;
   value.crrgCRis;
