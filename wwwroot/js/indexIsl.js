@@ -180,7 +180,7 @@ function generateRows() {
     iconaUpdate.addEventListener("click", async () => {
       await populateForm("Modifica Consuntivo");
       await populateByConsuntivo(row.crrgCSrl, "update");
-      document.getElementById("crrgCSrl").value = srl;
+      document.getElementById("crrgCSrl").value = row.crrgCSrl;
       modal.show();
     });
 

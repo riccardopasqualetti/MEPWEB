@@ -117,22 +117,6 @@ namespace MepWeb.Controllers
             return Ok(res.Body);
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Update(CrrgCreateRequest obj)
-        //{
-        //    var res = await _crrgService.AddCrrgAsync(obj);
-        //    if (!res.Succeeded)
-        //    {
-        //        return Problem(
-        //        detail: res.Errors[0].Message,
-        //        statusCode: StatusCodes.Status500InternalServerError
-        //        );
-        //    }
-
-        //    return Ok(new { Response = "Update completata" });
-        //}
-
         //GET Delete
         [HttpDelete("Delete/{crrgCSrl}")]
         public async Task<IActionResult> Delete(int crrgCSrl)
