@@ -1,3 +1,5 @@
+const logs = true; //per abilitare i logs
+
 // Variabili che contengono le informazioni sulla commessa corrente e l'accordion corrente
 let tbcpTstComm = "";
 let tbcpPrfComm = "";
@@ -9,29 +11,38 @@ let currentStato = "";
 let currentIsl = "";
 let currentConsuntivi = {};
 const modal = new bootstrap.Modal("#addConsuntivo");
+const altezzaAccordionVuoto = 93.84; //altezza dell'accordio con dentro solo l'intestazione della tabella
 
-// Aggiunge un event listener su tutti i bottoni per aprire gli "accordion" interni (quando clicchi per aprire una isl e vedere i consuntivi)
+// Aggiunge un event listener su tutti i bottoni per aprire gli "accordion" dei consuntivi
 Array.from(document.getElementsByClassName("open-btn")).forEach((x) => {
   x.parentElement.addEventListener("click", async (e) => {
-    /* if (e.buttons != 1) {
-      return;
-    } */
+    //salvo la isl selezionata per usarla in seguito
     currentIsl = x.parentElement.getAttribute("rowIsl");
+
+    //prendo lo stato della isl selezionata (anfu, svil, deli)
     const rowStato = x.parentElement.getAttribute("islStato");
+
+    //l'id dell'accordion è composto da "accordion-" numeroisl- statoisl
     currentAccordionId = `accordion-${currentIsl}-${rowStato}`;
+
+    //salvo anche lo stato per usarlo in seguito
     currentStato = rowStato;
+
     const accordionBody = document.getElementById(currentAccordionId);
     accordionBody.classList.toggle("opens-opened");
 
+    //se l'accordion è aperto allora mostra i consuntivi, altrimenti nascondi
     if (accordionBody.classList.contains("opens-opened")) {
       await showConsuntivi();
     } else {
+      //metto l'overflow a hidden per non visualizzare la barra laterale quando l'accordio si chiude
       accordionBody.style.overflowY = "hidden";
       accordionBody.style.maxHeight = "0px";
     }
   });
 });
 
+// Event listener per il bottone di pulizia del campo note
 document.getElementById("clear-text-btn").addEventListener("click", () => {
   document.getElementById("crrgNote").value = "";
   document.getElementById("crrgNote").focus();
@@ -43,62 +54,64 @@ document.getElementById("create-consuntivo-form").addEventListener("submit", asy
   await handleFormSubmit();
 });
 
-async function fetchGET(url) {
-  return await fetchApi(url, "GET");
-}
+// Funzione per le chiamate api, prende in ingresso l'url, il metodo e l'oggetto da passare nel body (non in uso)
+const http = {
+  get: async (url) => {
+    return await http.fetchApi(url, "GET");
+  },
+  post: async (url, obj) => {
+    return await http.fetchApi(url, "POST", obj);
+  },
+  put: async (url, obj) => {
+    return await http.fetchApi(url, "PUT", obj);
+  },
+  delete: async (url) => {
+    return await http.fetchApi(url, "DELETE");
+  },
 
-async function fetchPOST(url, obj) {
-  return await fetchApi(url, "POST", obj);
-}
+  fetchApi: async (url, method, obj) => {
+    const settings = {
+      method: method,
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
-async function fetchPUT(url, obj) {
-  return await fetchApi(url, "PUT", obj);
-}
-
-async function fetchDELETE(url) {
-  return await fetchApi(url, "DELETE");
-}
-
-// Funzione per le chiamate api, prende in ingresso l'url, il metodo e l'oggetto da passare nel body
-async function fetchApi(url, method, obj) {
-  const settings = {
-    method: method,
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  if (method != "GET" && method != "DELETE") {
-    if (!obj) {
-      throw new Error("No object passed");
+    console.log(method);
+    if (method != "GET" && method != "DELETE") {
+      if (!obj) {
+        throw new Error("No object passed");
+      }
+      settings.body = JSON.stringify(obj);
     }
-    settings.body = JSON.stringify(obj);
-  }
 
-  const res = await fetch(`${window.location.origin}/${url}`, settings);
-  try {
-    if (res.status === 200) {
-      const data = await res.json();
-      console.log(data);
-      return data;
-    } else {
-      console.log(res.status);
-      throw new Error("Error fetching data: " + res.detail);
+    const res = await fetch(`${window.location.origin}/${url}`, settings);
+    Log(res);
+    try {
+      if (res.status === 200) {
+        const data = await res.json();
+        Log(data);
+        return data;
+      } else {
+        Log(res.status);
+        throw new Error("Error fetching data: " + res.detail);
+      }
+    } catch (err) {
+      Log(err);
     }
-  } catch (err) {
-    console.log(err);
-  }
-}
+  },
+};
 
 // Al click sul pulsante per vedere i consuntivi viene scatenata questa funzione che fa aprire l'accordion cambiandogli l'altezza massima in base
 // a quanti consuntivi arrivano dalla chiamata
 async function showConsuntivi() {
   const accordionBody = document.getElementById(currentAccordionId);
   accordionBody.style.maxHeight = "92.84px";
-  currentConsuntivi = await fetchGET(`api/CrrgApi/GetAllByIsl/${currentIsl}`);
-  console.log(currentAccordionId);
-  console.log(currentStato);
+  currentConsuntivi = (await axios.get(`CrrgApi/GetAllByIsl/${currentIsl}`)).data;
+  Log(currentConsuntivi);
+  Log(currentAccordionId);
+  Log(currentStato);
   const height = generateRows();
   accordionBody.style.maxHeight = 92.84 + height + 1 + "px";
   setTimeout(() => {
@@ -109,7 +122,7 @@ async function showConsuntivi() {
 // Genera le righe con i consuntivi
 function generateRows() {
   const body = document.getElementById(`tbody-${currentIsl}-${currentStato}`);
-  console.log(`tbody-${currentIsl}-${currentStato}`);
+  Log(`tbody-${currentIsl}-${currentStato}`);
   body.innerHTML = "";
   let height = 0;
   let lastRow;
@@ -218,17 +231,13 @@ function generateRows() {
   div.className = "white-icona-wrapper";
   const iconaAdd = document.createElement("i");
   iconaAdd.className = "bi bi-plus-circle-fill pointer-pointer";
-  /* iconaAdd.setAttribute("data-bs-toggle", "modal");
-  iconaAdd.setAttribute("data-bs-target", "#addConsuntivo"); */
-  //iconaAdd.setAttribute("riga");
   div.appendChild(iconaAdd);
   td.appendChild(div);
   tr.appendChild(td);
-  /* tr.classList.add("last-row"); */
   body.appendChild(tr);
 
   iconaAdd.addEventListener("click", async () => {
-    cleanModalFields();
+    cleanModalErrors();
     await populateForm("Aggiungi Consuntivo");
     modal.show();
   });
@@ -236,22 +245,25 @@ function generateRows() {
   return height;
 }
 
+//Popola il form con i dati standard per poter inserire un consuntivo
 async function populateForm(modalTitle) {
   document.getElementById("addConsuntivoModalLabel").innerHTML = modalTitle;
   const islData = document.getElementById(`accordion-${currentIsl}-${currentStato}`);
+
   //reset campi
   document.getElementById("NTOper").innerHTML = "";
   document.getElementById("ora").value = "00:00:00";
   document.getElementById("data").value = new Date().toISOString().split("T")[0];
 
+  //valorizzazione campi commessa e composizione commessa completa
   tbcpTstComm = islData.getAttribute("TbcpTstComm");
   tbcpPrfComm = islData.getAttribute("TbcpPrfComm");
   tbcpAComm = islData.getAttribute("TbcpAComm");
   tbcpNComm = islData.getAttribute("TbcpNComm");
-
   comm = `${tbcpTstComm}/${tbcpPrfComm}/${tbcpAComm}/${tbcpNComm}`;
-  const tipoOperazione = await fetchGET(`api/Olca/GetOlcaCitoByCommAsync/${comm}`);
 
+  //chiamata per ricevere i tipi di operazione validi per la commessa e popola la select
+  const tipoOperazione = (await axios.get(`Olca/GetOlcaCitoByCommAsync/${comm}`)).data;
   for (const oper of tipoOperazione.olcaCitoList) {
     const option = document.createElement("option");
     option.value = `${oper.flussoOlca.olcaNOper}-${oper.flussoOlca.olcaTOper}`;
@@ -259,6 +271,7 @@ async function populateForm(modalTitle) {
     document.getElementById("NTOper").appendChild(option);
   }
 
+  //prendo il dato flag dall'ISL attuale e lo "decodifico" per poi settarlo come valore nel form
   const flagCausale = islData.getAttribute("flag");
   const causali = {
     "1-ANFU": "ANFU",
@@ -269,28 +282,38 @@ async function populateForm(modalTitle) {
     "9-CLOSE": "DELI",
   };
   document.getElementById("crrgCCaus").value = causali[flagCausale];
+
+  //valorizzazione del resto dei campi con i dati dell'ISL attuale
   document.getElementById("crrgNote").value = islData.getAttribute("islDesc");
   document.getElementById("crrgApp").value = islData.getAttribute("crrgApp");
   document.getElementById("crrgMod").value = islData.getAttribute("crrgMod");
   document.getElementById("crrgRifCliente").value = currentIsl;
   document.getElementById("crrgCSrl").value = 0;
 
+  //valorizzazione del campo "attività" in base al tipo di commessa o al flag offerta
   const tatvFlgOfferta = islData.getAttribute("TatvFlgOfferta");
   if (tbcpPrfComm == "B" || tatvFlgOfferta > 0) {
-    document.getElementById("crrgCmaatt4").checked = true;
+    document.getElementById("crrgCmaatt4").checked = true; //Verbale
   } else {
-    document.getElementById("crrgCmaatt1").checked = true;
+    document.getElementById("crrgCmaatt1").checked = true; //n.d.
   }
 }
 
+//Popola il form con i dati del consuntivo selezionato (per update o duplicate)
 async function populateByConsuntivo(srl, mode) {
-  cleanModalFields();
+  //pulisce i campi di errore
+  cleanModalErrors();
+
+  //prendo il consuntivo corrente dalla response che contiene i consuntivi della commessa
   const consuntivo = currentConsuntivi.find((x) => x.crrgCSrl == srl);
-  console.log(consuntivo);
+
+  //valorizzazione dei campi con i dati del consuntivo corrente
   document.getElementById("ora").value = getDuration(consuntivo.crrgTmRunIncr);
   if (mode == "update") {
+    //se siamo in update valorizzo anche la data
     document.getElementById("data").value = consuntivo.crrgDtt.split("T")[0];
   }
+
   for (const opt of document.getElementById("NTOper").options) {
     opt.selected = opt.value.split("-")[1] == consuntivo.crrgTOper;
   }
@@ -303,7 +326,7 @@ async function populateByConsuntivo(srl, mode) {
 async function handleFormSubmit() {
   const request = getConsuntivoObj();
 
-  const res = await fetchPOST("api/CrrgApi/Create", request);
+  const res = (await axios.post("CrrgApi/Create", request)).data;
 
   if (res.succeeded == "S") {
     document.getElementById("isl-error-container").innerText = "Operazione Eseguita";
@@ -312,7 +335,8 @@ async function handleFormSubmit() {
     await showConsuntivi();
     return;
   }
-  cleanModalFields();
+
+  cleanModalErrors();
 
   for (const error of res.errors) {
     const key = Object.keys(error)[0];
@@ -321,6 +345,7 @@ async function handleFormSubmit() {
   }
 }
 
+//Prende i dati del form della modale e setta quelli di default, ritorna un oggetto con i dati del consuntivo
 function getConsuntivoObj() {
   const form = document.getElementById("create-consuntivo-form");
   const data = new FormData(form);
@@ -328,6 +353,7 @@ function getConsuntivoObj() {
   const time = value.crrgTmRunIncrHMS.toString().split(":");
   const srl = document.getElementById("crrgCSrl").value;
 
+  //se il CSrl è diverso da 0 significa che siamo in update
   value.isUpdate = srl != "0";
   value.crrgPosDoc = 0;
   value.crrgPrgDoc = 0;
@@ -343,33 +369,42 @@ function getConsuntivoObj() {
   value.crrgCRis;
   value.crrgCdl = "_" + value.crrgCRis;
 
-  console.log(value);
+  Log(value);
   return value;
 }
 
 // Delete del consuntivo tramite CrrgCSrl
 async function deleteConsuntivo(crsl) {
-  console.log("Eliminazione consuntivo: " + crsl);
-  const res = await fetchDELETE(`api/CrrgApi/Delete/${crsl}`);
+  Log("Eliminazione consuntivo: " + crsl);
+  await axios.delete(`CrrgApi/Delete/${crsl}`);
 
+  //dopo la chiamata per l'eliminazione ricalcola l'altezza che deve avere l'accordion dei consuntivi
   let height = 0;
 
-  Array.from(document.getElementById(`tbody-${currentIsl}-${currentStato}`).children).forEach((x) => {
-    if (x.getAttribute("CrrgCSrl") == crsl) {
-      x.remove();
+  for (const child of document.getElementById(`tbody-${currentIsl}-${currentStato}`).children) {
+    if (child.getAttribute("CrrgCSrl") == crsl) {
+      child.remove();
     } else {
-      height += x.getBoundingClientRect().height;
+      height += child.getBoundingClientRect().height;
     }
-  });
-  document.getElementById(currentAccordionId).style.maxHeight = 92.84 + height + 1 + "px";
+  }
+  document.getElementById(currentAccordionId).style.maxHeight = altezzaAccordionVuoto + height + "px";
 }
 
 //per pulire i campi di errore
-function cleanModalFields() {
+function cleanModalErrors() {
   document.getElementById("isl-error-container").innerText = "";
   Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerText = ""));
 }
 
+//Da decimali a formato 00:00:00
 function getDuration(duration) {
   return new Date(duration * 1000).toISOString().substring(11, 19);
+}
+
+//Logga se la variabile logs = true
+function Log(val) {
+  if (logs) {
+    console.log(val);
+  }
 }

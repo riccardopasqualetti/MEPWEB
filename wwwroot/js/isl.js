@@ -4,21 +4,14 @@ let selectedIsl;
 async function setupSearchIsl(elementId) {
   const searchInput = document.getElementById("isl-search-input");
   const bsModal = new bootstrap.Modal("#searchIslModal");
-  const rows = document.getElementsByClassName("search-isl-riga");
+  const debouncedSearchData = debounce((ev) => searchData(ev), 500);
 
   await executeSearch(elementId, bsModal);
 
   bsModal.show();
 
   searchInput.addEventListener("input", (e) => {
-    for (const row of rows) {
-      value = row.querySelector(`*[field="rifCli"]`).innerText;
-      if (!value.toLowerCase().includes(e.target.value.toLowerCase())) {
-        row.classList.add("d-none");
-      } else {
-        row.classList.remove("d-none");
-      }
-    }
+    debouncedSearchData(e);
   });
 
   document.getElementById("searchIslModal").addEventListener("hidden.bs.modal", () => {
@@ -33,8 +26,49 @@ async function setupSearchIsl(elementId) {
     const input = document.getElementById(elementId);
     input.value = selectedIsl;
     input.onchange();
-    document.getElementById("NTOper").focus()
+    document.getElementById("NTOper").focus();
   });
+}
+
+const debounce = (mainFunction, delay) => {
+  // Declare a variable called 'timer' to store the timer ID
+  let timer;
+
+  // Return an anonymous function that takes in any number of arguments
+  return function (...args) {
+    // Clear the previous timer to prevent the execution of 'mainFunction'
+    clearTimeout(timer);
+
+    // Set a new timer that will execute 'mainFunction' after the specified delay
+    timer = setTimeout(() => {
+      mainFunction(...args);
+    }, delay);
+  };
+};
+
+function searchData(e) {
+  const rows = document.getElementsByClassName("search-isl-riga");
+  for (const row of rows) {
+    value = row.querySelector(`*[field="rifCli"]`).innerText;
+    if (!value.toLowerCase().includes(e.target.value.toLowerCase())) {
+      row.classList.add("d-none");
+    } else {
+      row.classList.remove("d-none");
+    }
+  }
+}
+
+function filterRows(e) {
+  console.log("1");
+  /*   const rows = document.getElementsByClassName("search-isl-riga");
+  for (const row of rows) {
+    value = row.querySelector(`*[field="rifCli"]`).innerText;
+    if (!value.toLowerCase().includes(e.target.value.toLowerCase())) {
+      row.classList.add("d-none");
+    } else {
+      row.classList.remove("d-none");
+    }
+  } */
 }
 
 async function executeSearch(elementId, bsModal) {
