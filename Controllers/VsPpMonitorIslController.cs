@@ -1,5 +1,6 @@
 ﻿using Mep01Web.Infrastructure;
 using Mep01Web.Service.Interface;
+using MepWeb.DTO.Request;
 using MepWeb.Service.Impl;
 using MepWeb.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -42,13 +43,19 @@ namespace MepWeb.Controllers
 		}
 
 		[HttpPost("GetIslByStato")]
-		public async Task<IActionResult> GetIslByStato(string[] flags)
+		public async Task<IActionResult> GetIslByStato(GetIslFilteredRequest request)
 		{
 			try
 			{
-				var res = await _dbContext.VsPpMonitorIsl.Where(x => flags.Contains(x.Flag)).Select(x => new { x.RifCli, x.Stato, x.Flag, x.AcliRagSoc1, x.TatvDesc }).ToListAsync();
+				var query = _dbContext.VsPpMonitorIsl.Where(x => request.Flags.Contains(x.Flag));
+					
+				if (!string.IsNullOrWhiteSpace(request.Isl))
+				{
+                    query = query.Where(x => x.RifCli.Contains(request.Isl));
+				}
+				query.Select(x => new { x.RifCli, x.Stato, x.Flag, x.AcliRagSoc1, x.TatvDesc });
 
-				return Ok(res);
+				return Ok(await query.ToListAsync());
 			}
 
 			catch (Exception ex)

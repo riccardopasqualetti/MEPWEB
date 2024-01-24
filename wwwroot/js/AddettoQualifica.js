@@ -17,7 +17,7 @@ let idDocumento = window.location.pathname.split("/")[3]
 
     }
 } */
-const baseURL = "https://localhost:7125/"
+const baseURL = "/"
 console.log(baseURL)
 
 console.log("Id doc= " + idDocumento)
