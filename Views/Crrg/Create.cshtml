@@ -187,12 +187,14 @@
 				<div class="form-group" style="margin-top:5px;">
 					<label asp-for="CrrgApp">Applicativo</label>
 					<select asp-for="CrrgApp" asp-items="@Model.AppList.Applicativi" class="form-select" id="CrrgApp" style="width:200px"></select>
+					<span asp-validation-for="CrrgApp" class="text-danger"></span>
 				</div>
 
 				@* Modulo *@
 				<div class="form-group" style="margin-top:5px;">
 					<label asp-for="CrrgMod">Modulo</label>
 					<select asp-for="CrrgMod" asp-items="@Model.ModList.Moduli" class="form-select" id="CrrgMod" style="width:200px"></select>
+					<span asp-validation-for="CrrgMod" class="text-danger"></span>
 				</div>
 
 				@* Note *@

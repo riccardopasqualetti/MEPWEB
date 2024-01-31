@@ -408,6 +408,10 @@ footer {
   color: var(--anfu-color) !important;
 }
 
+#isl-error-container {
+  font-weight: 800;
+}
+
 .isl-row-btns {
   padding-left: 0 !important;
   padding-right: 0 !important;

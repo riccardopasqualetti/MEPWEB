@@ -188,6 +188,7 @@ function generateRows() {
 
     const iconaUpdate = document.createElement("i");
     iconaUpdate.className = "bi bi-pencil-fill pointer-pointer border-secondary border-end px-1";
+    iconaUpdate.title = "Modifica";
     /* iconaUpdate.setAttribute("data-bs-toggle", "modal");
     iconaUpdate.setAttribute("data-bs-target", "#addConsuntivo"); */
     iconaUpdate.addEventListener("click", async () => {
@@ -199,12 +200,14 @@ function generateRows() {
 
     const iconaDelete = document.createElement("i");
     iconaDelete.className = "bi bi-trash-fill pointer-pointer px-1";
+    iconaDelete.title = "Elimina";
     iconaDelete.addEventListener("click", async () => {
       await deleteConsuntivo(row.crrgCSrl);
     });
 
     const iconaDuplicate = document.createElement("i");
     iconaDuplicate.className = "bi bi-trashbi bi-plus-circle pointer-pointer px-1 border-secondary border-end";
+    iconaDuplicate.title = "Duplica";
     iconaDuplicate.addEventListener("click", async () => {
       await populateForm("Duplica Consuntivo");
       await populateByConsuntivo(row.crrgCSrl);
@@ -231,6 +234,7 @@ function generateRows() {
   div.className = "white-icona-wrapper";
   const iconaAdd = document.createElement("i");
   iconaAdd.className = "bi bi-plus-circle-fill pointer-pointer";
+  iconaAdd.title = "Aggiungi consuntivo";
   div.appendChild(iconaAdd);
   td.appendChild(div);
   tr.appendChild(td);
@@ -325,11 +329,13 @@ async function populateByConsuntivo(srl, mode) {
 // Scatta quando viene inviato il form di aggiunta consuntivo, crea la request e la invia al controller, se ci sono errori li fa comparire nel campo che li ha causati
 async function handleFormSubmit() {
   const request = getConsuntivoObj();
+  const responseMessageContainer = document.getElementById("isl-error-container");
 
   const res = (await axios.post("CrrgApi/Create", request)).data;
 
   if (res.succeeded == "S") {
-    document.getElementById("isl-error-container").innerText = "Operazione Eseguita";
+    responseMessageContainer.classList.add("text-succeeded");
+    responseMessageContainer.innerText = "Operazione Eseguita";
     Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerText = ""));
     document.getElementById("close-modal").click();
     await showConsuntivi();
@@ -338,10 +344,17 @@ async function handleFormSubmit() {
 
   cleanModalErrors();
 
+  responseMessageContainer.classList.add("text-danger");
   for (const error of res.errors) {
     const key = Object.keys(error)[0];
     const id = `${key[0].toLowerCase() + key.substring(1)}-error`;
-    document.getElementById(id).innerText = error[key];
+    const campoErrore = document.getElementById(id);
+    if (campoErrore) {
+      campoErrore.innerText = error[key];
+    } else {
+      responseMessageContainer.innerText = error[key];
+      responseMessageContainer.style.color = "red";
+    }
   }
 }
 
@@ -393,6 +406,7 @@ async function deleteConsuntivo(crsl) {
 
 //per pulire i campi di errore
 function cleanModalErrors() {
+  document.getElementById("isl-error-container").className = "";
   document.getElementById("isl-error-container").innerText = "";
   Array.from(document.getElementsByClassName("text-danger")).forEach((x) => (x.innerText = ""));
 }

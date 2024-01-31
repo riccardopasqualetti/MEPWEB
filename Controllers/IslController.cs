@@ -4,6 +4,7 @@ using Mep01Web.Infrastructure;
 using Mep01Web.Models;
 using Mep01Web.Models.Views;
 using Mep01Web.Service.Interface;
+using MepWeb.Controllers;
 using MepWeb.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ namespace Mep01Web.Controllers
     [Authorize]
 #endif
     [Route("api/MepWeb_[controller]")]
+    [SessionTimeoutFilter]
     public class IslController : Controller
     {
 

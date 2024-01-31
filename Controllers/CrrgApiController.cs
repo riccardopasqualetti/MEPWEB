@@ -74,8 +74,16 @@ namespace MepWeb.Controllers
                 {
                     ModelState.AddModelError("CrrgMod", addCrrgResponse.Errors[0].Message);
                 }
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgApp)
+				{
+					ModelState.AddModelError("CrrgApp", addCrrgResponse.Errors[0].Message);
+				}
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgMod)
+				{
+					ModelState.AddModelError("CrrgMod", addCrrgResponse.Errors[0].Message);
+				}
 
-                obj.Succeeded = "N";
+				obj.Succeeded = "N";
                 var res = new CrrgErrorsResponse
                 {
                     Succeeded = "N"

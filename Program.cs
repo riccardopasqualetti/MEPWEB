@@ -27,9 +27,9 @@ namespace WebApplication2
             {
                 options.Cookie.Name = "auth";
                 //options.Cookie.Path = "/Login";
-                options.LoginPath = "/home/login";
+                options.LoginPath = "/login/login";
                 //options.AccessDeniedPath = "/Login";
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(600);
                 options.Cookie.SameSite = SameSiteMode.Strict;
             });
 
@@ -42,7 +42,7 @@ namespace WebApplication2
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(option =>
             {
-                option.IdleTimeout= TimeSpan.FromMinutes(120);
+                option.IdleTimeout= TimeSpan.FromMinutes(600);
             });
 
 

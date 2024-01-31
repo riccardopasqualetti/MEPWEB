@@ -38,7 +38,7 @@
                             <tr>
                                 <td>
                                     <label asp-for="FilterCrrgCRis">Risorsa</label>
-                                    <input asp-for="FilterCrrgCRis" class="form-control" style="width:50px" />
+                                    <input asp-for="FilterCrrgCRis" id="ris-input" class="form-control text-center" style="width:50px" />
                                     <span asp-validation-for="FilterCrrgCRis" class="text-danger"></span>
                                 </td>
                                 <td>
@@ -193,19 +193,19 @@
                         <td>
                             <div class="w-75 btn-group" role="group">
                                 @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>*@
-                                <a asp-controller="Crrg" asp-action="Duplicate" asp-route-id="@obj.CrrgCSrl"><i class="bi bi-plus-circle"></i></a>
+                                <a asp-controller="Crrg" title="Duplica" asp-action="Duplicate" asp-route-id="@obj.CrrgCSrl"><i class="bi bi-plus-circle"></i></a>
                             </div>
                         </td>
                         <td>
                             <div class="w-75 btn-group" role="group">
                                 @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>*@
-                                <a asp-controller="Crrg" asp-action="Update" asp-route-id="@obj.CrrgCSrl"><i class="bi bi-pencil-fill"></i></a>
+                                <a asp-controller="Crrg" title="Modifica" asp-action="Update" asp-route-id="@obj.CrrgCSrl"><i class="bi bi-pencil-fill"></i></a>
                             </div>
                         </td>
                         <td>
                             <div class="w-75 btn-group" role="group">
                                 @*<a asp-controller="Crrg" asp-action="Edit" asp-route-id="@obj.CrrgCSrl" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>*@
-                                <a asp-controller="Crrg" asp-action="Delete" asp-route-id="@obj.CrrgCSrl"><i class="bi bi-trash-fill"></i></a>
+                                <a asp-controller="Crrg" title="Elimina" asp-action="Delete" asp-route-id="@obj.CrrgCSrl"><i class="bi bi-trash-fill"></i></a>
                             </div>
                         </td>
                     </tr>        
@@ -250,4 +250,11 @@
     </div>
 </div>
 
+@section scripts {
+    <script>
+        document.getElementById("ris-input").addEventListener("input", (e) => {
+            e.target.value = e.target.value.toUpperCase();
+        })
+    </script>
 <script src="~/js/Filter.js?v=1.1"></script>
+}

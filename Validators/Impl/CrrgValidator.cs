@@ -60,8 +60,8 @@ namespace Mep01Web.Validators.Impl
                 crrgRequest.CrrgPrfDoc = ISL.TatvPrfComm;
                 crrgRequest.CrrgADoc = ISL.TatvAComm;
 				crrgRequest.CrrgNDoc = ISL.TatvNComm;
-				crrgRequest.CrrgApp = ISL.TatvCPartApp;
-				crrgRequest.CrrgMod = ISL.TatvCPart;
+				//crrgRequest.CrrgApp = ISL.TatvCPartApp;
+				//crrgRequest.CrrgMod = ISL.TatvCPart;
 				flgcom = "-5";
 
 				if (crrgRequest.CrrgCCaus == "CORI")
@@ -157,10 +157,10 @@ namespace Mep01Web.Validators.Impl
 			}
 
 
-			// Validazione Applicativo			
+			// Validazione Applicativo
 			FlussoTbpn flussoTbpn;
 			if (!string.IsNullOrWhiteSpace(crrgRequest.CrrgApp))
-			{				
+			{
 				flussoTbpn = await _dbContext.FlussoTbpns.SingleOrDefaultAsync(x => x.TbpnCPart == crrgRequest.CrrgApp && crrgRequest.CrrgApp.StartsWith("APP_"));
 				if (flussoTbpn == null && !string.IsNullOrWhiteSpace(crrgRequest.CrrgApp))
 				{

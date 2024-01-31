@@ -20,6 +20,10 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
+    @if(_userScope.SV_USR_EMAIL == null) {
+        
+    }
+
     <header>
 
        <nav id="main-navbar" class="navbar navbar-expand-md bg-dark fixed-top" data-bs-theme="dark">

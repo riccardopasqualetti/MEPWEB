@@ -13,10 +13,12 @@ using System.Globalization;
 using System.Reflection;
 using Microsoft.VisualBasic;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using MepWeb.Controllers;
 
 namespace Mep01Web.Controllers
 {
     [Authorize]
+    [SessionTimeoutFilter]
     public class CrrgController : Controller
     {
         private readonly SataconsultingContext _db;
@@ -144,6 +146,14 @@ namespace Mep01Web.Controllers
 				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgNote)
 				{
 					ModelState.AddModelError("CrrgNote", addCrrgResponse.Errors[0].Message);
+				}
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgApp)
+				{
+					ModelState.AddModelError("CrrgApp", addCrrgResponse.Errors[0].Message);
+				}
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgMod)
+				{
+					ModelState.AddModelError("CrrgMod", addCrrgResponse.Errors[0].Message);
 				}
 
 				obj.Succeeded = "N";
