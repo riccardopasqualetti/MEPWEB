@@ -20,6 +20,11 @@ namespace Mep01Web.DTO.Request
         public DateTime FilterCrrgDttStart { get; set; }
         public DateTime FilterCrrgDttEnd { get; set; }
         public string FilterRifCliente { get; set; }
+        public string FilterCommCode { get; set; }
+
+        public string FilterGroup { get; set; }
+
+        public CrrgGroupByList FilterGroupList { get; set; } = new CrrgGroupByList();
 
         public IEnumerable<FlussoCrrg> CrrgList { get; set; }
 

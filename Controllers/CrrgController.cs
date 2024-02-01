@@ -9,6 +9,7 @@ using MepWeb.Service;
 using MepWeb.Service.Interface;
 using MepWeb.DTO.Request;
 using MepWeb.Costants;
+using Mep01Web.Type.Dropdown;
 using System.Globalization;
 using System.Reflection;
 using Microsoft.VisualBasic;
@@ -47,13 +48,16 @@ namespace Mep01Web.Controllers
             obj.FilterCrrgDttStart = dd1;
             obj.FilterCrrgDttEnd = dd2;
             obj.FilterHidden = "Y";
+            CrrgGroupByList crrgGroupByList = new CrrgGroupByList();
+            obj.FilterGroupList = crrgGroupByList;
+            obj.FilterGroup = "D";            
             IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
                 .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)                
                 .OrderByDescending(c => c.CrrgDtIns)
                 .OrderByDescending(c => c.CrrgDtt)
-                .ToList();
+            .ToList();
 
-			obj.CrrgList = objCrrgList;
+            obj.CrrgList = objCrrgList;
 
             //var results = _db.FlussoCrrgs
             //	.GroupBy(x => CultureInfo.CurrentCulture.DateTimeFormat.Calendar
@@ -76,11 +80,43 @@ namespace Mep01Web.Controllers
         public async Task<ActionResult> Index(CrrgGetRequest obj)
         {
             obj.FilterHidden = "";
-            IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
-                .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
-                .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente))
-                .OrderByDescending(c => c.CrrgDtIns)
-                .OrderByDescending(c => c.CrrgDtt);
+            IEnumerable<FlussoCrrg> objCrrgList = null;
+            switch (obj.FilterGroup)
+            {
+                case "D": 
+                   objCrrgList = _db.FlussoCrrgs
+                    .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
+                    .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
+                    .Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || ( c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode) )  
+                    .OrderByDescending(c => c.CrrgDtIns)
+                    .OrderByDescending(c => c.CrrgDtt)
+                    .ToList();
+                    break;
+                case "I":
+                   objCrrgList = _db.FlussoCrrgs
+                    .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
+                    .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
+                    .Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
+                    .OrderByDescending(c => c.CrrgDtIns)
+                    .OrderByDescending(c => c.CrrgDtt)
+                    .OrderByDescending(c => c.CrrgRifCliente)
+                    .ToList();
+                    break;
+                case "C":
+                    objCrrgList = _db.FlussoCrrgs
+                     .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
+                     .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
+                     .Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
+                     .OrderByDescending(c => c.CrrgDtIns)
+                     .OrderByDescending(c => c.CrrgDtt)
+                     .OrderByDescending(c => c.CrrgNDoc)
+                     .OrderByDescending(c => c.CrrgADoc)
+                     //.OrderByDescending(c => c.CrrgPrfDoc)
+                     //.OrderByDescending(c => c.CrrgTstDoc)
+                     .ToList();
+                    break;
+            }
+
             obj.CrrgList = objCrrgList;
             return View(obj);
         }

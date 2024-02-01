@@ -8,6 +8,8 @@
 @{
     Decimal seconds_tot = 0;
     DateTime? crrg_dtt_prev = null;
+    String? crrg_rif_cliente_prev = null;
+    String? crrg_comm_code_prev = null;
     Decimal? cal_hh = 8;
     var _db1 = _db;
 }
@@ -51,12 +53,18 @@
                                     <input asp-for="FilterCrrgDttEnd" class="form-control" style="width:150px" type="date" />
                                     <span asp-validation-for="FilterCrrgDttEnd" class="text-danger"></span>
                                 </td>
-                                @*
                                 <td>
                                     <label asp-for="FilterRifCliente">ISL</label>
                                     <input asp-for="FilterRifCliente" class="form-control" style="width:150px" />
                                 </td>
-                                *@
+                                <td>
+                                    <label asp-for="FilterCommCode">Commessa</label>
+                                    <input asp-for="FilterCommCode" class="form-control" style="width:200px" />
+                                </td>
+                                <td>
+                                    <label asp-for="FilterGroup">Raggrupamento</label>
+                                    <select asp-for="FilterGroup" asp-items="@Model.FilterGroupList.Lista" class="form-select" style="width:120px"></select>
+                                </td>                                
                             </tr>
                         </table>
 
@@ -113,20 +121,23 @@
                 @foreach (var obj in Model.CrrgList)      
                 {
             
-                var duration = new Duration(@obj.CrrgTmRunIncr);
-                var com = string.Concat(@obj.CrrgTstDoc, "/", @obj.CrrgPrfDoc, "/", @obj.CrrgADoc, "/", @obj.CrrgNDoc.ToString("000000"));
+                    var duration = new Duration(@obj.CrrgTmRunIncr);
+                    var com = string.Concat(@obj.CrrgTstDoc, "/", @obj.CrrgPrfDoc, "/", @obj.CrrgADoc, "/", @obj.CrrgNDoc.ToString("000000"));
 
-                    @if (crrg_dtt_prev != obj.CrrgDtt)
+                    @if ((Model.FilterGroup == "D" && crrg_dtt_prev != obj.CrrgDtt) || (Model.FilterGroup == "I" && crrg_rif_cliente_prev != obj.CrrgRifCliente) || (Model.FilterGroup == "C" && crrg_comm_code_prev != com))
                     {
-                        if (crrg_dtt_prev != null) {
+                        if ((Model.FilterGroup == "D" && crrg_dtt_prev != null) || (Model.FilterGroup == "I" && crrg_rif_cliente_prev != null) || (Model.FilterGroup == "C" && crrg_comm_code_prev != null))
+                        {
                             var duration_tot = new Duration(seconds_tot);
                             <tr class="table-dark">
                                 <td width="10%" align="left">
                                 </td>
                                 <td width="10%" align="left">
-                                    @crrg_dtt_prev?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                    @if (Model.FilterGroup == "D") {
+                                        @crrg_dtt_prev?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                    }
                                 </td>
-                                @if (seconds_tot < 3600 * cal_hh)
+                                @if (seconds_tot < 3600 * cal_hh && Model.FilterGroup == "D" && Model.FilterRifCliente == null)
                                 {
                                 <td width="10%" align="left" class="text-danger">
                                     @duration_tot.GetDuration()
@@ -138,9 +149,17 @@
                                     @duration_tot.GetDuration()
                                 </td>
                                 }
-                                <td width="10%" align="left">                        
+                                <td width="10%" align="left">
+                                    @if (Model.FilterGroup == "I")
+                                    {
+                                        @crrg_rif_cliente_prev
+                                    }
                                 </td>
-                                <td width="10%" align="left">                        
+                                <td width="10%" align="left">
+                                    @if (Model.FilterGroup == "C")
+                                    {
+                                        @crrg_comm_code_prev
+                                    }
                                 </td>
                                 <td width="55%" align="left">                        
                                 </td>
@@ -167,6 +186,8 @@
 
                         seconds_tot = 0;
                         crrg_dtt_prev = obj.CrrgDtt;
+                        crrg_rif_cliente_prev = obj.CrrgRifCliente;
+                        crrg_comm_code_prev = com;
                     }
 
                     @if (1 == 1) { seconds_tot += duration.GetSeconds(); }
@@ -211,16 +232,18 @@
                     </tr>        
                 }
 
-                @if (crrg_dtt_prev != null)
+                @if (seconds_tot > 0) 
                 {
                         var duration_tot = new Duration(seconds_tot);
                         <tr class="table-dark">
                             <td width="10%" align="left">
                             </td>
                             <td width="10%" align="left">
-                                @crrg_dtt_prev?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                @if (Model.FilterGroup == "D") {
+                                    @crrg_dtt_prev?.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                }
                             </td>
-                            @if (seconds_tot < 3600 * cal_hh) {
+                            @if (seconds_tot < 3600 * cal_hh && Model.FilterGroup == "D" && Model.FilterRifCliente == null) {
                             <td width="10%" align="left" class="text-danger">
                                 @duration_tot.GetDuration()
                             </td>
@@ -229,9 +252,17 @@
                                 @duration_tot.GetDuration()
                             </td>
                             }
-                            <td width="10%" align="left">                        
+                            <td width="10%" align="left">    
+                                @if (Model.FilterGroup == "I")
+                                {
+                                    @crrg_rif_cliente_prev
+                                }                                
                             </td>
-                            <td width="10%" align="left">                        
+                            <td width="10%" align="left">
+                                @if (Model.FilterGroup == "C")
+                                {
+                                    @crrg_comm_code_prev
+                                }
                             </td>
                             <td width="55%" align="left">                        
                             </td>
