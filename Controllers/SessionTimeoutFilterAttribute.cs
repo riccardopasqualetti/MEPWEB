@@ -9,8 +9,7 @@ namespace MepWeb.Controllers
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var prova = context.HttpContext.Session.GetString("SV_USR_EMAIL");
-            if (string.IsNullOrWhiteSpace(prova))
+            if (string.IsNullOrWhiteSpace(context.HttpContext.Session.GetString("SV_USR_EMAIL")))
             {
                 // Esegui il logout o effettua altra gestione in caso di sessione scaduta
                 context.Result = new RedirectToActionResult("LogoutGet", "Login", null);
