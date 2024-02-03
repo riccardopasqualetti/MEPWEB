@@ -54,7 +54,7 @@
                                     Attività
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Isl" asp-action="Index">Isl</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Isl" asp-action="Index">Monitor Isl</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Crrg" asp-action="IndexConsuntivi">Monitor Commesse</a></li>
                                 </ul>
                             </li>
@@ -130,7 +130,7 @@
                 <p>Sei sicuro di voler effettuare il logout dalla piattaforma?</p>
             </div>
             <div class="modal-footer border-0">
-                <form method="post" asp-area="" asp-controller="Home" asp-action="Logout">
+                <form method="post" asp-area="" asp-controller="Login" asp-action="Logout">
                     <button type="submit" class="btn btn-success" id="btn-confirm-logout">Si</button>
                 </form>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>

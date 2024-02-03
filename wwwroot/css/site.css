@@ -4,6 +4,7 @@
   --svil-color: rgba(51, 204, 255, 1);
   --deli-color: rgba(102, 255, 51, 1);
   --hover-btn-color: #084299;
+  --darker-bg: #002933;
 }
 
 html {
@@ -683,9 +684,23 @@ footer {
   margin-right: 0;
 }
 
-.row-selected {
-  background-color: rgba(94, 179, 183, 0.409) !important;
+#cons-tbody tr:nth-of-type(odd) > td {
+  background-color: #001c22;
 }
+
+.row-selected {
+  background-color: rgb(49, 106, 115) !important;
+}
+
+/* .table-striped tbody tr:nth-child(odd) td.row-selected {
+  background-color: rgb(49, 106, 115) !important; 
+}
+.table-striped tbody tr:nth-child(even) td.row-selected {
+  background-color: rgb(49, 106, 115) !important; 
+}
+.table-striped tbody tr td.row-selected {
+  background-color: rgb(49, 106, 115) !important;
+} */
 
 #err-modal * {
   color: rgb(174, 208, 208);

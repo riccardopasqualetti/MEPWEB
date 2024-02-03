@@ -27,12 +27,13 @@
                     <div class="mt-2">
                         <label for="password" class="form-label">Password:</label>
                         <input required type="password" name="password" class="form-control" id="password" placeholder="*********">
+                        <p class="m-0 mt-1 d-none" id="caps-alert"><i class="bi bi-capslock-fill"></i> Caps Lock attivo</p>
                     </div>
                     <button class="btn btn-success mt-3" type="submit" id="btn-login">Login</button>
                 </form>
 
                 <div class="mt-4">
-                    <a href="https://192.168.192.104:44300/RichiestaResetPassword" target="_blank">Hai dimenticato la password?</a>
+                    <a href="https://cloud.sataconsulting.it/RichiestaResetPassword" target="_blank">Hai dimenticato la password?</a>
                 </div>
             </div>
         </div>
@@ -40,18 +41,16 @@
 </div>
 
 
-@* <p>Use this page to login.</p>
+@section scripts {
+    <script>
 
-<form method="post" name="Login">
-    <div class="border p-3 mt-4">
-        
-            <div class="form-group" style="margin-top:5px;">
-                <label>User</label>
-                <input name="user" class="form-control" style="width:50px" />                
-            </div>
-        
-        <br />
-        <button type="submit" class="btn btn-primary" style="width:150px">Login</button>
-    </div>
-</form>
- *@
+        document.addEventListener('keydown', (e) => {
+            var isCaps = e.getModifierState('CapsLock');
+            if (isCaps) {
+                document.getElementById("caps-alert").classList.remove("d-none")
+            } else {
+                document.getElementById("caps-alert").classList.add("d-none")
+            }
+        })
+    </script>
+}
