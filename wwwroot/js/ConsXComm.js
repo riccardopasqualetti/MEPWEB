@@ -61,7 +61,7 @@ function search(nComm, cCli, value1, value2) {
   value2 = value2.trim().toLowerCase();
   if (value1 != "" || value2 != "") {
     for (const row of tableRows) {
-      const field1 = row.querySelector(`[campo="${nComm}"]`).innerText.toLowerCase();
+      const field1 = row.querySelector(`[campo="${nComm}"]`).innerText.toLowerCase().split("/")[3];
       const field2 = row.querySelector(`[campo="${cCli}"]`).innerText.toLowerCase();
 
       if (field1.includes(value1) && field2.includes(value2)) {
