@@ -15,6 +15,8 @@ using System.Reflection;
 using Microsoft.VisualBasic;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using MepWeb.Controllers;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Mep01Web.Controllers
 {
@@ -38,84 +40,82 @@ namespace Mep01Web.Controllers
 			_registroRicaricheService = registroRicaricheService;
 			_oreQualificaService = oreQualificaService;
 		}
-		public IActionResult Index()
+
+        //GET        
+        public async Task<ActionResult> Index()
         {
-            DateTime dd2 = DateTime.Now.Date;
-            DateTime dd1 = dd2.Subtract(TimeSpan.FromDays(((int)dd2.DayOfWeek + 6) % 7 ));
-            
-            CrrgGetRequest obj = new CrrgGetRequest();
-            obj.FilterCrrgCRis = _userScope.SV_USR_SIGLA;
-            obj.FilterCrrgDttStart = dd1;
-            obj.FilterCrrgDttEnd = dd2;
-            obj.FilterHidden = "Y";
-            CrrgGroupByList crrgGroupByList = new CrrgGroupByList();
-            obj.FilterGroupList = crrgGroupByList;
-            obj.FilterGroup = "D";            
-            IEnumerable<FlussoCrrg> objCrrgList = _db.FlussoCrrgs
-                .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)                
-                .OrderByDescending(c => c.CrrgDtIns)
-                .OrderByDescending(c => c.CrrgDtt)
-            .ToList();
+            var filter = _userScope.SV_USR_CRRG_FILTER;
+
+            CrrgReportRequest filterjson = new CrrgReportRequest();
+
+            if (filter != null)
+            {
+                filterjson = JsonConvert.DeserializeObject<CrrgReportRequest>(filter);
+            }
+
+            CrrgReportRequest obj = new CrrgReportRequest();
+            if (filterjson.FilterMantain != "Y")
+            {
+                DateTime dd2 = DateTime.Now.Date;
+                DateTime dd1 = dd2.Subtract(TimeSpan.FromDays(((int)dd2.DayOfWeek + 6) % 7));
+                obj.FilterCrrgCRis = _userScope.SV_USR_SIGLA;
+                obj.FilterCrrgDttStart = dd1;
+                obj.FilterCrrgDttEnd = dd2;
+                obj.FilterHidden = "Y";
+                CrrgGroupByList crrgGroupByList = new CrrgGroupByList();
+                obj.FilterGroupList = crrgGroupByList;
+                obj.FilterGroup = "D";
+            }
+            else
+            {
+                obj.FilterCrrgCRis = filterjson.FilterCrrgCRis;
+                obj.FilterCrrgDttStart = filterjson.FilterCrrgDttStart;
+                obj.FilterCrrgDttEnd = filterjson.FilterCrrgDttEnd;
+                obj.FilterRifCliente = filterjson.FilterRifCliente;
+                obj.FilterCommCode = filterjson.FilterCommCode;
+                obj.FilterGroup = filterjson.FilterGroup;
+                obj.FilterHidden = filterjson.FilterHidden;
+                //obj = JsonConvert.DeserializeObject<CrrgGetRequest>(filter);
+
+                filterjson.FilterMantain = "N";
+                _userScope.SV_USR_CRRG_FILTER = JsonConvert.SerializeObject(filterjson);
+            }
+
+            var pluto = await _crrgService.GetCrrgReportAsync(obj);
+            IEnumerable<FlussoCrrg> objCrrgList = pluto.Body;
 
             obj.CrrgList = objCrrgList;
+            return View(obj);
+        }
 
-            //var results = _db.FlussoCrrgs
-            //	.GroupBy(x => CultureInfo.CurrentCulture.DateTimeFormat.Calendar
-            //                    .GetWeekOfYear((DateTime)x.CrrgDtt, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday))
-            //       .SelectMany(gx => gx, (gx, x) => new
-            //       {
-            //        Week = gx.Key,
-            //        DateTime = x,
-            //        Count = gx.Count(),
-            //       });
 
-            //         var re = results.ToList();
+        //GET
+        [HttpGet("[controller]/[action]")]
+        public async Task<ActionResult> IndexMantain()
+        {
+            var filter = _userScope.SV_USR_CRRG_FILTER;
 
-            return View(obj);           
+            if (filter != null)
+            {
+                CrrgReportRequest filterjson = new CrrgReportRequest();
+                filterjson = JsonConvert.DeserializeObject<CrrgReportRequest>(filter);
+                filterjson.FilterMantain = "Y";
+                _userScope.SV_USR_CRRG_FILTER = JsonConvert.SerializeObject(filterjson);
+            }
+            return RedirectToAction("Index");
         }
 
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Index(CrrgGetRequest obj)
+        public async Task<ActionResult> Index(CrrgReportRequest obj)
         {
+            _userScope.SV_USR_CRRG_FILTER = JsonConvert.SerializeObject(obj);
+                        
             obj.FilterHidden = "";
-            IEnumerable<FlussoCrrg> objCrrgList = null;
-            switch (obj.FilterGroup)
-            {
-                case "D": 
-                   objCrrgList = _db.FlussoCrrgs
-                    .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
-                    .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
-                    .Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || ( c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode) )  
-                    .OrderByDescending(c => c.CrrgDtIns)
-                    .OrderByDescending(c => c.CrrgDtt)
-                    .ToList();
-                    break;
-                case "I":
-                   objCrrgList = _db.FlussoCrrgs
-                    .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
-                    .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
-                    .Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
-                    .OrderByDescending(c => c.CrrgDtIns)
-                    .OrderByDescending(c => c.CrrgDtt)
-                    .OrderByDescending(c => c.CrrgRifCliente)
-                    .ToList();
-                    break;
-                case "C":
-                    objCrrgList = _db.FlussoCrrgs
-                     .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
-                     .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
-                     .Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
-                     .OrderByDescending(c => c.CrrgDtIns)
-                     .OrderByDescending(c => c.CrrgDtt)
-                     .OrderByDescending(c => c.CrrgNDoc)
-                     .OrderByDescending(c => c.CrrgADoc)
-                     //.OrderByDescending(c => c.CrrgPrfDoc)
-                     //.OrderByDescending(c => c.CrrgTstDoc)
-                     .ToList();
-                    break;
-            }
+
+			var pluto = await _crrgService.GetCrrgReportAsync(obj);
+			IEnumerable<FlussoCrrg> objCrrgList = pluto.Body;
 
             obj.CrrgList = objCrrgList;
             return View(obj);
@@ -316,7 +316,7 @@ namespace Mep01Web.Controllers
         {
 			var deleteCrrgResponse = await _crrgService.DeleteCrrgAsync(obj);
 			
-			return RedirectToAction("Index");		
+			return RedirectToAction("IndexMantain");		
 			
         }
 

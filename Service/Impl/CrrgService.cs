@@ -17,6 +17,8 @@ using MepWeb.DTO.Response;
 using MepWeb.DTO.Request;
 using MepWeb.Costants;
 using MepWeb.Service.Interface;
+using Mep01Web.Models.Views;
+using System.Collections.Generic;
 
 namespace Mep01Web.Service.Impl
 {
@@ -46,9 +48,9 @@ namespace Mep01Web.Service.Impl
 			_vsCommAperteXCliService = vsCommAperteXCliService;
 		}
 
-		public async Task<ResponseBase<CrrgResponse>?> GetCrrgAsync(CrrgCreateRequest crrgRequest)
+		public async Task<ResponseBase<CrrgResponse>?> GetCrrgAsync(CrrgGetRequest crrgRequest)
         {
-            FlussoCrrg flussoCrrg = await _dbContext.FlussoCrrgs.SingleOrDefaultAsync(e => e.CrrgCSrl == crrgRequest.CrrgCSrl && e.CrrgCDitta == "01");
+            FlussoCrrg flussoCrrg = await _dbContext.FlussoCrrgs.SingleOrDefaultAsync(e => e.CrrgCSrl == crrgRequest.CrrgCSrl && e.CrrgCDitta == crrgRequest.CrrgCDitta);
 
             if (flussoCrrg == null)
             {
@@ -58,6 +60,50 @@ namespace Mep01Web.Service.Impl
             crrgResponse.FlussoCrrg = flussoCrrg;
             return ResponseBase<CrrgResponse?>.Success(crrgResponse);
         }
+
+        public async Task<ResponseBase<IEnumerable<FlussoCrrg>>?> GetCrrgReportAsync(CrrgReportRequest obj)
+        {
+            List<FlussoCrrg> objCrrgList = null;
+            //IEnumerable<FlussoCrrg> objCrrgList = null;            
+			switch (obj.FilterGroup)
+            {
+                case "D":
+                    objCrrgList = _dbContext.FlussoCrrgs
+                    .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
+                    .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
+					.Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
+                    .OrderByDescending(c => c.CrrgDtIns)
+                    .OrderByDescending(c => c.CrrgDtt)                     
+                    .ToList();
+                    break;
+                case "I":
+                    objCrrgList = _dbContext.FlussoCrrgs
+                    .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
+                    .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
+					.Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
+                    .OrderByDescending(c => c.CrrgDtIns)
+                    .OrderByDescending(c => c.CrrgDtt)
+                    .OrderByDescending(c => c.CrrgRifCliente)
+                    .ToList();
+                    break;
+                case "C":
+                    objCrrgList = _dbContext.FlussoCrrgs
+                    .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
+                    .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
+					.Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
+                    .OrderByDescending(c => c.CrrgDtIns)
+                    .OrderByDescending(c => c.CrrgDtt)
+                    .OrderByDescending(c => c.CrrgNDoc)
+                    .OrderByDescending(c => c.CrrgADoc)
+                    //.OrderByDescending(c => c.CrrgPrfDoc)
+                    //.OrderByDescending(c => c.CrrgTstDoc)
+                    .ToList();
+                    break;
+            }
+
+            //IEnumerable<FlussoCrrg> objCrrgListIE = objCrrgList.AsEnumerable();
+            return ResponseBase<IEnumerable<FlussoCrrg>>.Success(objCrrgList.AsEnumerable()); //objCrrgList.AsEnumerable()
+		}
 
         public async Task<ResponseBase<List<ConsXCommResponse>>?> GetAllConsAsync()
         {
@@ -427,7 +473,10 @@ namespace Mep01Web.Service.Impl
 
         public async Task<CrrgCreateRequest> DeleteCrrgPrepareDataAsync(CrrgCreateRequest crrgCreateRequest)
         {
-            var getCrrgResponse = await GetCrrgAsync(crrgCreateRequest);
+            CrrgGetRequest crrgGetRequest = new CrrgGetRequest();
+            crrgGetRequest.CrrgCDitta = "01";
+            crrgGetRequest.CrrgCSrl = crrgCreateRequest.CrrgCSrl;
+            var getCrrgResponse = await GetCrrgAsync(crrgGetRequest);
             var flussoCrrg = getCrrgResponse.Body.FlussoCrrg;
 			crrgCreateRequest.CrrgCSrl = flussoCrrg.CrrgCSrl;
 			crrgCreateRequest.CrrgCRis = flussoCrrg.CrrgCRis;
