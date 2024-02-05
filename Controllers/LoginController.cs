@@ -30,12 +30,12 @@ namespace MepWeb.Controllers
             return View();
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> LogoutGet()
-        //{
-        //    await HttpContext.SignOutAsync();
-        //    return RedirectToAction("Login", "Login");
-        //}
+        [HttpGet]
+        public async Task<IActionResult> LogoutGet()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Login", "Login");
+        }
 
         [HttpPost]
         public async Task<IActionResult> Logout()
