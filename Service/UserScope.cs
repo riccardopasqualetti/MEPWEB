@@ -1,4 +1,8 @@
-﻿namespace MepWeb.Service
+﻿using Mep01Web.DTO.Request;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+
+namespace MepWeb.Service
 {
     public class UserScope
     {
@@ -29,6 +33,17 @@
             set
             {
                 _contextAccessor.HttpContext.Session.SetString(nameof(SV_USR_EMAIL), value);
+            }
+        }
+        public string SV_USR_CRRG_FILTER
+        {
+            get
+            {
+                return _contextAccessor.HttpContext.Session.GetString(nameof(SV_USR_CRRG_FILTER));
+            }
+            set
+            {
+                _contextAccessor.HttpContext.Session.SetString(nameof(SV_USR_CRRG_FILTER), value);
             }
         }
     }
