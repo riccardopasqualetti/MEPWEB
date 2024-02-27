@@ -16,7 +16,6 @@ namespace Mep01Web.Controllers
     [Authorize]
 #endif
     [Route("api/MepWeb_[controller]")]
-    [SessionTimeoutFilter]
     public class IslController : Controller
     {
 

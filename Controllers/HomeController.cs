@@ -20,7 +20,6 @@ using MepWeb.Controllers;
 namespace Mep01Web.Controllers
 {
     [Authorize]
-    [SessionTimeoutFilter]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

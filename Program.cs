@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using MepWeb.Service;
 using MepWeb.Service.Interface;
 using MepWeb.Service.Impl;
+using MepWeb.Controllers;
 
 namespace WebApplication2
 {
@@ -28,50 +29,52 @@ namespace WebApplication2
                 options.Cookie.Name = "auth";
                 //options.Cookie.Path = "/Login";
                 options.LoginPath = "/login/login";
+                options.LogoutPath = "/login/login";
                 //options.AccessDeniedPath = "/Login";
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(600);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(240);
                 options.Cookie.SameSite = SameSiteMode.Strict;
+                options.SlidingExpiration = true;
             });
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<SessionTimeoutFilterAttribute>();
+            });
 
             // [RP] for session variable.
             builder.Services.AddScoped<UserScope>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddSession(option =>
-            {
-                option.IdleTimeout= TimeSpan.FromMinutes(600);
-            });
+            builder.Services.AddSession();
 
 
-			builder.Services.AddDbContext<SataconsultingContext>(options =>
+            builder.Services.AddDbContext<SataconsultingContext>(options =>
                  options.UseSqlServer(builder.Configuration.GetConnectionString("Main")));
             builder.Services.AddRazorPages();
             builder.Services.AddTransient<ICrrgService, CrrgService>();
             builder.Services.AddTransient<ICrrgValidator, CrrgValidator>();
             builder.Services.AddTransient<ITatvService, TatvService>();
             builder.Services.AddTransient<ITbcpService, TbcpService>();
-			builder.Services.AddTransient<IAcliService, AcliService>();
-			builder.Services.AddTransient<IOlcaService, OlcaService>();
-            builder.Services.AddTransient<IPscCo02Service, PscCo02Service>();      
+            builder.Services.AddTransient<IAcliService, AcliService>();
+            builder.Services.AddTransient<IOlcaService, OlcaService>();
+            builder.Services.AddTransient<IPscCo02Service, PscCo02Service>();
             builder.Services.AddTransient<IMvxpa01Service, Mvxpa01Service>();
-			builder.Services.AddTransient<ITbpnService, TbpnService>();
+            builder.Services.AddTransient<ITbpnService, TbpnService>();
             builder.Services.AddTransient<ILoginService, LoginService>();
             builder.Services.AddTransient<IOreQualificaService, OreQualificaService>();
             builder.Services.AddTransient<IRegistroRicaricheService, RegistroRicaricheService>();
             builder.Services.AddTransient<IOreQualificaService, OreQualificaService>();
             builder.Services.AddTransient<ITcdlService, TcdlService>();
-            builder.Services.AddTransient<IPscQualService, PscQualService>(); 
+            builder.Services.AddTransient<IPscQualService, PscQualService>();
             builder.Services.AddTransient<IVsCommAperteXCliService, VsCommAperteXCliService>();
-			builder.Services.AddTransient<IMaccService, MaccService>();
-			builder.Services.AddTransient<IQualificheService, QualificheService>();
+            builder.Services.AddTransient<IMaccService, MaccService>();
+            builder.Services.AddTransient<IQualificheService, QualificheService>();
 
 
-			var app = builder.Build();
+            var app = builder.Build();
 
-            
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -82,11 +85,11 @@ namespace WebApplication2
 
             app.UseHttpsRedirection();
             app.UseStaticFiles(); //[RP] defined in wwwroot.
-            app.UseSession(); //[RP] for session variable.
 
-			app.UseRouting();
+            app.UseRouting();
             //app.UseAuthentication(); //[RP] 29:47 https://www.youtube.com/watch?v=hZ1DASYd9rk
             app.UseAuthentication();
+            app.UseSession(); //[RP] for session variable.
             app.UseAuthorization();
 
             app.MapRazorPages();

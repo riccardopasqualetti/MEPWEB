@@ -1,21 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using MepWeb.Service;
+using Microsoft.AspNetCore.Authentication;
 
 namespace MepWeb.Controllers
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class SessionTimeoutFilterAttribute : ActionFilterAttribute
+    public class SessionTimeoutFilterAttribute : IAsyncActionFilter
     {
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (string.IsNullOrWhiteSpace(context.HttpContext.Session.GetString("SV_USR_EMAIL")))
+            //context.HttpContext.User.Identity != null && context.HttpContext.User.Identity.IsAuthenticated
+            if (context.HttpContext.Request.Path.Value != null && !context.HttpContext.Request.Path.Value.EndsWith("/login/login", StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrWhiteSpace(context.HttpContext.Session.GetString("SV_USR_EMAIL")))
             {
+                await context.HttpContext.SignOutAsync();
                 // Esegui il logout o effettua altra gestione in caso di sessione scaduta
-                context.Result = new RedirectToActionResult("LogoutGet", "Login", null);
+                context.Result = new RedirectToActionResult("Login", "Login", null);
             }
-
-            base.OnActionExecuting(context);
+            else
+            {
+                await next();
+            }
         }
     }
 }

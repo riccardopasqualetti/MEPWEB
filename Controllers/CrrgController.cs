@@ -21,7 +21,6 @@ using Newtonsoft.Json;
 namespace Mep01Web.Controllers
 {
     [Authorize]
-    [SessionTimeoutFilter]
     public class CrrgController : Controller
     {
         private readonly SataconsultingContext _db;
