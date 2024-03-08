@@ -727,3 +727,17 @@ footer {
 .tgen-margin {
   margin-top: 10vh;
 }
+
+/* RegistroRicariche */
+
+.btn-back {
+    margin-left: 3.7rem;
+}
+
+.btn-back + #tgen #containerLayoutAziendale {
+    margin-top: 1rem;
+}
+
+.btn-back + #tgen #containerLayoutAziendale>div>div {
+    margin-bottom: 0;
+}

@@ -51,6 +51,8 @@ public partial class VsConsXComm
 
     public string? TfattGen { get; set; }
 
+    public string? TfattGde { get; set; }
+
     public decimal HhacqPgm { get; set; }
 
     public decimal HhacqSoa { get; set; }
@@ -63,6 +65,8 @@ public partial class VsConsXComm
 
     public decimal HhacqGen { get; set; }
 
+    public decimal HhacqGde { get; set; }
+
     public decimal HhcrrgPgm { get; set; }
 
     public decimal HhcrrgSoa { get; set; }
@@ -74,4 +78,35 @@ public partial class VsConsXComm
     public decimal HhcrrgSyd { get; set; }
 
     public decimal HhcrrgGen { get; set; }
+
+    public decimal HhcrrgPgmEff { get; set; }
+
+    public decimal HhcrrgSoaEff { get; set; }
+
+    public decimal HhcrrgPjmEff { get; set; }
+
+    public decimal HhcrrgBucEff { get; set; }
+
+    public decimal HhcrrgSydEff { get; set; }
+
+    public decimal HhcrrgPgmEffNv { get; set; }
+
+    public decimal HhcrrgSoaEffNv { get; set; }
+
+    public decimal HhcrrgPjmEffNv { get; set; }
+
+    public decimal HhcrrgBucEffNv { get; set; }
+
+    public decimal HhcrrgSydEffNv { get; set; }
+
+    public decimal? Hh001aPgm { get; set; }
+
+    public decimal? Hh001aSoa { get; set; }
+
+    public decimal? Hh001aPjm { get; set; }
+
+    public decimal? Hh001aBuc { get; set; }
+
+    public decimal? Hh001aSyd { get; set; }
+
 }

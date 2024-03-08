@@ -19,6 +19,7 @@ using MepWeb.Costants;
 using MepWeb.Service.Interface;
 using Mep01Web.Models.Views;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Mep01Web.Service.Impl
 {
@@ -30,25 +31,25 @@ namespace Mep01Web.Service.Impl
         private readonly IAcliService _acliService;
         private readonly ITbcpService _tbcpService;
         private readonly IOlcaService _olcaService;
-		private readonly IMvxpa01Service _mvxpa01Service;		
-		private readonly ITbpnService _tbpnService;
-		private readonly ITatvService _tatvService;
+        private readonly IMvxpa01Service _mvxpa01Service;
+        private readonly ITbpnService _tbpnService;
+        private readonly ITatvService _tatvService;
         private readonly IVsCommAperteXCliService _vsCommAperteXCliService;
 
-		public CrrgService(SataconsultingContext dbContext, ICrrgValidator crrgValidator, IAcliService acliService, ITbcpService tbcpService, IOlcaService olcaService, IMvxpa01Service mvxpa01Service, ITbpnService tbpnService, ITatvService tatvService, IVsCommAperteXCliService vsCommAperteXCliService)
-		{
-			_dbContext = dbContext;
-			_crrgValidator = crrgValidator;
-			_acliService = acliService;
-			_tbcpService = tbcpService;
-			_olcaService = olcaService;
-			_mvxpa01Service = mvxpa01Service;
-			_tbpnService = tbpnService;
-			_tatvService = tatvService;
-			_vsCommAperteXCliService = vsCommAperteXCliService;
-		}
+        public CrrgService(SataconsultingContext dbContext, ICrrgValidator crrgValidator, IAcliService acliService, ITbcpService tbcpService, IOlcaService olcaService, IMvxpa01Service mvxpa01Service, ITbpnService tbpnService, ITatvService tatvService, IVsCommAperteXCliService vsCommAperteXCliService)
+        {
+            _dbContext = dbContext;
+            _crrgValidator = crrgValidator;
+            _acliService = acliService;
+            _tbcpService = tbcpService;
+            _olcaService = olcaService;
+            _mvxpa01Service = mvxpa01Service;
+            _tbpnService = tbpnService;
+            _tatvService = tatvService;
+            _vsCommAperteXCliService = vsCommAperteXCliService;
+        }
 
-		public async Task<ResponseBase<CrrgResponse>?> GetCrrgAsync(CrrgGetRequest crrgRequest)
+        public async Task<ResponseBase<CrrgResponse>?> GetCrrgAsync(CrrgGetRequest crrgRequest)
         {
             FlussoCrrg flussoCrrg = await _dbContext.FlussoCrrgs.SingleOrDefaultAsync(e => e.CrrgCSrl == crrgRequest.CrrgCSrl && e.CrrgCDitta == crrgRequest.CrrgCDitta);
 
@@ -65,22 +66,22 @@ namespace Mep01Web.Service.Impl
         {
             List<FlussoCrrg> objCrrgList = null;
             //IEnumerable<FlussoCrrg> objCrrgList = null;            
-			switch (obj.FilterGroup)
+            switch (obj.FilterGroup)
             {
                 case "D":
                     objCrrgList = _dbContext.FlussoCrrgs
                     .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
                     .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
-					.Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
+                    .Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
                     .OrderByDescending(c => c.CrrgDtIns)
-                    .OrderByDescending(c => c.CrrgDtt)                     
+                    .OrderByDescending(c => c.CrrgDtt)
                     .ToList();
                     break;
                 case "I":
                     objCrrgList = _dbContext.FlussoCrrgs
                     .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
                     .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
-					.Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
+                    .Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
                     .OrderByDescending(c => c.CrrgDtIns)
                     .OrderByDescending(c => c.CrrgDtt)
                     .OrderByDescending(c => c.CrrgRifCliente)
@@ -90,7 +91,7 @@ namespace Mep01Web.Service.Impl
                     objCrrgList = _dbContext.FlussoCrrgs
                     .Where(c => c.CrrgCRis == obj.FilterCrrgCRis && c.CrrgDtt >= obj.FilterCrrgDttStart && c.CrrgDtt <= obj.FilterCrrgDttEnd)
                     .Where(c => obj.FilterRifCliente == "" || obj.FilterRifCliente == null || c.CrrgRifCliente.Contains(obj.FilterRifCliente)).AsEnumerable()
-					.Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
+                    .Where(c => obj.FilterCommCode == "" || obj.FilterCommCode == null || (c.CrrgTstDoc + "/" + c.CrrgPrfDoc + "/" + c.CrrgADoc.ToString() + "/" + c.CrrgNDoc.ToString("000000")).Contains(obj.FilterCommCode))
                     .OrderByDescending(c => c.CrrgDtIns)
                     .OrderByDescending(c => c.CrrgDtt)
                     .OrderByDescending(c => c.CrrgNDoc)
@@ -103,59 +104,70 @@ namespace Mep01Web.Service.Impl
 
             //IEnumerable<FlussoCrrg> objCrrgListIE = objCrrgList.AsEnumerable();
             return ResponseBase<IEnumerable<FlussoCrrg>>.Success(objCrrgList.AsEnumerable()); //objCrrgList.AsEnumerable()
-		}
+        }
 
         public async Task<ResponseBase<List<ConsXCommResponse>>?> GetAllConsAsync()
         {
-            var all = await _dbContext.VsConsXComms.ToListAsync();
-
-            var res = new List<ConsXCommResponse>();
-
-            foreach (var item in all)
+            var res = await _dbContext.VsConsXComms.Select(item => new ConsXCommResponse
             {
-                res.Add(new ConsXCommResponse
-                {
-                    TBCP_TST_COMM = item.TbcpTstComm,
-                    TBCP_PRF_COMM = item.TbcpPrfComm,
-                    TBCP_A_COMM = item.TbcpAComm,
-                    TBCP_N_COMM = item.TbcpNComm,
-                    TBCP_C_CLI = item.TbcpCCli,
-                    ACLI_RAG_SOC_1 = item.AcliRagSoc1,
-                    TBCP_OFF_PREV = item.TbcpOffPrev,
-                    TBCP_RIF_CLIENTE = item.TbcpRifCliente,
-                    DESCRIZIONE_RIDOTTA = item.DescrizioneRidotta,
-                    TBCP_M1_PROJECT = item.TbcpM1Project,
-                    TBCP_DESC = item.TbcpDesc,
-                    USR1_DESC = item.Usr1Desc,
-                    TbcpId = item.TbcpId,
-                    HHACQPGM = item.HhacqPgm,
-                    HHACQSOA = item.HhacqSoa,
-                    HHACQPJM = item.HhacqPjm,
-                    HHACQBUC = item.HhacqBuc,
-                    HHACQSYD = item.HhacqSyd,
-                    HHACQGEN = item.HhacqGen,
-                    TFATTPGM = item.TfattPgm,
-                    TFATTSOA = item.TfattSoa,
-                    TFATTPJM = item.TfattPjm,
-                    TFATTBUC = item.TfattBuc,
-                    TFATTSYD = item.TfattSyd,
-                    TFATTGEN = item.TfattGen,
-                    HHCRRGPGM = item.HhcrrgPgm,
-                    HHCRRGSOA = item.HhcrrgSoa,
-                    HHCRRGPJM = item.HhcrrgPjm,
-                    HHCRRGBUC = item.HhcrrgBuc,
-                    HHCRRGSYD = item.HhcrrgSyd,
-                    HHCRRGGEN = item.HhcrrgGen
-                });
-            }
+                TBCP_TST_COMM = item.TbcpTstComm,
+                TBCP_PRF_COMM = item.TbcpPrfComm,
+                TBCP_A_COMM = item.TbcpAComm,
+                TBCP_N_COMM = item.TbcpNComm,
+                TBCP_C_CLI = item.TbcpCCli,
+                ACLI_RAG_SOC_1 = item.AcliRagSoc1,
+                TBCP_OFF_PREV = item.TbcpOffPrev,
+                TBCP_RIF_CLIENTE = item.TbcpRifCliente,
+                DESCRIZIONE_RIDOTTA = item.DescrizioneRidotta,
+                TBCP_M1_PROJECT = item.TbcpM1Project,
+                TBCP_DESC = item.TbcpDesc,
+                USR1_DESC = item.Usr1Desc,
+                TbcpId = item.TbcpId,
+                HHACQPGM = item.HhacqPgm,
+                HHACQSOA = item.HhacqSoa,
+                HHACQPJM = item.HhacqPjm,
+                HHACQBUC = item.HhacqBuc,
+                HHACQSYD = item.HhacqSyd,
+                HHACQGEN = item.HhacqGen,
+                HHACQGDE = item.HhacqGde,
+                TFATTPGM = item.TfattPgm,
+                TFATTSOA = item.TfattSoa,
+                TFATTPJM = item.TfattPjm,
+                TFATTBUC = item.TfattBuc,
+                TFATTSYD = item.TfattSyd,
+                TFATTGEN = item.TfattGen,
+                TFATTGDE = item.TfattGde,
+                HHCRRGPGM = item.HhcrrgPgm,
+                HHCRRGSOA = item.HhcrrgSoa,
+                HHCRRGPJM = item.HhcrrgPjm,
+                HHCRRGBUC = item.HhcrrgBuc,
+                HHCRRGSYD = item.HhcrrgSyd,
+                HHCRRGGEN = item.HhcrrgGen,
+                HHCRRGPGMEFF = item.HhcrrgPgmEff,
+                HHCRRGSOAEFF = item.HhcrrgSoaEff,
+                HHCRRGPJMEFF = item.HhcrrgPjmEff,
+                HHCRRGBUCEFF = item.HhcrrgBucEff,
+                HHCRRGSYDEFF = item.HhcrrgSydEff,
+                HHCRRGPGMEFFNV = item.HhcrrgPgmEffNv,
+                HHCRRGSOAEFFNV = item.HhcrrgSoaEffNv,
+                HHCRRGPJMEFFNV = item.HhcrrgPjmEffNv,
+                HHCRRGBUCEFFNV = item.HhcrrgBucEffNv,
+                HHCRRGSYDEFFNV = item.HhcrrgSydEffNv,
+                HH001APGM = item.Hh001aPgm ?? 0,
+                HH001ASOA = item.Hh001aSoa ?? 0,
+                HH001APJM = item.Hh001aPjm ?? 0,
+                HH001ABUC = item.Hh001aBuc ?? 0,
+                HH001ASYD = item.Hh001aSyd ?? 0
+            }).ToListAsync();
+
 
             return res;
         }
 
         public async Task<ResponseBase<CrrgResponse>?> AddCrrgAsync(CrrgCreateRequest crrgRequest)
         {
-			
-			var crrgValidate = await _crrgValidator.CrrgValidateAsync(crrgRequest);
+
+            var crrgValidate = await _crrgValidator.CrrgValidateAsync(crrgRequest);
             if (!crrgValidate.Succeeded)
             {
                 return ResponseBase<CrrgResponse?>.Failed(crrgValidate.Errors);
@@ -173,10 +185,10 @@ namespace Mep01Web.Service.Impl
 
             var grpRes = await GetGrpCdlsAsync(grpCdlRequest);
 
-//            tatv_residuo_gg
-//              tatv_residuo_gg_test
-//              tatv_stima_gg
-//                tatv_stima_gg_test
+            //            tatv_residuo_gg
+            //              tatv_residuo_gg_test
+            //              tatv_stima_gg
+            //                tatv_stima_gg_test
             var m = _dbContext.FlussoCrrgs.Max(c => c.CrrgCSrl) + 1;
             var crrgTmRunIncr = new Duration(crrgRequest.CrrgTmRunIncrHMS);
             var hms = crrgTmRunIncr.GetSeconds();
@@ -263,13 +275,13 @@ namespace Mep01Web.Service.Impl
                 CrrgMod = crrgRequest.CrrgMod,
                 CrrgGrpcdlEff = grpRes.Body.CrrgGrpcdlEff,
                 CrrgGrpcdlPrev = grpRes.Body.CrrgGrpcdlPrev
-                
-			};
 
-			if (crrgRequest.IsUpdate)
-			{
+            };
+
+            if (crrgRequest.IsUpdate)
+            {
                 return await UpdateCrrgAsync(crrgRequest);
-            } 
+            }
             else
             {
                 var diff = (decimal)hms / (3600 * 8);
@@ -341,8 +353,8 @@ namespace Mep01Web.Service.Impl
             var ggDiff = (decimal)hmsDiff / (3600 * 8);
 
             {
-            if (crrgRequest.CrrgRifCliente != null && (crrgRequest.CrrgCCaus == "DELI" || crrgRequest.CrrgCCaus == "SVIL"))
-                await _tatvService.UpdateTatvAsync(crrgRequest.CrrgRifCliente, crrgRequest.CrrgCCaus, ggDiff);
+                if (crrgRequest.CrrgRifCliente != null && (crrgRequest.CrrgCCaus == "DELI" || crrgRequest.CrrgCCaus == "SVIL"))
+                    await _tatvService.UpdateTatvAsync(crrgRequest.CrrgRifCliente, crrgRequest.CrrgCCaus, ggDiff);
             }
 
             var crrgResponse = new CrrgResponse();
@@ -354,11 +366,11 @@ namespace Mep01Web.Service.Impl
 
         public async Task<ResponseBase<CrrgResponse>?> DeleteCrrgAsync(CrrgCreateRequest crrgRequest)
         {
-			FlussoCrrg flussoCrrg = await _dbContext.FlussoCrrgs.SingleOrDefaultAsync(e => e.CrrgCSrl == crrgRequest.CrrgCSrl && e.CrrgCDitta == "01");
+            FlussoCrrg flussoCrrg = await _dbContext.FlussoCrrgs.SingleOrDefaultAsync(e => e.CrrgCSrl == crrgRequest.CrrgCSrl && e.CrrgCDitta == "01");
             if (flussoCrrg == null)
             {
-				return ResponseBase<CrrgResponse?>.Failed("-2", $"Non sono stati trovati record in flusso_acli");
-			}
+                return ResponseBase<CrrgResponse?>.Failed("-2", $"Non sono stati trovati record in flusso_acli");
+            }
 
             var hms = new Duration(flussoCrrg.CrrgTmRunIncr).GetSeconds();
             var diff = -(decimal)hms / (3600 * 8);
@@ -367,39 +379,39 @@ namespace Mep01Web.Service.Impl
                 await _tatvService.UpdateTatvAsync(crrgRequest.CrrgRifCliente, crrgRequest.CrrgCCaus, diff);
             }
             _dbContext.FlussoCrrgs.Remove(flussoCrrg);
-			var affected = await _dbContext.SaveChangesAsync();
+            var affected = await _dbContext.SaveChangesAsync();
 
-			var crrgResponse = new CrrgResponse();
-			crrgResponse.FlussoCrrg = flussoCrrg;
-			return ResponseBase<CrrgResponse?>.Success(crrgResponse);
-		}
+            var crrgResponse = new CrrgResponse();
+            crrgResponse.FlussoCrrg = flussoCrrg;
+            return ResponseBase<CrrgResponse?>.Success(crrgResponse);
+        }
 
 
-		public async Task<CrrgCreateRequest> AddCrrgPrepareDataAsync(CrrgCreateRequest crrgCreateRequest)
+        public async Task<CrrgCreateRequest> AddCrrgPrepareDataAsync(CrrgCreateRequest crrgCreateRequest)
         {
             // Preparazione dropdown con causali
             CrrgCCausList crrgCCausList = new CrrgCCausList();
-			crrgCreateRequest.CrrgCCausList = crrgCCausList;
-            		
+            crrgCreateRequest.CrrgCCausList = crrgCCausList;
 
-			// Preparazione dropdown con macroattività
-			CrrgCmaattList crrgCmaattList = new CrrgCmaattList();
-			var getMvxpa01response = await _mvxpa01Service.GetMvxpa01Async();
-			foreach (var mvxpa01 in getMvxpa01response.Body)
-			{
-				var item = new SelectListItem
-				{
-					Text = mvxpa01.Descrizione,
-					Value = mvxpa01.Cmaatt
-				};
 
-				crrgCmaattList.Lista.Add(item);
-			}
-			crrgCreateRequest.CrrgCmaattList = crrgCmaattList;
-			
+            // Preparazione dropdown con macroattività
+            CrrgCmaattList crrgCmaattList = new CrrgCmaattList();
+            var getMvxpa01response = await _mvxpa01Service.GetMvxpa01Async();
+            foreach (var mvxpa01 in getMvxpa01response.Body)
+            {
+                var item = new SelectListItem
+                {
+                    Text = mvxpa01.Descrizione,
+                    Value = mvxpa01.Cmaatt
+                };
+
+                crrgCmaattList.Lista.Add(item);
+            }
+            crrgCreateRequest.CrrgCmaattList = crrgCmaattList;
+
 
             // Preparazione dropdown con codice e ragione sociale clienti
-			AcliList acliList = new AcliList();
+            AcliList acliList = new AcliList();
             var getAcliAllResponse = await _vsCommAperteXCliService.GetCustOfOpenCommAsync();
             foreach (var cli in getAcliAllResponse.Body)
             {
@@ -415,60 +427,60 @@ namespace Mep01Web.Service.Impl
 
 
             // Preparazione dropdown con codice e descrizione commesse            
-			crrgCreateRequest.TbcpList = new TbcpList();
-			
+            crrgCreateRequest.TbcpList = new TbcpList();
 
-			// Preparazione dropdown con numero operazioni e tipo operazioni
-			NTOperList crrgTOperList = new NTOperList();					
-			//OlcaGetRequest o = new OlcaGetRequest();
-			//o.OlcaTstDoc = "COV";
-			//o.OlcaPrfDoc = "A";
-			//o.OlcaADoc = 2023;
-			//o.OlcaNDoc = 231006;
-			//o.OlcaNRigaDoc = 1;
-			//var getOlcaCitoResponse = await _olcaService.GetOlcaCitoAsync(o);
+
+            // Preparazione dropdown con numero operazioni e tipo operazioni
+            NTOperList crrgTOperList = new NTOperList();
+            //OlcaGetRequest o = new OlcaGetRequest();
+            //o.OlcaTstDoc = "COV";
+            //o.OlcaPrfDoc = "A";
+            //o.OlcaADoc = 2023;
+            //o.OlcaNDoc = 231006;
+            //o.OlcaNRigaDoc = 1;
+            //var getOlcaCitoResponse = await _olcaService.GetOlcaCitoAsync(o);
             crrgCreateRequest.NTOperList = new NTOperList();
 
 
-			// Preparazione dropdown Applicativi
-			AppList appList = new AppList();
-			TbpnGetRequest tbpnAppGetRequest= new TbpnGetRequest();
+            // Preparazione dropdown Applicativi
+            AppList appList = new AppList();
+            TbpnGetRequest tbpnAppGetRequest = new TbpnGetRequest();
             tbpnAppGetRequest.TbpnCPart = "APP_";
-			tbpnAppGetRequest.TbpnCDitta = "01";
-			var getTbpnAppAllLightAsync = await _tbpnService.GetTbpnLikeAllLightAsync(tbpnAppGetRequest);
-			foreach (var tbpnLight in getTbpnAppAllLightAsync.Body)
-			{
-				var item = new SelectListItem
-				{
-					Text = tbpnLight.TbpnCPart,
-					Value = tbpnLight.TbpnCPart
-				};
+            tbpnAppGetRequest.TbpnCDitta = "01";
+            var getTbpnAppAllLightAsync = await _tbpnService.GetTbpnLikeAllLightAsync(tbpnAppGetRequest);
+            foreach (var tbpnLight in getTbpnAppAllLightAsync.Body)
+            {
+                var item = new SelectListItem
+                {
+                    Text = tbpnLight.TbpnCPart,
+                    Value = tbpnLight.TbpnCPart
+                };
 
-				appList.Applicativi.Add(item);
-			}			
-			crrgCreateRequest.AppList = appList;
-
-
-			// Preparazione dropdown Moduli
-			ModList modList = new ModList();
-			TbpnGetRequest tbpnModGetRequest = new TbpnGetRequest();
-			tbpnModGetRequest.TbpnCPart = "MOD_";
-			tbpnModGetRequest.TbpnCDitta = "01";
-			var getTbpnModAllLightAsync = await _tbpnService.GetTbpnLikeAllLightAsync(tbpnModGetRequest);
-			foreach (var tbpnLight in getTbpnModAllLightAsync.Body)
-			{
-				var item = new SelectListItem
-				{
-					Text = tbpnLight.TbpnCPart,
-					Value = tbpnLight.TbpnCPart
-				};
-
-				modList.Moduli.Add(item);
-			}
-			crrgCreateRequest.ModList = modList;
+                appList.Applicativi.Add(item);
+            }
+            crrgCreateRequest.AppList = appList;
 
 
-			return crrgCreateRequest;
+            // Preparazione dropdown Moduli
+            ModList modList = new ModList();
+            TbpnGetRequest tbpnModGetRequest = new TbpnGetRequest();
+            tbpnModGetRequest.TbpnCPart = "MOD_";
+            tbpnModGetRequest.TbpnCDitta = "01";
+            var getTbpnModAllLightAsync = await _tbpnService.GetTbpnLikeAllLightAsync(tbpnModGetRequest);
+            foreach (var tbpnLight in getTbpnModAllLightAsync.Body)
+            {
+                var item = new SelectListItem
+                {
+                    Text = tbpnLight.TbpnCPart,
+                    Value = tbpnLight.TbpnCPart
+                };
+
+                modList.Moduli.Add(item);
+            }
+            crrgCreateRequest.ModList = modList;
+
+
+            return crrgCreateRequest;
         }
 
         public async Task<CrrgCreateRequest> DeleteCrrgPrepareDataAsync(CrrgCreateRequest crrgCreateRequest)
@@ -478,33 +490,33 @@ namespace Mep01Web.Service.Impl
             crrgGetRequest.CrrgCSrl = crrgCreateRequest.CrrgCSrl;
             var getCrrgResponse = await GetCrrgAsync(crrgGetRequest);
             var flussoCrrg = getCrrgResponse.Body.FlussoCrrg;
-			crrgCreateRequest.CrrgCSrl = flussoCrrg.CrrgCSrl;
-			crrgCreateRequest.CrrgCRis = flussoCrrg.CrrgCRis;
-			crrgCreateRequest.CrrgDtt = flussoCrrg.CrrgDtt == null ? DateTime.Now : (DateTime)flussoCrrg.CrrgDtt;            
-			crrgCreateRequest.CrrgTmRunIncrHMS = (new Duration(flussoCrrg.CrrgTmRunIncr)).GetDatetime();
-			crrgCreateRequest.CrrgRifCliente = flussoCrrg.CrrgRifCliente;
-			crrgCreateRequest.CommCode = flussoCrrg.CrrgTstDoc + "/" + flussoCrrg.CrrgPrfDoc + "/" + flussoCrrg.CrrgADoc + "/" + flussoCrrg.CrrgNDoc.ToString("000000"); ;
-            
-			crrgCreateRequest.CrrgCCaus = flussoCrrg.CrrgCCaus;
-			crrgCreateRequest.CrrgNOper = flussoCrrg.CrrgNOper;
-			crrgCreateRequest.CrrgTOper = flussoCrrg.CrrgTOper;			
-			crrgCreateRequest.CrrgCmaatt = flussoCrrg.CrrgCmaatt;
-			crrgCreateRequest.CrrgApp = flussoCrrg.CrrgApp;
-			crrgCreateRequest.CrrgMod = flussoCrrg.CrrgMod;
-			crrgCreateRequest.CrrgNote = flussoCrrg.CrrgNote;
+            crrgCreateRequest.CrrgCSrl = flussoCrrg.CrrgCSrl;
+            crrgCreateRequest.CrrgCRis = flussoCrrg.CrrgCRis;
+            crrgCreateRequest.CrrgDtt = flussoCrrg.CrrgDtt == null ? DateTime.Now : (DateTime)flussoCrrg.CrrgDtt;
+            crrgCreateRequest.CrrgTmRunIncrHMS = (new Duration(flussoCrrg.CrrgTmRunIncr)).GetDatetime();
+            crrgCreateRequest.CrrgRifCliente = flussoCrrg.CrrgRifCliente;
+            crrgCreateRequest.CommCode = flussoCrrg.CrrgTstDoc + "/" + flussoCrrg.CrrgPrfDoc + "/" + flussoCrrg.CrrgADoc + "/" + flussoCrrg.CrrgNDoc.ToString("000000"); ;
 
-			var tbcpGetRequest = new TbcpGetRequest();
+            crrgCreateRequest.CrrgCCaus = flussoCrrg.CrrgCCaus;
+            crrgCreateRequest.CrrgNOper = flussoCrrg.CrrgNOper;
+            crrgCreateRequest.CrrgTOper = flussoCrrg.CrrgTOper;
+            crrgCreateRequest.CrrgCmaatt = flussoCrrg.CrrgCmaatt;
+            crrgCreateRequest.CrrgApp = flussoCrrg.CrrgApp;
+            crrgCreateRequest.CrrgMod = flussoCrrg.CrrgMod;
+            crrgCreateRequest.CrrgNote = flussoCrrg.CrrgNote;
+
+            var tbcpGetRequest = new TbcpGetRequest();
             tbcpGetRequest.CommPrfDoc = flussoCrrg.CrrgPrfDoc;
-			tbcpGetRequest.CommTstDoc = flussoCrrg.CrrgTstDoc;
-			tbcpGetRequest.CommADoc = flussoCrrg.CrrgADoc;
-			tbcpGetRequest.CommNDoc = flussoCrrg.CrrgNDoc;
+            tbcpGetRequest.CommTstDoc = flussoCrrg.CrrgTstDoc;
+            tbcpGetRequest.CommADoc = flussoCrrg.CrrgADoc;
+            tbcpGetRequest.CommNDoc = flussoCrrg.CrrgNDoc;
             var getTbcpResponse = await _tbcpService.GetTbcpByCodeAsync(tbcpGetRequest);
             if (getTbcpResponse.Succeeded)
             {
-				crrgCreateRequest.ComCCli = getTbcpResponse.Body.CommMasterData.TbcpCCli + " - " + getTbcpResponse.Body.CommRCli;
-			}			
-			return crrgCreateRequest;
-		}
+                crrgCreateRequest.ComCCli = getTbcpResponse.Body.CommMasterData.TbcpCCli + " - " + getTbcpResponse.Body.CommRCli;
+            }
+            return crrgCreateRequest;
+        }
 
         public async Task<decimal> CheckHoursAvailability(decimal idDoc, decimal hours, string qualifica)
         {
@@ -514,10 +526,10 @@ namespace Mep01Web.Service.Impl
                 return -1;
             }
             decimal res = 0;
-            switch(qualifica)
+            switch (qualifica)
             {
                 case "PGM":
-                    res = crrg.HhacqPgm - crrg.HhcrrgPgm - hours; 
+                    res = crrg.HhacqPgm - crrg.HhcrrgPgm - hours;
                     break;
                 case "SOA":
                     res = crrg.HhacqSoa - crrg.HhcrrgSoa - hours;
@@ -539,71 +551,105 @@ namespace Mep01Web.Service.Impl
             return res;
         }
 
-		public async Task<ResponseBase<CrrgGrpCdlsResponse>?> GetGrpCdlsAsync(CrrgGrpCdlsRequest crrgGrpCdlsRequest)
+        public async Task<ResponseBase<CrrgGrpCdlsResponse?>> GetGrpCdlsAsync(CrrgGrpCdlsRequest crrgGrpCdlsRequest)
         {
+            var res = new CrrgGrpCdlsResponse();
 
-			if (string.IsNullOrWhiteSpace(crrgGrpCdlsRequest.CrrgCdl))
-			{
-				crrgGrpCdlsRequest.CrrgCdl = (await _dbContext.FlussoMaccs.FirstOrDefaultAsync(x => x.MaccCMatricola == crrgGrpCdlsRequest.CrrgCRis)).MaccCCdl;
-			}
-
-			decimal? GrpCdlEff;
-			decimal? GrpCdlPrev = null;
-
-			var comm = await _dbContext.VsPpCommAperteXClis.FirstOrDefaultAsync(x => x.OrpbTstDoc == crrgGrpCdlsRequest.CrrgTstDoc && x.OrpbPrfDoc == crrgGrpCdlsRequest.CrrgPrfDoc && x.OrpbADoc == crrgGrpCdlsRequest.CrrgADoc && x.OrpbNDoc == crrgGrpCdlsRequest.CrrgNDoc);
-			var pscCo02 = await _dbContext.PscCo02s.FirstOrDefaultAsync(x => x.CRisorsa == crrgGrpCdlsRequest.CrrgCRis && x.IdDoc == comm.TbcpId);
-			if (pscCo02 != null)
-			{
-				GrpCdlEff = pscCo02.Grpcdl;
-			}
-			else
-			{
-				var pscQual = await _dbContext.PscQuals.FirstOrDefaultAsync(x => x.CRisorsa == crrgGrpCdlsRequest.CrrgCRis && x.TSoggetto == "C" && x.CSoggetto == comm.TbcpCCli && x.CDitta == CommonCostants.CDitta);
-
-				if (pscQual != null)
-				{
-					GrpCdlEff = pscQual.Grpcdl;
-				}
-				else
-				{
-					GrpCdlEff = (await _dbContext.FlussoTcdls.FirstOrDefaultAsync(x => x.TcdlCCdl == crrgGrpCdlsRequest.CrrgCdl && x.TcdlCDitta == CommonCostants.CDitta)).TcdlGrpcdl;
-				}
-			}
-
-            var pscCo01 = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.IdDoc == comm.TbcpId && x.Grpcdl == GrpCdlEff && x.CDitta == CommonCostants.CDitta);
-
-            if (pscCo01 != null)
+            //mi prendo la risorsa se non viene passata
+            if (string.IsNullOrWhiteSpace(crrgGrpCdlsRequest.CrrgCdl))
             {
-                GrpCdlPrev = GrpCdlEff;
+                crrgGrpCdlsRequest.CrrgCdl = (await _dbContext.FlussoMaccs.FirstOrDefaultAsync(x => x.MaccCMatricola == crrgGrpCdlsRequest.CrrgCRis)).MaccCCdl;
+            }
+
+            decimal? GrpCdlEff;
+            decimal? GrpCdlPrev = null;
+
+            // Valorizzazione CrrgGrpcdlEff
+            var comm = await _dbContext.VsPpCommAperteXClis.FirstOrDefaultAsync(x => x.OrpbTstDoc == crrgGrpCdlsRequest.CrrgTstDoc && x.OrpbPrfDoc == crrgGrpCdlsRequest.CrrgPrfDoc && x.OrpbADoc == crrgGrpCdlsRequest.CrrgADoc && x.OrpbNDoc == crrgGrpCdlsRequest.CrrgNDoc);
+            var pscCo02 = await _dbContext.PscCo02s.FirstOrDefaultAsync(x => x.CRisorsa == crrgGrpCdlsRequest.CrrgCRis && x.IdDoc == comm.TbcpId);
+            if (pscCo02 != null)
+            {
+                res.CrrgGrpcdlEff = pscCo02.Grpcdl;
             }
             else
             {
-                var comm1 = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == comm.TbcpId);
+                var pscQual = await _dbContext.PscQuals.FirstOrDefaultAsync(x => x.CRisorsa == crrgGrpCdlsRequest.CrrgCRis && x.TSoggetto == "C" && x.CSoggetto == comm.TbcpCCli && x.CDitta == CommonCostants.CDitta);
 
-                if (comm1 != null)
+                if (pscQual != null)
                 {
-                    if (comm1.TfattGen != null)
-                    {
-                        var mvx = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == "***");
-
-                        if (mvx != null)
-                        {
-                            GrpCdlPrev = mvx.Cod;
-                        }
-                    }
-
-
+                    res.CrrgGrpcdlEff = pscQual.Grpcdl;
+                }
+                else
+                {
+                    res.CrrgGrpcdlEff = (await _dbContext.FlussoTcdls.FirstOrDefaultAsync(x => x.TcdlCCdl == crrgGrpCdlsRequest.CrrgCdl && x.TcdlCDitta == CommonCostants.CDitta)).TcdlGrpcdl;
                 }
             }
 
-            var res = new CrrgGrpCdlsResponse
-            {
-                CrrgGrpcdlEff = GrpCdlEff,
-                CrrgGrpcdlPrev = GrpCdlPrev
-            };
 
-			return ResponseBase<CrrgGrpCdlsResponse>.Success(res);
-		}
+			// Valorizzazione CrrgGrpcdlPrev
+			var pscCo01 = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.IdDoc == comm.TbcpId && x.Grpcdl == res.CrrgGrpcdlEff && x.CDitta == CommonCostants.CDitta);
+			if (pscCo01 != null)
+            {
+                res.CrrgGrpcdlPrev = res.CrrgGrpcdlEff;  //Tentativo 1
+            }
+            else
+            {
+				var mvxzz12E = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == "E**");
+				var mvxzz12D = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == "D**");
+				var tcdlDefault = (await _dbContext.FlussoTcdls.FirstOrDefaultAsync(x => x.TcdlCCdl == crrgGrpCdlsRequest.CrrgCdl && x.TcdlCDitta == CommonCostants.CDitta)).TcdlGrpcdl;
+				var mvxzz12Default = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.Cod == tcdlDefault);
+				Mvxzz12? macroGrpDefault = null;
+				Mvxzz12? macroGrpDefaultOther = null;
+				if ("SOA SYD".Contains(mvxzz12Default.DescrizioneRidotta)) { macroGrpDefault = mvxzz12E; macroGrpDefaultOther = mvxzz12D; }
+				if ("PGM PJM BUC".Contains(mvxzz12Default.DescrizioneRidotta)) { macroGrpDefault = mvxzz12D; macroGrpDefaultOther = mvxzz12E; }
+                if (macroGrpDefault == null || macroGrpDefaultOther == null) { return res; };
+
+				var vsConsXComm = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == comm.TbcpId);
+				if (vsConsXComm != null && ((macroGrpDefault.DescrizioneRidotta == "E**" || vsConsXComm.TfattGen != null)  || (macroGrpDefault.DescrizioneRidotta == "D**" || vsConsXComm.TfattGde != null))) 
+                {
+                    res.CrrgGrpcdlPrev= macroGrpDefault.Cod; //Tentativo 2
+				} else
+                {
+					if (vsConsXComm != null && ((macroGrpDefault.DescrizioneRidotta == "E**" || vsConsXComm.TfattGde != null) || (macroGrpDefault.DescrizioneRidotta == "D**" || vsConsXComm.TfattGen != null)))
+                    {
+						res.CrrgGrpcdlPrev = macroGrpDefaultOther.Cod; //Tentativo 3
+					}
+				}
+			}
+
+            return ResponseBase<CrrgGrpCdlsResponse>.Success(res);
+
+
+            //Eng : SOA SYD E**
+            //Deli: PGM PJM BUC D**
+
+
+            //var pscCo01 = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.IdDoc == comm.TbcpId && x.Grpcdl == GrpCdlEff && x.CDitta == CommonCostants.CDitta);
+
+            //if (pscCo01 != null)
+            //{
+            //    GrpCdlPrev = GrpCdlEff;
+            //}
+            //else
+            //{
+            //    var comm1 = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == comm.TbcpId);
+
+            //    if (comm1 != null)
+            //    {
+            //        if (comm1.TfattGen != null)
+            //        {
+            //            var mvx = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == "E**");
+
+            //            if (mvx != null)
+            //            {
+            //                GrpCdlPrev = mvx.Cod;
+            //            }
+            //        }
+
+
+            //    }
+            //}
+        }
 
         public async Task<ResponseBase<List<FlussoCrrg?>>> GetConsuntiviByIslAsync(string isl)
         {

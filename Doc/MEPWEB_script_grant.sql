@@ -23,6 +23,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_tcdl TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_QUAL    TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_NMDT	TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_NMDC	TO mepweb
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_001A    TO mepweb
 
 
 GRANT VIEW DEFINITION ON dba.flusso_acli                TO mepweb 
@@ -47,6 +48,7 @@ GRANT VIEW DEFINITION ON dba.flusso_tcdl                TO mepweb
 GRANT VIEW DEFINITION ON dba.PSC_QUAL                   TO mepweb 
 GRANT VIEW DEFINITION ON dba.PSC_NMDT					TO mepweb
 GRANT VIEW DEFINITION ON dba.PSC_NMDC					TO mepweb
+GRANT VIEW DEFINITION ON dba.PSC_001A					TO mepweb
 
 
 GRANT SELECT ON dba.mvxpa01                             TO mepweb

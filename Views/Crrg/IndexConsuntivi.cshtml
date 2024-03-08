@@ -6,8 +6,10 @@
 @functions {
     public string calcolaAllarme(string? tfatt, decimal? hhacq, decimal? hhacqcrrg)
     {
-        if ((tfatt == "1" || tfatt == "2") && hhacq > 0) {
-            if ((((hhacq - hhacqcrrg) / hhacq) * 100) < 10) {
+        if ((tfatt == "1" || tfatt == "2") && hhacq > 0)
+        {
+            if ((((hhacq - hhacqcrrg) / hhacq) * 100) < 10)
+            {
                 return "allarme-rosso";
             }
             else if ((((hhacq - hhacqcrrg) / hhacq) * 100) < 20)
@@ -18,7 +20,7 @@
             {
                 return "allarme-verde";
             }
-        } 
+        }
         else
         {
             return "";
@@ -48,7 +50,6 @@
         <div id="menu-btns">
             <a href="#" type="button" onClick="goToDoc('OreQualifica')" class="btn btn-primary">Ore x Qualifica</a>
             <a type="button" onClick="goToDoc('AddettoQualifica')" class="btn btn-primary">Addetto / Qualifica</a>
-            @*<button type="button" target="_blank" onClick="goToDoc('RegistroRicariche')" class="btn btn-primary" role="button">Registro Ricariche</button>*@
         </div>
     </div>
 
@@ -59,78 +60,92 @@
                     <th scope="col" class="n-riga"><div><p>#</p></div></th>
                     <th scope="col"><div>Commessa</div></th>
                     <th scope="col"><div>Cliente</div></th>
-                    <th scope="col"><div>Ragione<br/>Sociale</div></th>
-                    <th scope="col"><div>Offerta/<br/>Ordine</div></th>
+                    <th scope="col"><div>Ragione<br />Sociale</div></th>
+                    <th scope="col"><div>Offerta/<br />Ordine</div></th>
                     <th scope="col"><div>Area</div></th>
                     <th scope="col"><div>Progetto</div></th>
                     <th scope="col"><div>Descrizione</div></th>
-                    <th scope="col"><div>Project<br/>Manager</div></th>
-                    <th scope="col"><div>Ore<br/>GEN</div></th>
-                    <th scope="col"><div>Ore<br/>PGM</div></th>
-                    <th scope="col"><div>Ore<br/>SOA</div></th>
+                    <th scope="col"><div>Project<br />Manager</div></th>
+                    @* <th scope="col"><div class="text-center w-100">Ore<br />GEN</div></th> *@
+                    <th scope="col"><div class="text-center w-100">Ore<br />Eng</div></th>
+                    @*                  <th scope="col"><div>Ore<br />SOA</div></th>
+                    <th scope="col"><div>Ore<br />SYD</div></th> *@
+                    <th scope="col"><div class="text-center w-100">Ore<br />Deli</div></th>
+                    @*                     <th scope="col"><div>Ore<br/>PGM</div></th>
                     <th scope="col"><div>Ore<br/>PJM</div></th>
-                    <th scope="col"><div>Ore<br/>BUC</div></th>
-                    <th scope="col"><div>Ore<br/>SYD</div></th>
+                    <th scope="col"><div>Ore<br/>BUC</div></th> *@
+                    <th scope="col"><div class="text-center w-100">Ore<br />EngNV</div></th>
+                    <th scope="col"><div class="text-center w-100">Ore<br />DeliNV</div></th>
                 </tr>
             </thead>
-            <tbody id="cons-tbody">                
-                    @for (int i = 0; i < Model.Count; i++)
-                    {
-                    
+            <tbody id="cons-tbody">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+
                     <tr class="riga" id="row-@(i + 1)" idDoc="@Model[i].TbcpId">
-                            <td class="n-riga-value"><div><p><strong>@(i + 1)</strong></p></div></td>
-                            <td campo="TBCP_COMM">@Model[i].TBCP_TST_COMM/@Model[i].TBCP_PRF_COMM/@Model[i].TBCP_A_COMM/@Model[i].TBCP_N_COMM</td>
-                            <td campo="TBCP_C_CLI">@Model[i].TBCP_C_CLI</td>
-                            <td campo="ACLI_RAG_SOC_1">@Model[i].ACLI_RAG_SOC_1<br/>@Model[i].TBCP_OFF_PREV</td>
-                            <td campo="TBCP_RIF_CLIENTE">@Model[i].TBCP_RIF_CLIENTE</td>
-                            <td campo="DESCRIZIONE_RIDOTTA">@Model[i].DESCRIZIONE_RIDOTTA</td>
-                            <td campo="TBCP_M1_PROJECT">@Model[i].TBCP_M1_PROJECT</td>
-                            <td campo="TBCP_DESC">@Model[i].TBCP_DESC</td>
-                            <td campo="USR1_DESC">@Model[i].USR1_DESC</td>
-                            <td>
-                                <div>
-                                    <p class="text-end" campo="HHACQGEN">@(String.Format("{0:0.00}", Model[i].HHACQGEN))</p>
-                                    <p class="text-end" campo="HHCRRGGEN">@(String.Format("{0:0.00}", Model[i].HHCRRGGEN))</p>
-                                    <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTGEN, Model[i].HHACQGEN, Model[i].HHCRRGGEN)" campo="HHACQGEN">@(String.Format("{0:0.00}", (Model[i].HHACQGEN - Model[i].HHCRRGGEN)))</p>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <p class="text-end" campo="HHACQPGM">@(String.Format("{0:0.00}", Model[i].HHACQPGM))</p>
-                                    <p class="text-end" campo="HHCRRGPGM">@(String.Format("{0:0.00}", Model[i].HHCRRGPGM))</p>
-                                    <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTPGM, Model[i].HHACQPGM, Model[i].HHCRRGPGM)" campo="HHACQPGM">@(String.Format("{0:0.00}", (Model[i].HHACQPGM - Model[i].HHCRRGPGM)))</p>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <p class="text-end" campo="HHACQSOA">@(String.Format("{0:0.00}", Model[i].HHACQSOA))</p>
-                                    <p class="text-end" campo="HHCRRGSOA">@(String.Format("{0:0.00}", Model[i].HHCRRGSOA))</p>
-                                    <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTSOA, Model[i].HHACQSOA, Model[i].HHCRRGSOA)" campo="HHACQSOA">@(String.Format("{0:0.00}", (Model[i].HHACQSOA - Model[i].HHCRRGSOA)))</p>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <p class="text-end" campo="HHACQPJM">@(String.Format("{0:0.00}", Model[i].HHACQPJM))</p>
-                                    <p class="text-end" campo="HHCRRGPJM">@(String.Format("{0:0.00}", Model[i].HHCRRGPJM))</p>
-                                    <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTPJM, Model[i].HHACQPJM, Model[i].HHCRRGPJM)" campo="HHACQPJM">@(String.Format("{0:0.00}", (Model[i].HHACQPJM - Model[i].HHCRRGPJM)))</p>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <p class="text-end" campo="HHACQBUC">@(String.Format("{0:0.00}", Model[i].HHACQBUC))</p>
-                                    <p class="text-end" campo="HHCRRGBUC">@(String.Format("{0:0.00}", Model[i].HHCRRGBUC))</p>
-                                    <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTBUC, Model[i].HHACQBUC, Model[i].HHCRRGBUC)" campo="HHACQBUC">@(String.Format("{0:0.00}", (Model[i].HHACQBUC - Model[i].HHCRRGBUC)))</p>
-                                </div>
-                            </td>
-                            <td>
-                                <div>
-                                    <p class="text-end" campo="HHACQSYD">@(String.Format("{0:0.00}", Model[i].HHACQSYD))</p>
-                                    <p class="text-end" campo="HHCRRGSYD">@(String.Format("{0:0.00}", Model[i].HHCRRGSYD))</p>
-                                    <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTSYD, Model[i].HHACQSYD, Model[i].HHCRRGSYD)" campo="HHACQSYD">@(String.Format("{0:0.00}", (Model[i].HHACQSYD - Model[i].HHCRRGSYD)))</p>
-                                </div>
-                            </td>
-                        </tr>
-                    }
+                        <td class="n-riga-value">
+                            <div>
+                                <span id="note-@(i + 1)"><i class="bi bi-sticky-fill"></i></span>
+                                <p><strong>@(i + 1)</strong></p>
+                            </div>
+                        </td>
+                        <td campo="TBCP_COMM">@Model[i].TBCP_TST_COMM/@Model[i].TBCP_PRF_COMM/@Model[i].TBCP_A_COMM/@Model[i].TBCP_N_COMM</td>
+                        <td campo="TBCP_C_CLI">@Model[i].TBCP_C_CLI</td>
+                        <td campo="ACLI_RAG_SOC_1">@Model[i].ACLI_RAG_SOC_1<br />@Model[i].TBCP_OFF_PREV</td>
+                        <td campo="TBCP_RIF_CLIENTE">@Model[i].TBCP_RIF_CLIENTE</td>
+                        <td campo="DESCRIZIONE_RIDOTTA">@Model[i].DESCRIZIONE_RIDOTTA</td>
+                        <td campo="TBCP_M1_PROJECT">@Model[i].TBCP_M1_PROJECT</td>
+                        <td campo="TBCP_DESC">@Model[i].TBCP_DESC</td>
+                        <td campo="USR1_DESC">@Model[i].USR1_DESC</td>
+
+                        @*                         @{
+                    var totOreRes = await _psc01aService.GetTotOreVerbaliByCommessaAsync(@Model[i].TBCP_N_COMM.ToString());
+                    var totOreEng = totOreRes.Body.Where(x => x.Qualifica == "SOA" || x.Qualifica == "SYD").Sum(x => x.TotaleOre);
+                    var totOreDeli = totOreRes.Body.Where(x => x.Qualifica == "PGM" || x.Qualifica == "PJM" || x.Qualifica == "BUC").Sum(x => x.TotaleOre);
+
+                    } *@
+
+                        @* Eng *@
+                        <td>
+                            <div>
+                                <p class="text-end mb-0" campo="Eng">@(String.Format("{0:0.00}", Model[i].HHACQSOA + Model[i].HHACQSYD + Model[i].HHACQGEN))</p>
+                                <p class="text-end mb-0" campo="HHCRRGSOA">@(String.Format("{0:0.00}", Model[i].HHCRRGSOA + Model[i].HHCRRGSYD + Model[i].HHCRRGGEN))</p>
+                                <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTSOA, Model[i].HHACQSOA + Model[i].HHACQSYD, Model[i].HHCRRGSOA + Model[i].HHCRRGSYD)" campo="HHACQSOA">@(String.Format("{0:0.00}", ((Model[i].HHACQSOA + Model[i].HHACQSYD + Model[i].HHACQGEN) - (Model[i].HHCRRGSOA + Model[i].HHCRRGSYD + Model[i].HHCRRGGEN))))</p>  @* ore pagate - ore consuntivate *@
+                                <p class="text-end mb-0" campo="HHACQSOA">@(String.Format("{0:0.00}", Model[i].HH001ASOA + Model[i].HH001ASYD))</p>
+                            </div>
+                        </td>
+
+                        @* Deli *@
+                        <td>
+                            <div>
+                                <p class="text-end mb-0" campo="Deli">@(String.Format("{0:0.00}", Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC + Model[i].HHACQGDE))</p>
+                                <p class="text-end mb-0" campo="HHCRRGPGM">@(String.Format("{0:0.00}", Model[i].HHCRRGPGM + Model[i].HHCRRGPJM + Model[i].HHCRRGBUC))</p>
+                                <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTPGM, Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC, Model[i].HHCRRGPGM + Model[i].HHCRRGPJM + Model[i].HHCRRGBUC)" campo="HHACQPGM">@(String.Format("{0:0.00}", ((Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC) - (Model[i].HHCRRGPGM + Model[i].HHCRRGPJM + Model[i].HHCRRGBUC))))</p> @* ore pagate - ore consuntivate *@
+                                <p class="text-end mb-0" campo="HHCRRGPGM">@(String.Format("{0:0.00}", Model[i].HH001APGM + Model[i].HH001APJM + Model[i].HH001ABUC))</p>
+                            </div>
+                        </td>
+
+                        @* No verbale Eng *@
+                        <td>
+                            <div>
+                                <p class="text-end mb-0 opacity-0" campo="EngNV">p</p>
+                                <p class="text-end mb-0" campo="SOASYDNV">@(String.Format("{0:0.00}", Model[i].HHCRRGSOAEFFNV + Model[i].HHCRRGSYDEFFNV))</p>
+                                <p class="text-end mb-0" campo=""></p>
+                                <p class="text-end mb-0" campo=""></p>
+                            </div>
+                        </td>
+
+                        @* No verbale Deli *@
+                        <td>
+                            <div>
+                                <p class="text-end mb-0 opacity-0" campo="DeliNV">p</p>
+                                <p class="text-end mb-0" campo="PGMPJMBUCNV">@(String.Format("{0:0.00}", Model[i].HHCRRGPGMEFFNV + Model[i].HHCRRGPJMEFFNV + Model[i].HHCRRGBUCEFFNV))</p>
+                                <p class="text-end mb-0" campo=""></p>
+                                <p class="text-end mb-0" campo=""></p>
+                            </div>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
 

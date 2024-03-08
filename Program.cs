@@ -44,6 +44,7 @@ namespace WebApplication2
 
             // [RP] for session variable.
             builder.Services.AddScoped<UserScope>();
+            builder.Services.AddScoped<GetConfig>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession();
@@ -70,6 +71,7 @@ namespace WebApplication2
             builder.Services.AddTransient<IVsCommAperteXCliService, VsCommAperteXCliService>();
             builder.Services.AddTransient<IMaccService, MaccService>();
             builder.Services.AddTransient<IQualificheService, QualificheService>();
+            builder.Services.AddTransient<IPsc001AService, Psc001AService>();
 
 
             var app = builder.Build();

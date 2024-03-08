@@ -10,3 +10,9 @@ Scaffold-DbContext "Name=ConnectionStrings:Main" Microsoft.EntityFrameworkCore.S
 
 13/01/2023
 Scaffold-DbContext "Name=ConnectionStrings:Main" Microsoft.EntityFrameworkCore.SqlServer -OutputDir EntitiesTemp -Namespace MepWeb.EntitiesTemp -ContextNamespace MepWeb.Infrastructure -Context SataconsultingContextTemp -Tables vs_pp_calendar_ris -f
+
+
+Scaffold-DbContext "Name=ConnectionStrings:Main" Microsoft.EntityFrameworkCore.SqlServer -OutputDir EntitiesTemp -Namespace MepWeb.EntitiesTemp -ContextNamespace MepWeb.Infrastructure -Context SataconsultingContextTemp -Tables vs_cons_x_comm -f
+
+06/03/2024
+Scaffold-DbContext "Name=ConnectionStrings:Main" Microsoft.EntityFrameworkCore.SqlServer -OutputDir EntitiesTemp -Namespace MepWeb.EntitiesTemp -ContextNamespace MepWeb.Infrastructure -Context SataconsultingContextTemp -Tables PSC_001A -f

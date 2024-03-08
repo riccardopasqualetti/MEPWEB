@@ -25,17 +25,35 @@
         public decimal?  HHACQBUC { get; set; }
         public decimal?  HHACQSYD { get; set; }
         public decimal?  HHACQGEN { get; set; }
+		public decimal   HHACQGDE { get; set; }
         public string?   TFATTPGM { get; set; }
         public string?   TFATTSOA { get; set; }
         public string?   TFATTPJM { get; set; }
         public string?   TFATTBUC { get; set; }
         public string?   TFATTSYD { get; set; }
         public string?   TFATTGEN { get; set; }
-        public decimal?  HHCRRGPGM { get; set; }
+		public string?   TFATTGDE { get; set; }
+		public decimal?  HHCRRGPGM { get; set; }
         public decimal?  HHCRRGSOA { get; set; }
         public decimal?  HHCRRGPJM { get; set; }
         public decimal?  HHCRRGBUC { get; set; }
         public decimal?  HHCRRGSYD { get; set; }
         public decimal?  HHCRRGGEN { get; set; }
+        public decimal   HHCRRGPGMEFF { get; set; }
+        public decimal   HHCRRGSOAEFF { get; set; }
+        public decimal   HHCRRGPJMEFF { get; set; }
+        public decimal   HHCRRGBUCEFF { get; set; }
+        public decimal   HHCRRGSYDEFF { get; set; }
+        public decimal   HHCRRGGENEFF { get; set; }
+		public decimal   HHCRRGPGMEFFNV { get; set; }
+		public decimal   HHCRRGSOAEFFNV { get; set; }
+		public decimal   HHCRRGPJMEFFNV { get; set; }
+		public decimal   HHCRRGBUCEFFNV { get; set; }
+		public decimal   HHCRRGSYDEFFNV { get; set; }
+        public decimal?  HH001APGM { get; set; }
+        public decimal?  HH001ASOA { get; set; }
+        public decimal?  HH001APJM { get; set; }
+        public decimal?  HH001ABUC { get; set; }
+        public decimal?  HH001ASYD { get; set; }
     }
 }
