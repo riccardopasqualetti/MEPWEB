@@ -157,9 +157,11 @@ namespace Mep01Web.Service.Impl
                 HH001ASOA = item.Hh001aSoa ?? 0,
                 HH001APJM = item.Hh001aPjm ?? 0,
                 HH001ABUC = item.Hh001aBuc ?? 0,
-                HH001ASYD = item.Hh001aSyd ?? 0
+                HH001ASYD = item.Hh001aSyd ?? 0,
+                Preoccupazione = _dbContext.FlussoTbcps.FirstOrDefault(x => x.TbcpTstComm == item.TbcpTstComm && x.TbcpPrfComm == item.TbcpPrfComm && x.TbcpAComm == item.TbcpAComm && x.TbcpNComm == item.TbcpNComm).TbcpFfllA1,
+                Avanzamento = _dbContext.FlussoTbcps.FirstOrDefault(x => x.TbcpTstComm == item.TbcpTstComm && x.TbcpPrfComm == item.TbcpPrfComm && x.TbcpAComm == item.TbcpAComm && x.TbcpNComm == item.TbcpNComm).TbcpFfllN1,
+                Note = _dbContext.FlussoTbcps.FirstOrDefault(x => x.TbcpTstComm == item.TbcpTstComm && x.TbcpPrfComm == item.TbcpPrfComm && x.TbcpAComm == item.TbcpAComm && x.TbcpNComm == item.TbcpNComm).TbcpFfllT1 
             }).ToListAsync();
-
 
             return res;
         }

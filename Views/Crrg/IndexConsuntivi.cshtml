@@ -1,4 +1,5 @@
 ﻿@using MepWeb.DTO.Response;
+@using Newtonsoft.Json;
 @model List<MepWeb.DTO.Response.ConsXCommResponse>;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -25,6 +26,11 @@
         {
             return "";
         }
+    }
+
+    public string fo(decimal? arg)
+    {
+        return String.Format("{0:0.00}", arg);
     }
 }
 @{
@@ -62,18 +68,15 @@
                     <th scope="col"><div>Cliente</div></th>
                     <th scope="col"><div>Ragione<br />Sociale</div></th>
                     <th scope="col"><div>Offerta/<br />Ordine</div></th>
-                    <th scope="col"><div>Area</div></th>
-                    <th scope="col"><div>Progetto</div></th>
+                    <th scope="col"><div>Area/<br />Progetto</div></th>
                     <th scope="col"><div>Descrizione</div></th>
                     <th scope="col"><div>Project<br />Manager</div></th>
-                    @* <th scope="col"><div class="text-center w-100">Ore<br />GEN</div></th> *@
+                    <th scope="col"><div class="text-center w-100">Avanzamento</div></th>
+                    <th scope="col"><div class="text-center w-100">Preoccupazione</div></th>
+
+                    @* ore *@
                     <th scope="col"><div class="text-center w-100">Ore<br />Eng</div></th>
-                    @*                  <th scope="col"><div>Ore<br />SOA</div></th>
-                    <th scope="col"><div>Ore<br />SYD</div></th> *@
                     <th scope="col"><div class="text-center w-100">Ore<br />Deli</div></th>
-                    @*                     <th scope="col"><div>Ore<br/>PGM</div></th>
-                    <th scope="col"><div>Ore<br/>PJM</div></th>
-                    <th scope="col"><div>Ore<br/>BUC</div></th> *@
                     <th scope="col"><div class="text-center w-100">Ore<br />EngNV</div></th>
                     <th scope="col"><div class="text-center w-100">Ore<br />DeliNV</div></th>
                 </tr>
@@ -81,36 +84,52 @@
             <tbody id="cons-tbody">
                 @for (int i = 0; i < Model.Count; i++)
                 {
+                    var comm = $"{Model[i].TBCP_TST_COMM}/{Model[i].TBCP_PRF_COMM}/{Model[i].TBCP_A_COMM}/{Model[i].TBCP_N_COMM}";
 
                     <tr class="riga" id="row-@(i + 1)" idDoc="@Model[i].TbcpId">
                         <td class="n-riga-value">
                             <div>
-                                <span id="note-@(i + 1)"><i class="bi bi-sticky-fill"></i></span>
+                                <span id="note-@(i + 1)" class="note-btn">
+                                    <i data-bs-toggle="modal" data-bs-target="#nota-modal" onclick="populateNotaForm({comm:'@comm'})" title="dettagli commessa" class="bi bi-info-circle-fill"></i>
+                                </span>
                                 <p><strong>@(i + 1)</strong></p>
                             </div>
                         </td>
-                        <td campo="TBCP_COMM">@Model[i].TBCP_TST_COMM/@Model[i].TBCP_PRF_COMM/@Model[i].TBCP_A_COMM/@Model[i].TBCP_N_COMM</td>
+                        <td campo="TBCP_COMM">@comm</td>
                         <td campo="TBCP_C_CLI">@Model[i].TBCP_C_CLI</td>
                         <td campo="ACLI_RAG_SOC_1">@Model[i].ACLI_RAG_SOC_1<br />@Model[i].TBCP_OFF_PREV</td>
                         <td campo="TBCP_RIF_CLIENTE">@Model[i].TBCP_RIF_CLIENTE</td>
-                        <td campo="DESCRIZIONE_RIDOTTA">@Model[i].DESCRIZIONE_RIDOTTA</td>
-                        <td campo="TBCP_M1_PROJECT">@Model[i].TBCP_M1_PROJECT</td>
+                        <td campo="DESCRIZIONE_RIDOTTA/TBCP_M1_PROJECT">@Model[i].DESCRIZIONE_RIDOTTA<br />@Model[i].TBCP_M1_PROJECT</td>
                         <td campo="TBCP_DESC">@Model[i].TBCP_DESC</td>
                         <td campo="USR1_DESC">@Model[i].USR1_DESC</td>
 
-                        @*                         @{
-                    var totOreRes = await _psc01aService.GetTotOreVerbaliByCommessaAsync(@Model[i].TBCP_N_COMM.ToString());
-                    var totOreEng = totOreRes.Body.Where(x => x.Qualifica == "SOA" || x.Qualifica == "SYD").Sum(x => x.TotaleOre);
-                    var totOreDeli = totOreRes.Body.Where(x => x.Qualifica == "PGM" || x.Qualifica == "PJM" || x.Qualifica == "BUC").Sum(x => x.TotaleOre);
+                        @* Avanzamento *@
+                        <td campo="Avanzamento">@Model[i].Avanzamento</td>
 
-                    } *@
+                        @* Preoccupazione *@
+                        @{
+                            var classe = "";
+                            if (@Model[i].Preoccupazione == "Y")
+                            {
+                                classe = "bg-giallo";
+                            }
+                            else if (@Model[i].Preoccupazione == "R")
+                            {
+                                classe = "bg-rosso";
+                            }
+                            else
+                            {
+                                classe = "bg-verde";
+                            }
+                        }
+                        <td campo="Preoccupazione" class="position-relative"><div class="preoccupazione centrato @classe"></div></td>
 
                         @* Eng *@
                         <td>
                             <div>
                                 <p class="text-end mb-0" campo="Eng">@(String.Format("{0:0.00}", Model[i].HHACQSOA + Model[i].HHACQSYD + Model[i].HHACQGEN))</p>
                                 <p class="text-end mb-0" campo="HHCRRGSOA">@(String.Format("{0:0.00}", Model[i].HHCRRGSOA + Model[i].HHCRRGSYD + Model[i].HHCRRGGEN))</p>
-                                <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTSOA, Model[i].HHACQSOA + Model[i].HHACQSYD, Model[i].HHCRRGSOA + Model[i].HHCRRGSYD)" campo="HHACQSOA">@(String.Format("{0:0.00}", ((Model[i].HHACQSOA + Model[i].HHACQSYD + Model[i].HHACQGEN) - (Model[i].HHCRRGSOA + Model[i].HHCRRGSYD + Model[i].HHCRRGGEN))))</p>  @* ore pagate - ore consuntivate *@
+                                <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTSOA, Model[i].HHACQSOA + Model[i].HHACQSYD, Model[i].HHCRRGSOA + Model[i].HHCRRGSYD)" campo="HHACQSOA">@(String.Format("{0:0.00}", ((Model[i].HHACQSOA + Model[i].HHACQSYD + Model[i].HHACQGEN) - (Model[i].HHCRRGSOA + Model[i].HHCRRGSYD))))</p>  @* ore pagate - ore consuntivate *@
                                 <p class="text-end mb-0" campo="HHACQSOA">@(String.Format("{0:0.00}", Model[i].HH001ASOA + Model[i].HH001ASYD))</p>
                             </div>
                         </td>
@@ -120,7 +139,7 @@
                             <div>
                                 <p class="text-end mb-0" campo="Deli">@(String.Format("{0:0.00}", Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC + Model[i].HHACQGDE))</p>
                                 <p class="text-end mb-0" campo="HHCRRGPGM">@(String.Format("{0:0.00}", Model[i].HHCRRGPGM + Model[i].HHCRRGPJM + Model[i].HHCRRGBUC))</p>
-                                <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTPGM, Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC, Model[i].HHCRRGPGM + Model[i].HHCRRGPJM + Model[i].HHCRRGBUC)" campo="HHACQPGM">@(String.Format("{0:0.00}", ((Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC) - (Model[i].HHCRRGPGM + Model[i].HHCRRGPJM + Model[i].HHCRRGBUC))))</p> @* ore pagate - ore consuntivate *@
+                                <p class="text-end mb-0 @calcolaAllarme(Model[i].TFATTPGM, Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC, Model[i].HHCRRGPGM + Model[i].HHCRRGPJM + Model[i].HHCRRGBUC)" campo="HHACQPGM">@(String.Format("{0:0.00}", ((Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC + Model[i].HHACQGDE) - (Model[i].HHCRRGPGM + Model[i].HHCRRGPJM + Model[i].HHCRRGBUC))))</p> @* ore pagate - ore consuntivate *@
                                 <p class="text-end mb-0" campo="HHCRRGPGM">@(String.Format("{0:0.00}", Model[i].HH001APGM + Model[i].HH001APJM + Model[i].HH001ABUC))</p>
                             </div>
                         </td>
@@ -152,7 +171,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal errore documento non selezionato -->
 <div class="modal fade" id="err-modal" tabindex="-1" aria-labelledby="errModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -168,8 +187,128 @@
     </div>
 </div>
 
-@section scripts {
+<!-- Modal note -->
+<div class="modal fade" id="nota-modal" tabindex="-1" aria-labelledby="notaModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h3>Dettaglio riga</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="aggiungi-nota">
+                <div class="modal-body mt-0">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <p id="cliente-commessa" class="fs-5 mb-2"></p>
+                            <p class="fs-5 mb-0">Descrizione:</p>
+                            <p id="descrizione-commessa" class="mb-2"></p>
+                            <select class="form-select mb-2" name="commessa_attuale" id="commessa-attuale"></select>
 
+                            <div class="mb-2 mt-1 position-relative">
+                                <label for="nota">Nota:</label>
+                                <i id="clear-text-btn" title="svuota nota" class="bi bi-x-circle-fill pointer-pointer"></i>
+                                <textarea id="nota" name="nota" type="text" rows="5" class="form-control"
+                                          aria-describedby="description"></textarea>
+                            </div>
+                            <div class="text-danger" id="nota-error"></div>
+
+                            <div id="modal-preoccupazione" class="d-flex align-items-center">
+                                <p class="m-0">Preoccupazione:</p>
+                                <div>
+                                    <span class="preoccupazione"></span>
+                                    <span><i class="bi bi-caret-right-fill"></i></span>
+                                    <span class="preoccupazione"></span>
+                                    <span class="preoccupazione"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-7">
+                            <p class="fs-5 mb-0">Dettaglio ore:</p>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Acquistate</th>
+                                        <th scope="col">Consuntivate</th>
+                                        <th scope="col">Differenza</th>
+                                        <th scope="col">Verbalizzate</th>
+                                        <th scope="col">Non Verb.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Gen</th>
+                                        <td id="modal-gen-Acquistate"></td>
+                                        <td id="modal-gen-Consuntivate"></td>
+                                        <td id="modal-gen-Differenza"></td>
+                                        <td id="modal-gen-HH001A"></td>
+                                        <td id="modal-gen-NV"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">SOA</th>
+                                        <td id="modal-soa-Acquistate"></td>
+                                        <td id="modal-soa-Consuntivate"></td>
+                                        <td id="modal-soa-Differenza"></td>
+                                        <td id="modal-soa-HH001A"></td>
+                                        <td id="modal-soa-NV"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">SYD</th>
+                                        <td id="modal-syd-Acquistate"></td>
+                                        <td id="modal-syd-Consuntivate"></td>
+                                        <td id="modal-syd-Differenza"></td>
+                                        <td id="modal-syd-HH001A"></td>
+                                        <td id="modal-syd-NV"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Gde</th>
+                                        <td id="modal-gde-Acquistate"></td>
+                                        <td id="modal-gde-Consuntivate"></td>
+                                        <td id="modal-gde-Differenza"></td>
+                                        <td id="modal-gde-HH001A"></td>
+                                        <td id="modal-gde-NV"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">PGM</th>
+                                        <td id="modal-pgm-Acquistate"></td>
+                                        <td id="modal-pgm-Consuntivate"></td>
+                                        <td id="modal-pgm-Differenza"></td>
+                                        <td id="modal-pgm-HH001A"></td>
+                                        <td id="modal-pgm-NV"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">PJM</th>
+                                        <td id="modal-pjm-Acquistate"></td>
+                                        <td id="modal-pjm-Consuntivate"></td>
+                                        <td id="modal-pjm-Differenza"></td>
+                                        <td id="modal-pjm-HH001A"></td>
+                                        <td id="modal-pjm-NV"></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">BUC</th>
+                                        <td id="modal-buc-Acquistate"></td>
+                                        <td id="modal-buc-Consuntivate"></td>
+                                        <td id="modal-buc-Differenza"></td>
+                                        <td id="modal-buc-HH001A"></td>
+                                        <td id="modal-buc-NV"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Salva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="jsonI" value="@JsonConvert.SerializeObject(Model, Formatting.None)" />
+
+@section scripts {
     <script src="~/js/ConsXComm.js"></script>
 
 }

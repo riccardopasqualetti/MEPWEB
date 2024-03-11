@@ -55,5 +55,8 @@
         public decimal?  HH001APJM { get; set; }
         public decimal?  HH001ABUC { get; set; }
         public decimal?  HH001ASYD { get; set; }
+        public string?   Preoccupazione { get; set; }
+        public decimal?  Avanzamento { get; set; }
+        public string?   Note { get; set; }
     }
 }
