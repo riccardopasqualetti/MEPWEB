@@ -7,8 +7,16 @@ const tableRows = document.getElementsByClassName("riga");
 const response = JSON.parse(document.getElementById("jsonI").value).map((ogg) => {
   return { ...ogg, commessa: `${ogg.TBCP_TST_COMM}/${ogg.TBCP_PRF_COMM}/${ogg.TBCP_A_COMM}/${ogg.TBCP_N_COMM}` };
 });
+console.log(response);
 const preoccupazione = Array.from(document.querySelectorAll("#aggiungi-nota .preoccupazione"));
 const rows = document.querySelectorAll("#aggiungi-nota tbody tr");
+const inputAvanzamento = document.querySelector("#modal-avanzamento input");
+
+inputAvanzamento.addEventListener("input", (e) => {
+  if (e.target.value > 100) e.target.value = 100;
+  if (e.target.value < 0) e.target.value = 0;
+});
+
 for (const row of rows) {
   row.addEventListener("mouseover", (e) => {
     for (const child of row.children) {
@@ -21,6 +29,18 @@ for (const row of rows) {
     }
   });
 }
+
+let isPreoccupazioneOpen = false;
+const iSpan = document.querySelector("#modal-preoccupazione > div span:nth-of-type(2)");
+iSpan.addEventListener("click", () => {
+  if (isPreoccupazioneOpen) {
+    closePreoccupazione();
+  } else {
+    isPreoccupazioneOpen = true;
+    document.querySelector("#modal-preoccupazione > div span:nth-of-type(2) i").style.transform = "rotateY(180deg)";
+    document.querySelector("#modal-preoccupazione > div").style.maxWidth = "131px";
+  }
+});
 
 Array.from(document.getElementById("cons-tbody").children).forEach((row, i) => {
   row.addEventListener("click", () => {
@@ -61,15 +81,16 @@ document.getElementById("clear-text-btn").addEventListener("click", () => {
   nota.focus();
 });
 
-document.getElementById("aggiungi-nota").addEventListener("submit", (e) => {
+document.getElementById("aggiungi-nota").addEventListener("submit", async (e) => {
   e.preventDefault();
   const data = new FormData(e.target);
   const value = Object.fromEntries(data.entries());
+  console.log(value);
   if (preoccupazione) {
     const preoccupazioneSelezionata = preoccupazione.find((x) => !x.classList.contains("pointer-pointer"));
-    preoccupazioneSelezionata.classList.contains("bg-verde") && updateCommessa(value.commessa_attuale, { preoccupazione: "G", nota: value.nota });
-    preoccupazioneSelezionata.classList.contains("bg-giallo") && updateCommessa(value.commessa_attuale, { preoccupazione: "Y", nota: value.nota });
-    preoccupazioneSelezionata.classList.contains("bg-rosso") && updateCommessa(value.commessa_attuale, { preoccupazione: "R", nota: value.nota });
+    preoccupazioneSelezionata.classList.contains("bg-verde") && (await updateCommessa(value.commessa_attuale, { preoccupazione: "G", Note: value.nota, Avanzamento: value.avanzamento }));
+    preoccupazioneSelezionata.classList.contains("bg-giallo") && (await updateCommessa(value.commessa_attuale, { preoccupazione: "Y", Note: value.nota, Avanzamento: value.avanzamento }));
+    preoccupazioneSelezionata.classList.contains("bg-rosso") && (await updateCommessa(value.commessa_attuale, { preoccupazione: "R", Note: value.nota, Avanzamento: value.avanzamento }));
   }
   console.log(response);
 });
@@ -77,26 +98,6 @@ document.getElementById("aggiungi-nota").addEventListener("submit", (e) => {
 document.getElementById("filter-btn").addEventListener("click", () => {
   document.getElementById("filters-container").classList.toggle("show-filters");
 });
-
-/* inputNCommessa.addEventListener("input", (e) => {
-    if (!isSearching) {
-        isSearching = true
-        setTimeout(() => {
-            search("TBCP_N_COMM", e.target.value)
-        }, 700)
-        isSearching = false
-    }
-});
-
-inputCliente.addEventListener("input", (e) => {
-    if (!isSearching) {
-        isSearching = true
-        setTimeout(() => {
-            search("TBCP_C_CLI", e.target.value)
-        }, 700)
-        isSearching = false
-    }
-}); */
 
 document.getElementById("search-form").addEventListener("submit", (e) => {
   e.preventDefault();
@@ -107,35 +108,94 @@ document.getElementById("reset-research").addEventListener("click", () => {
   resetRows();
 });
 
-function updateCommessa(comm, valueObj) {
+function closePreoccupazione() {
+  isPreoccupazioneOpen = false;
+  document.querySelector("#modal-preoccupazione > div span:nth-of-type(2) i").style.transform = "rotateY(360deg)";
+  document.querySelector("#modal-preoccupazione > div").style.maxWidth = "70px";
+}
+
+async function updateCommessa(comm, valueObj) {
+  console.log(valueObj);
+  let req = {
+    tstComm: null,
+    prfComm: null,
+    aComm: null,
+    nComm: null,
+  };
+
   response.map((x) => {
     if (x.commessa === comm) {
       for (const key in valueObj) {
+        console.log(x[key]);
         x[key] = valueObj[key];
       }
+
+      req.tstComm = x.TBCP_TST_COMM;
+      req.prfComm = x.TBCP_PRF_COMM;
+      req.aComm = x.TBCP_A_COMM;
+      req.nComm = x.TBCP_N_COMM;
+      valueObj.Note && (req.nota = valueObj.Note);
+      valueObj.preoccupazione && (req.Preoccupazione = valueObj.preoccupazione);
+      valueObj.Avanzamento && (req.Avanzamento = valueObj.Avanzamento);
     }
     return x;
   });
+
+  const res = await axios.post("/api/Tbcp/UpdateTbcpOpzionali", req);
+  if (res.status != 200) {
+    if (res.status == 400) {
+      return;
+    } else {
+      alert("Richiesta non andata a buon fine");
+      return;
+    }
+  }
+
+  if (valueObj.Avanzamento) document.querySelector(`#cons-tbody [rowComm="${comm}"] [campo="Avanzamento"]`).innerText = valueObj.Avanzamento + "%";
+  console.log(valueObj.preoccupazione);
+  switch (valueObj.preoccupazione) {
+    case "G":
+      const campoPre = document.querySelector(`#cons-tbody [rowComm="${comm}"] [campo="Preoccupazione"] div`);
+      console.log(campoPre);
+      campoPre.classList.remove("bg-giallo", "bg-rosso");
+      campoPre.classList.add("bg-verde");
+      break;
+    case "Y":
+      const campoPre1 = document.querySelector(`#cons-tbody [rowComm="${comm}"] [campo="Preoccupazione"] div`);
+      console.log(campoPre1);
+      campoPre1.classList.remove("bg-verde", "bg-rosso");
+      campoPre1.classList.add("bg-giallo");
+      break;
+    case "R":
+      const campoPre2 = document.querySelector(`#cons-tbody [rowComm="${comm}"] [campo="Preoccupazione"] div`);
+      console.log(campoPre2);
+      campoPre2.classList.remove("bg-verde", "bg-giallo");
+      campoPre2.classList.add("bg-rosso");
+      break;
+  }
 }
 
 function populateNotaForm({ comm }) {
-  let isPreoccupazioneOpen = false;
   const form = document.getElementById("aggiungi-nota");
+
+  closePreoccupazione();
 
   const select = form.querySelector("#commessa-attuale");
   select.addEventListener("change", (e) => {
     populateNotaForm({ comm: e.target.value });
   });
   const currentRow = response.find((r) => r.commessa === comm);
-  if (currentRow.note) {
-    form.querySelector("#nota").value = currentRow.note;
+  if (currentRow.Note) {
+    form.querySelector("#nota").value = currentRow.Note;
+  } else {
+    form.querySelector("#nota").value = "";
   }
 
-  if (currentRow.preoccupazione === "Y") {
+  if (currentRow.Preoccupazione === "Y") {
     preoccupazione[0].className = "preoccupazione bg-giallo";
     preoccupazione[1].className = "preoccupazione bg-verde pointer-pointer";
     preoccupazione[2].className = "preoccupazione bg-rosso pointer-pointer";
-  } else if (currentRow.preoccupazione === "R") {
+  } else if (currentRow.Preoccupazione === "R") {
     preoccupazione[0].className = "preoccupazione bg-rosso";
     preoccupazione[1].className = "preoccupazione bg-verde pointer-pointer";
     preoccupazione[2].className = "preoccupazione bg-giallo pointer-pointer";
@@ -145,18 +205,6 @@ function populateNotaForm({ comm }) {
     preoccupazione[2].className = "preoccupazione bg-rosso pointer-pointer";
   }
 
-  const iSpan = form.querySelector("#modal-preoccupazione > div span:nth-of-type(2)");
-  iSpan.addEventListener("click", () => {
-    if (isPreoccupazioneOpen) {
-      isPreoccupazioneOpen = false;
-      form.querySelector("#modal-preoccupazione > div span:nth-of-type(2) i").style.transform = "rotateY(360deg)";
-      form.querySelector("#modal-preoccupazione > div").style.maxWidth = "70px";
-    } else {
-      isPreoccupazioneOpen = true;
-      form.querySelector("#modal-preoccupazione > div span:nth-of-type(2) i").style.transform = "rotateY(180deg)";
-      form.querySelector("#modal-preoccupazione > div").style.maxWidth = "131px";
-    }
-  });
   const i = iSpan.querySelector("i");
   iSpan.addEventListener("mouseover", () => {
     i.style.color = "var(--whiter-text-color)";
@@ -215,6 +263,9 @@ function populateNotaForm({ comm }) {
   document.getElementById("modal-buc-Differenza").innerText = fo(currentRow.HHACQBUC - currentRow.HHCRRGBUC);
   document.getElementById("modal-buc-HH001A").innerText = fo(currentRow.HH001ABUC);
   document.getElementById("modal-buc-NV").innerText = fo(currentRow.HHCRRGBUCEFFNV);
+
+  console.log(currentRow);
+  inputAvanzamento.value = currentRow.Avanzamento;
 }
 
 function fo(stringa) {

@@ -943,7 +943,13 @@ public partial class SataconsultingContext : DbContext
         {
             entity.HasKey(e => new { e.TbcpTstComm, e.TbcpPrfComm, e.TbcpAComm, e.TbcpNComm, e.TbcpCDitta }).HasName("tbcp_chiave");
 
-            entity.ToTable("flusso_tbcp");
+            entity.ToTable("flusso_tbcp", tb =>
+            {
+                tb.HasTrigger("trg_ss_tbcp_ins");
+                tb.HasTrigger("trg_ss_tbcp_mod");
+                tb.HasTrigger("trg_ss_tbcp_paag_del");
+                tb.HasTrigger("trg_ss_tbcp_paag_mod");
+            });
 
             entity.Property(e => e.TbcpTstComm)
                 .HasMaxLength(3)

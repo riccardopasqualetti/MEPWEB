@@ -86,7 +86,7 @@
                 {
                     var comm = $"{Model[i].TBCP_TST_COMM}/{Model[i].TBCP_PRF_COMM}/{Model[i].TBCP_A_COMM}/{Model[i].TBCP_N_COMM}";
 
-                    <tr class="riga" id="row-@(i + 1)" idDoc="@Model[i].TbcpId">
+                    <tr class="riga" id="row-@(i + 1)" idDoc="@Model[i].TbcpId" rowComm="@comm">
                         <td class="n-riga-value">
                             <div>
                                 <span id="note-@(i + 1)" class="note-btn">
@@ -104,7 +104,7 @@
                         <td campo="USR1_DESC">@Model[i].USR1_DESC</td>
 
                         @* Avanzamento *@
-                        <td campo="Avanzamento">@Model[i].Avanzamento</td>
+                        <td campo="Avanzamento" class="text-center">@String.Format("{0:0}", Model[i].Avanzamento)%</td>
 
                         @* Preoccupazione *@
                         @{
@@ -207,12 +207,12 @@
                             <div class="mb-2 mt-1 position-relative">
                                 <label for="nota">Nota:</label>
                                 <i id="clear-text-btn" title="svuota nota" class="bi bi-x-circle-fill pointer-pointer"></i>
-                                <textarea id="nota" name="nota" type="text" rows="5" class="form-control"
+                                <textarea id="nota" name="nota" type="text" rows="3" class="form-control"
                                           aria-describedby="description"></textarea>
                             </div>
                             <div class="text-danger" id="nota-error"></div>
 
-                            <div id="modal-preoccupazione" class="d-flex align-items-center">
+                            <div id="modal-preoccupazione" class="d-flex align-items-center mb-2">
                                 <p class="m-0">Preoccupazione:</p>
                                 <div>
                                     <span class="preoccupazione"></span>
@@ -220,6 +220,13 @@
                                     <span class="preoccupazione"></span>
                                     <span class="preoccupazione"></span>
                                 </div>
+                            </div>
+
+                            <div id="modal-avanzamento" class="d-flex align-items-center">
+                                <p class="m-0">Avanzamento %:</p>
+                                @* <button class="ms-3 btn btn-success" type="button">-</button> *@
+                                <input name="avanzamento" type="number" min="0" max="100" class="form-control" />
+                                @* <button class="btn btn-success" type="button">+</button> *@
                             </div>
 
                         </div>
@@ -298,7 +305,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0">
+                <div class="modal-footer border-0 pt-0">
                     <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Salva</button>
                 </div>
             </form>

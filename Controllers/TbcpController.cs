@@ -7,6 +7,7 @@ using Mep01Web.DTO.Request;
 using Mep01Web.DTO.Response;
 using Mep01Web.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
+using MepWeb.DTO.Request;
 
 namespace Mep01Web.Controllers
 {
@@ -195,6 +196,13 @@ namespace Mep01Web.Controllers
                     statusCode: StatusCodes.Status500InternalServerError
                 );
             }
+        }
+
+        [HttpPost("UpdateTbcpOpzionali")]
+        public async Task<IActionResult> UpdateCampiTbcp(TbcpUpdateCampiOpzionaliRequest request)
+        {
+            await _tbcpService.UpdateCampiOpzionaliAsync(request);
+            return Ok(new { response = "ciao" });
         }
 
     }

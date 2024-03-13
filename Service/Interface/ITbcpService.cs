@@ -1,6 +1,7 @@
 ﻿using Mep01Web.DTO.Request;
 using Mep01Web.DTO.Response;
 using Mep01Web.DTO;
+using MepWeb.DTO.Request;
 
 namespace Mep01Web.Service.Interface
 {
@@ -15,6 +16,6 @@ namespace Mep01Web.Service.Interface
         Task<ResponseBase<List<TbcpLightResponse>>?> GetTbcpAllLightByCliAsync(TbcpGetRequest tbcpGetRequest);
 
         Task<ResponseBase<TbcpLightResponse>> GetTbcpLightByNumAsync(TbcpGetRequest tbcpGetRequest);
-
+        Task<ResponseBase<TbcpUpdateCampiOpzionaliRequest>> UpdateCampiOpzionaliAsync(TbcpUpdateCampiOpzionaliRequest request);
     }
 }
