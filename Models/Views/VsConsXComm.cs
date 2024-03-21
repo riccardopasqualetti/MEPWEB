@@ -67,17 +67,17 @@ public partial class VsConsXComm
 
     public decimal HhacqGde { get; set; }
 
-    public decimal HhcrrgPgm { get; set; }
+    //public decimal HhcrrgPgm { get; set; }
 
-    public decimal HhcrrgSoa { get; set; }
+    //public decimal HhcrrgSoa { get; set; }
 
-    public decimal HhcrrgPjm { get; set; }
+    //public decimal HhcrrgPjm { get; set; }
 
-    public decimal HhcrrgBuc { get; set; }
+    //public decimal HhcrrgBuc { get; set; }
 
-    public decimal HhcrrgSyd { get; set; }
+    //public decimal HhcrrgSyd { get; set; }
 
-    public decimal HhcrrgGen { get; set; }
+    //public decimal HhcrrgGen { get; set; }
 
     public decimal HhcrrgPgmEff { get; set; }
 

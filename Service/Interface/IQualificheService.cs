@@ -7,5 +7,6 @@ namespace MepWeb.Service.Interface
     public interface IQualificheService
     {
         Task<ResponseBase<List<Mvxzz12>?>> GetAllFromMvxzz12Async();
+        Task<ResponseBase<List<Mvxzz12>?>> GetAllNotGenFromMvxzz12Async();
     }
 }

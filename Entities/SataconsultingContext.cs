@@ -4932,48 +4932,48 @@ public partial class SataconsultingContext : DbContext
             entity.Property(e => e.HhacqSyd)
                 .HasColumnType("numeric(6, 2)")
                 .HasColumnName("HHACQ_SYD");
-            entity.Property(e => e.HhcrrgBuc)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_BUC");
+            //entity.Property(e => e.HhcrrgBuc)
+            //    .HasColumnType("numeric(38, 6)")
+            //    .HasColumnName("HHCRRG_BUC");
             entity.Property(e => e.HhcrrgBucEff)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_BUC_EFF");
             entity.Property(e => e.HhcrrgBucEffNv)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_BUC_EFF_NV");
-            entity.Property(e => e.HhcrrgGen)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_GEN");
-            entity.Property(e => e.HhcrrgPgm)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_PGM");
+            //entity.Property(e => e.HhcrrgGen)
+            //    .HasColumnType("numeric(38, 6)")
+            //    .HasColumnName("HHCRRG_GEN");
+            //entity.Property(e => e.HhcrrgPgm)
+            //    .HasColumnType("numeric(38, 6)")
+            //    .HasColumnName("HHCRRG_PGM");
             entity.Property(e => e.HhcrrgPgmEff)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_PGM_EFF");
             entity.Property(e => e.HhcrrgPgmEffNv)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_PGM_EFF_NV");
-            entity.Property(e => e.HhcrrgPjm)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_PJM");
+            //entity.Property(e => e.HhcrrgPjm)
+            //    .HasColumnType("numeric(38, 6)")
+            //    .HasColumnName("HHCRRG_PJM");
             entity.Property(e => e.HhcrrgPjmEff)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_PJM_EFF");
             entity.Property(e => e.HhcrrgPjmEffNv)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_PJM_EFF_NV");
-            entity.Property(e => e.HhcrrgSoa)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_SOA");
+            //entity.Property(e => e.HhcrrgSoa)
+            //    .HasColumnType("numeric(38, 6)")
+            //    .HasColumnName("HHCRRG_SOA");
             entity.Property(e => e.HhcrrgSoaEff)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_SOA_EFF");
             entity.Property(e => e.HhcrrgSoaEffNv)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_SOA_EFF_NV");
-            entity.Property(e => e.HhcrrgSyd)
-                .HasColumnType("numeric(38, 6)")
-                .HasColumnName("HHCRRG_SYD");
+            //entity.Property(e => e.HhcrrgSyd)
+            //    .HasColumnType("numeric(38, 6)")
+            //    .HasColumnName("HHCRRG_SYD");
             entity.Property(e => e.HhcrrgSydEff)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_SYD_EFF");

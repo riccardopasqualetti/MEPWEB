@@ -137,12 +137,12 @@ namespace Mep01Web.Service.Impl
                 TFATTSYD = item.TfattSyd,
                 TFATTGEN = item.TfattGen,
                 TFATTGDE = item.TfattGde,
-                HHCRRGPGM = item.HhcrrgPgm,
-                HHCRRGSOA = item.HhcrrgSoa,
-                HHCRRGPJM = item.HhcrrgPjm,
-                HHCRRGBUC = item.HhcrrgBuc,
-                HHCRRGSYD = item.HhcrrgSyd,
-                HHCRRGGEN = item.HhcrrgGen,
+                //HHCRRGPGM = item.HhcrrgPgm,
+                //HHCRRGSOA = item.HhcrrgSoa,
+                //HHCRRGPJM = item.HhcrrgPjm,
+                //HHCRRGBUC = item.HhcrrgBuc,
+                //HHCRRGSYD = item.HhcrrgSyd,
+                //HHCRRGGEN = item.HhcrrgGen,
                 HHCRRGPGMEFF = item.HhcrrgPgmEff,
                 HHCRRGSOAEFF = item.HhcrrgSoaEff,
                 HHCRRGPJMEFF = item.HhcrrgPjmEff,
@@ -522,8 +522,8 @@ namespace Mep01Web.Service.Impl
 
         public async Task<decimal> CheckHoursAvailability(decimal idDoc, decimal hours, string qualifica)
         {
-            var crrg = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == idDoc);
-            if (crrg == null)
+            var consXComm = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == idDoc);
+            if (consXComm == null)
             {
                 return -1;
             }
@@ -531,22 +531,25 @@ namespace Mep01Web.Service.Impl
             switch (qualifica)
             {
                 case "PGM":
-                    res = crrg.HhacqPgm - crrg.HhcrrgPgm - hours;
+                    res = consXComm.HhacqPgm - consXComm.HhcrrgPgmEff - hours;
                     break;
                 case "SOA":
-                    res = crrg.HhacqSoa - crrg.HhcrrgSoa - hours;
+                    res = consXComm.HhacqSoa - consXComm.HhcrrgSoaEff - hours;
                     break;
                 case "PJM":
-                    res = crrg.HhacqPjm - crrg.HhcrrgPjm - hours;
+                    res = consXComm.HhacqPjm - consXComm.HhcrrgPjmEff - hours;
                     break;
                 case "BUC":
-                    res = crrg.HhacqBuc - crrg.HhcrrgBuc - hours;
+                    res = consXComm.HhacqBuc - consXComm.HhcrrgBucEff - hours;
                     break;
                 case "SYD":
-                    res = crrg.HhacqSyd - crrg.HhcrrgSyd - hours;
+                    res = consXComm.HhacqSyd - consXComm.HhcrrgSydEff - hours;
                     break;
-                case "GEN":
-                    res = crrg.HhacqGen - crrg.HhcrrgGen - hours;
+                case "E**":
+                    res = consXComm.HhacqGen - (consXComm.HhcrrgSoaEff + consXComm.HhcrrgSydEff) - hours;
+                    break;
+                case "D**":
+                    res = consXComm.HhacqGen - (consXComm.HhcrrgPgmEff + consXComm.HhcrrgPjmEff + consXComm.HhcrrgBucEff) - hours;
                     break;
             }
 

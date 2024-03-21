@@ -19,14 +19,44 @@ namespace MepWeb.Controllers
             _logger = logger;   
 
         }
-        [HttpGet()]
-        public async Task<IActionResult> GetAllFromMvxzz12Async()
+        [HttpGet("OreQualifica")]
+        public async Task<IActionResult> GetAllFromMvxzz12OreQualificaAsync()
         {
             _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllFromMvxzz12Async");
 
             try
             {
                 var getResponse = await _QualificheService.GetAllFromMvxzz12Async();
+
+                if (getResponse.Succeeded)
+                {
+                    return Ok(getResponse.Body);
+                }
+                else
+                {
+                    return Problem(
+                          detail: getResponse.Errors[getResponse.Errors.Count - 1].Code + " | " + getResponse.Errors[getResponse.Errors.Count - 1].Message,
+                        statusCode: getResponse.Errors[getResponse.Errors.Count - 1].Code == "-2" ? StatusCodes.Status404NotFound : StatusCodes.Status400BadRequest
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem(
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status500InternalServerError
+                );
+            }
+        }
+
+        [HttpGet("AddettoQualifica")]
+        public async Task<IActionResult> GetAllFromMvxzz12AddettoQualificaAsync()
+        {
+            _logger.Log(LogLevel.Information, "Ricevuta nuova richiesta GetAllFromMvxzz12Async");
+
+            try
+            {
+                var getResponse = await _QualificheService.GetAllNotGenFromMvxzz12Async();
 
                 if (getResponse.Succeeded)
                 {

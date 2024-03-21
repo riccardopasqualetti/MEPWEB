@@ -30,6 +30,7 @@ console.log("Id doc= " + idDocumento)
  *  */
 const registroRicaricheObj = {
     //credentials: login,
+    name: "RegistroRicariche",
     authToken: tempToken,
     apiUrl: {
         get: {

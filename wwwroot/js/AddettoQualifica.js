@@ -28,6 +28,7 @@ console.log("Id doc= " + idDocumento)
  * */
 const addettoQualificaObj = {
     //credentials: login,
+    name: "AddettoQualifica",
     authToken: tempToken,
     apiUrl: {
         get: {
@@ -64,9 +65,10 @@ const addettoQualificaObj = {
             searchUrls: [
                 {
                     url: "api/MepWeb_Macc",
-                    searchFieldNames: ["maccCMatricola", "maccDesc"]
+                    searchFieldNames: ["maccCMatricola", "maccCMatricola", "maccDesc"]
                 }
             ],
+            type: "dropdown",
             update: false,
             modalPosition: {
                 row: 1,
@@ -78,7 +80,7 @@ const addettoQualificaObj = {
             displayedName: "Qualifica",
             searchUrls: [
                 {
-                    url: "api/MepWeb_Qualifiche",
+                    url: "api/MepWeb_Qualifiche/AddettoQualifica",
                     searchFieldNames: ["cod", "descrizioneRidotta"]
                 }
             ],

@@ -33,12 +33,12 @@
         public string?   TFATTSYD { get; set; }
         public string?   TFATTGEN { get; set; }
 		public string?   TFATTGDE { get; set; }
-		public decimal?  HHCRRGPGM { get; set; }
-        public decimal?  HHCRRGSOA { get; set; }
-        public decimal?  HHCRRGPJM { get; set; }
-        public decimal?  HHCRRGBUC { get; set; }
-        public decimal?  HHCRRGSYD { get; set; }
-        public decimal?  HHCRRGGEN { get; set; }
+		//public decimal?  HHCRRGPGM { get; set; }
+  //      public decimal?  HHCRRGSOA { get; set; }
+  //      public decimal?  HHCRRGPJM { get; set; }
+  //      public decimal?  HHCRRGBUC { get; set; }
+  //      public decimal?  HHCRRGSYD { get; set; }
+  //      public decimal?  HHCRRGGEN { get; set; }
         public decimal   HHCRRGPGMEFF { get; set; }
         public decimal   HHCRRGSOAEFF { get; set; }
         public decimal   HHCRRGPJMEFF { get; set; }

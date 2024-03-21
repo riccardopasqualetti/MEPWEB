@@ -228,39 +228,46 @@ function populateNotaForm({ comm }) {
   form.querySelector("#cliente-commessa").innerText = `Cliente: ${currentRow.ACLI_RAG_SOC_1} ${currentRow.TBCP_OFF_PREV ? "- " + currentRow.TBCP_OFF_PREV : ""}`;
   form.querySelector("#descrizione-commessa").innerText = currentRow.TBCP_DESC;
 
+  //GEN
   document.getElementById("modal-gen-Acquistate").innerText = fo(currentRow.HHACQGEN);
-  document.getElementById("modal-gen-Consuntivate").innerText = fo(currentRow.HHCRRGGEN);
-  document.getElementById("modal-gen-Differenza").innerText = fo(currentRow.HHACQSOA + currentRow.HHACQSYD + currentRow.HHACQGEN - (currentRow.HHCRRGSOA + currentRow.HHCRRGSYD + currentRow.HHCRRGGEN));
+  document.getElementById("modal-gen-Consuntivate").innerText = fo(currentRow.HHCRRGSOAEFF + currentRow.HHCRRGSYDEFF);
+  document.getElementById("modal-gen-Differenza").innerText = fo(currentRow.HHACQSOA + currentRow.HHACQSYD + currentRow.HHACQGEN - (currentRow.HHCRRGSOAEFF + currentRow.HHCRRGSYDEFF));
   document.getElementById("modal-gen-HH001A").innerText = fo(currentRow.HH001ASOA + currentRow.HH001ASYD);
   document.getElementById("modal-gen-NV").innerText = fo(currentRow.HHCRRGSOAEFFNV + currentRow.HHCRRGSYDEFFNV);
+  //SOA
   document.getElementById("modal-soa-Acquistate").innerText = fo(currentRow.HHACQSOA);
-  document.getElementById("modal-soa-Consuntivate").innerText = fo(currentRow.HHCRRGSOA);
-  document.getElementById("modal-soa-Differenza").innerText = fo(currentRow.HHACQSOA - currentRow.HHCRRGSOA);
+  document.getElementById("modal-soa-Consuntivate").innerText = fo(currentRow.HHCRRGSOAEFF);
+  document.getElementById("modal-soa-Differenza").innerText = fo(currentRow.HHACQSOA - currentRow.HHCRRGSOAEFF);
   document.getElementById("modal-soa-HH001A").innerText = fo(currentRow.HH001ASOA);
   document.getElementById("modal-soa-NV").innerText = fo(currentRow.HHCRRGSOAEFFNV);
+  //SYD
   document.getElementById("modal-syd-Acquistate").innerText = fo(currentRow.HHACQSYD);
-  document.getElementById("modal-syd-Consuntivate").innerText = fo(currentRow.HHCRRGSYD);
-  document.getElementById("modal-syd-Differenza").innerText = fo(currentRow.HHACQSYD - currentRow.HHCRRGSYD);
+  document.getElementById("modal-syd-Consuntivate").innerText = fo(currentRow.HHCRRGSYDEFF);
+  document.getElementById("modal-syd-Differenza").innerText = fo(currentRow.HHACQSYD - currentRow.HHCRRGSYDEFF);
   document.getElementById("modal-syd-HH001A").innerText = fo(currentRow.HH001ASYD);
   document.getElementById("modal-syd-NV").innerText = fo(currentRow.HHCRRGSYDEFFNV);
+  //GDE
   document.getElementById("modal-gde-Acquistate").innerText = fo(currentRow.HHACQGDE);
-  document.getElementById("modal-gde-Consuntivate").innerText = fo(currentRow.HHCRRGPGM + currentRow.HHCRRGPJM + currentRow.HHCRRGBUC);
-  document.getElementById("modal-gde-Differenza").innerText = fo(currentRow.HHACQPGM + currentRow.HHACQPJM + currentRow.HHACQBUC - (currentRow.HHCRRGPGM + currentRow.HHCRRGPJM + currentRow.HHCRRGBUC));
+  document.getElementById("modal-gde-Consuntivate").innerText = fo(currentRow.HHCRRGPGMEFF + currentRow.HHCRRGPJMEFF + currentRow.HHCRRGBUCEFF);
+  document.getElementById("modal-gde-Differenza").innerText = fo(currentRow.HHACQPGM + currentRow.HHACQPJM + currentRow.HHACQBUC - (currentRow.HHCRRGPGMEFF + currentRow.HHCRRGPJMEFF + currentRow.HHCRRGBUCEFF));
   document.getElementById("modal-gde-HH001A").innerText = fo(currentRow.HH001APGM + currentRow.HH001APJM + currentRow.HH001ABUC);
   document.getElementById("modal-gde-NV").innerText = fo(currentRow.HHCRRGPGMEFFNV + currentRow.HHCRRGPJMEFFNV + currentRow.HHCRRGBUCEFFNV);
+  //PGM
   document.getElementById("modal-pgm-Acquistate").innerText = fo(currentRow.HHACQPGM);
-  document.getElementById("modal-pgm-Consuntivate").innerText = fo(currentRow.HHCRRGPGM);
-  document.getElementById("modal-pgm-Differenza").innerText = fo(currentRow.HHACQPGM - currentRow.HHCRRGPGM);
+  document.getElementById("modal-pgm-Consuntivate").innerText = fo(currentRow.HHCRRGPGMEFF);
+  document.getElementById("modal-pgm-Differenza").innerText = fo(currentRow.HHACQPGM - currentRow.HHCRRGPGMEFF);
   document.getElementById("modal-pgm-HH001A").innerText = fo(currentRow.HH001APGM);
   document.getElementById("modal-pgm-NV").innerText = fo(currentRow.HHCRRGPGMEFFNV);
+  //PJM
   document.getElementById("modal-pjm-Acquistate").innerText = fo(currentRow.HHACQPJM);
-  document.getElementById("modal-pjm-Consuntivate").innerText = fo(currentRow.HHCRRGPJM);
-  document.getElementById("modal-pjm-Differenza").innerText = fo(currentRow.HHACQPJM - currentRow.HHCRRGPJM);
+  document.getElementById("modal-pjm-Consuntivate").innerText = fo(currentRow.HHCRRGPJMEFF);
+  document.getElementById("modal-pjm-Differenza").innerText = fo(currentRow.HHACQPJM - currentRow.HHCRRGPJMEFF);
   document.getElementById("modal-pjm-HH001A").innerText = fo(currentRow.HH001APJM);
   document.getElementById("modal-pjm-NV").innerText = fo(currentRow.HHCRRGPJMEFFNV);
+  //BUC
   document.getElementById("modal-buc-Acquistate").innerText = fo(currentRow.HHACQBUC);
-  document.getElementById("modal-buc-Consuntivate").innerText = fo(currentRow.HHCRRGBUC);
-  document.getElementById("modal-buc-Differenza").innerText = fo(currentRow.HHACQBUC - currentRow.HHCRRGBUC);
+  document.getElementById("modal-buc-Consuntivate").innerText = fo(currentRow.HHCRRGBUCEFF);
+  document.getElementById("modal-buc-Differenza").innerText = fo(currentRow.HHACQBUC - currentRow.HHCRRGBUCEFF);
   document.getElementById("modal-buc-HH001A").innerText = fo(currentRow.HH001ABUC);
   document.getElementById("modal-buc-NV").innerText = fo(currentRow.HHCRRGBUCEFFNV);
 
@@ -269,7 +276,7 @@ function populateNotaForm({ comm }) {
 }
 
 function fo(stringa) {
-  return stringa.toFixed(2).padStart(1, "0").replace(".", ",");
+  return stringa?.toFixed(2).padStart(1, "0").replace(".", ",");
 }
 
 function search(nComm, cCli, value1, value2) {

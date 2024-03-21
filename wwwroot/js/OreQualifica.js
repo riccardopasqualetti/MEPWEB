@@ -13,6 +13,7 @@ const baseURL = "/"
 *  */
 const oreQualificaObj = {
     //credentials: login,
+    name: "OreQualifica",
     authToken: tempToken,
     apiUrl: {
         get: {
@@ -47,7 +48,7 @@ const oreQualificaObj = {
             displayedName: "Qualifica",
             searchUrls: [
                 {
-                    url: "api/MepWeb_Qualifiche",
+                    url: "api/MepWeb_Qualifiche/OreQualifica",
                     searchFieldNames: ["cod", "descrizioneRidotta"]
                 }
             ],

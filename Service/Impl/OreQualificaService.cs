@@ -139,6 +139,7 @@ namespace MepWeb.Service.Impl
             c001.Grpcdl = (decimal)createRequest.Qualifica;
             c001.HhAcq = createRequest.OreAcquistate ?? 0;
             c001.TFatt = createRequest.TipoFatturazione;
+            c001.Note = createRequest.Note;
             c001.DtIns = DateTime.Now;
             c001.UtenteIns = _scope.SV_USR_SIGLA;
             c001.DtUm = DateTime.Now;
