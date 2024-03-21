@@ -89,6 +89,10 @@ public partial class VsConsXComm
 
     public decimal HhcrrgSydEff { get; set; }
 
+    public decimal HhcrrgGenEff { get; set; }
+
+    public decimal HhcrrgGdeEff { get; set; }
+
     public decimal HhcrrgPgmEffNv { get; set; }
 
     public decimal HhcrrgSoaEffNv { get; set; }
@@ -98,6 +102,10 @@ public partial class VsConsXComm
     public decimal HhcrrgBucEffNv { get; set; }
 
     public decimal HhcrrgSydEffNv { get; set; }
+
+    public decimal HhcrrgGenEffNv { get; set; }
+
+    public decimal HhcrrgGdeEffNv { get; set; }
 
     public decimal? Hh001aPgm { get; set; }
 

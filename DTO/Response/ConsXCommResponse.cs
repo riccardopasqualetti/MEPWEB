@@ -45,11 +45,14 @@
         public decimal   HHCRRGBUCEFF { get; set; }
         public decimal   HHCRRGSYDEFF { get; set; }
         public decimal   HHCRRGGENEFF { get; set; }
+        public decimal   HHCRRGGDEEFF { get; set; }
 		public decimal   HHCRRGPGMEFFNV { get; set; }
 		public decimal   HHCRRGSOAEFFNV { get; set; }
 		public decimal   HHCRRGPJMEFFNV { get; set; }
 		public decimal   HHCRRGBUCEFFNV { get; set; }
 		public decimal   HHCRRGSYDEFFNV { get; set; }
+		public decimal   HHCRRGGENEFFNV { get; set; }
+		public decimal   HHCRRGGDEEFFNV { get; set; }
         public decimal?  HH001APGM { get; set; }
         public decimal?  HH001ASOA { get; set; }
         public decimal?  HH001APJM { get; set; }

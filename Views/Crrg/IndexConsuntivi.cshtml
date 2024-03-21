@@ -129,7 +129,7 @@
                             <div>
                                 <p class="text-end mb-0" campo="Eng">@(fo(Model[i].HHACQSOA + Model[i].HHACQSYD + Model[i].HHACQGEN))</p>
                                 <p class="text-end mb-0" campo="HHCRRGSOA">@(fo(Model[i].HHCRRGSOAEFF + Model[i].HHCRRGSYDEFF + Model[i].HHCRRGGENEFF))</p>
-                                <p class="text-end mb-0">@(fo(((Model[i].HHACQSOA + Model[i].HHACQSYD + Model[i].HHACQGEN) - (Model[i].HHCRRGSOAEFF + Model[i].HHCRRGSYDEFF))))</p>  @* ore pagate - ore consuntivate *@
+                                <p class="text-end mb-0">@(fo(((Model[i].HHACQSOA + Model[i].HHACQSYD + Model[i].HHACQGEN) - (Model[i].HHCRRGSOAEFF + Model[i].HHCRRGSYDEFF + Model[i].HHCRRGGENEFF))))</p>  @* ore pagate - ore consuntivate *@
                                 <p class="text-end mb-0" campo="HHACQSOA">@(fo(Model[i].HH001ASOA + Model[i].HH001ASYD))</p>
                             </div>
                         </td>
@@ -139,7 +139,7 @@
                             <div>
                                 <p class="text-end mb-0" campo="Deli">@(fo(Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC + Model[i].HHACQGDE))</p>
                                 <p class="text-end mb-0" campo="HHCRRGPGM">@(fo(Model[i].HHCRRGPGMEFF + Model[i].HHCRRGPJMEFF + Model[i].HHCRRGBUCEFF))</p>
-                                <p class="text-end mb-0" campo="HHACQPGM">@(fo(((Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC + Model[i].HHACQGDE) - (Model[i].HHCRRGPGMEFF + Model[i].HHCRRGPJMEFF + Model[i].HHCRRGBUCEFF))))</p> @* ore pagate - ore consuntivate *@
+                                <p class="text-end mb-0" campo="HHACQPGM">@(fo(((Model[i].HHACQPGM + Model[i].HHACQPJM + Model[i].HHACQBUC + Model[i].HHACQGDE) - (Model[i].HHCRRGPGMEFF + Model[i].HHCRRGPJMEFF + Model[i].HHCRRGBUCEFF + Model[i].HHCRRGGDEEFF))))</p> @* ore pagate - ore consuntivate *@
                                 <p class="text-end mb-0" campo="HHCRRGPGM">@(fo(Model[i].HH001APGM + Model[i].HH001APJM + Model[i].HH001ABUC))</p>
                             </div>
                         </td>
@@ -148,7 +148,7 @@
                         <td>
                             <div>
                                 <p class="text-end mb-0 opacity-0" campo="EngNV">p</p>
-                                <p class="text-end mb-0" campo="SOASYDNV">@(fo(Model[i].HHCRRGSOAEFFNV + Model[i].HHCRRGSYDEFFNV))</p>
+                                <p class="text-end mb-0" campo="SOASYDNV">@(fo(Model[i].HHCRRGSOAEFFNV + Model[i].HHCRRGSYDEFFNV + Model[i].HHCRRGGENEFFNV))</p>
                                 <p class="text-end mb-0" campo=""></p>
                                 <p class="text-end mb-0" campo=""></p>
                             </div>
@@ -158,7 +158,7 @@
                         <td>
                             <div>
                                 <p class="text-end mb-0 opacity-0" campo="DeliNV">p</p>
-                                <p class="text-end mb-0" campo="PGMPJMBUCNV">@(fo(Model[i].HHCRRGPGMEFFNV + Model[i].HHCRRGPJMEFFNV + Model[i].HHCRRGBUCEFFNV))</p>
+                                <p class="text-end mb-0" campo="PGMPJMBUCNV">@(fo(Model[i].HHCRRGPGMEFFNV + Model[i].HHCRRGPJMEFFNV + Model[i].HHCRRGBUCEFFNV + Model[i].HHCRRGGDEEFFNV))</p>
                                 <p class="text-end mb-0" campo=""></p>
                                 <p class="text-end mb-0" campo=""></p>
                             </div>

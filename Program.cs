@@ -26,7 +26,7 @@ namespace WebApplication2
             })
             .AddCookie(options =>
             {
-                options.Cookie.Name = "auth";
+                options.Cookie.Name = "auth_mepscweb";
                 //options.Cookie.Path = "/Login";
                 options.LoginPath = "/login/login";
                 options.LogoutPath = "/login/login";

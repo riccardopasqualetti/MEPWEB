@@ -228,12 +228,17 @@ function populateNotaForm({ comm }) {
   form.querySelector("#cliente-commessa").innerText = `Cliente: ${currentRow.ACLI_RAG_SOC_1} ${currentRow.TBCP_OFF_PREV ? "- " + currentRow.TBCP_OFF_PREV : ""}`;
   form.querySelector("#descrizione-commessa").innerText = currentRow.TBCP_DESC;
 
+  //H001A = verbalizzate
   //GEN
+  const genCons = document.getElementById("modal-gen-Consuntivate");
   document.getElementById("modal-gen-Acquistate").innerText = fo(currentRow.HHACQGEN);
-  document.getElementById("modal-gen-Consuntivate").innerText = fo(currentRow.HHCRRGSOAEFF + currentRow.HHCRRGSYDEFF);
-  document.getElementById("modal-gen-Differenza").innerText = fo(currentRow.HHACQSOA + currentRow.HHACQSYD + currentRow.HHACQGEN - (currentRow.HHCRRGSOAEFF + currentRow.HHCRRGSYDEFF));
-  document.getElementById("modal-gen-HH001A").innerText = fo(currentRow.HH001ASOA + currentRow.HH001ASYD);
-  document.getElementById("modal-gen-NV").innerText = fo(currentRow.HHCRRGSOAEFFNV + currentRow.HHCRRGSYDEFFNV);
+  genCons.innerText = fo(currentRow.HHCRRGGENEFF);
+  if (currentRow.HHCRRGGENEFF > 0) {
+    genCons.classList.add("allarme-rosso");
+  }
+  document.getElementById("modal-gen-Differenza").innerText = fo(currentRow.HHACQGEN - currentRow.HHCRRGGENEFF);
+  document.getElementById("modal-gen-HH001A").innerText = "";
+  document.getElementById("modal-gen-NV").innerText = fo(currentRow.HHCRRGGENEFFNV);
   //SOA
   document.getElementById("modal-soa-Acquistate").innerText = fo(currentRow.HHACQSOA);
   document.getElementById("modal-soa-Consuntivate").innerText = fo(currentRow.HHCRRGSOAEFF);
@@ -247,11 +252,15 @@ function populateNotaForm({ comm }) {
   document.getElementById("modal-syd-HH001A").innerText = fo(currentRow.HH001ASYD);
   document.getElementById("modal-syd-NV").innerText = fo(currentRow.HHCRRGSYDEFFNV);
   //GDE
+  const gdeCons = document.getElementById("modal-gde-Consuntivate");
   document.getElementById("modal-gde-Acquistate").innerText = fo(currentRow.HHACQGDE);
-  document.getElementById("modal-gde-Consuntivate").innerText = fo(currentRow.HHCRRGPGMEFF + currentRow.HHCRRGPJMEFF + currentRow.HHCRRGBUCEFF);
-  document.getElementById("modal-gde-Differenza").innerText = fo(currentRow.HHACQPGM + currentRow.HHACQPJM + currentRow.HHACQBUC - (currentRow.HHCRRGPGMEFF + currentRow.HHCRRGPJMEFF + currentRow.HHCRRGBUCEFF));
-  document.getElementById("modal-gde-HH001A").innerText = fo(currentRow.HH001APGM + currentRow.HH001APJM + currentRow.HH001ABUC);
-  document.getElementById("modal-gde-NV").innerText = fo(currentRow.HHCRRGPGMEFFNV + currentRow.HHCRRGPJMEFFNV + currentRow.HHCRRGBUCEFFNV);
+  gdeCons.innerText = fo(currentRow.HHCRRGGDEEFF);
+  if (currentRow.HHCRRGGDEEFF > 0) {
+    gdeCons.classList.add("allarme-rosso");
+  }
+  document.getElementById("modal-gde-Differenza").innerText = fo(currentRow.HHACQGDE - currentRow.HHCRRGGDEEFF);
+  document.getElementById("modal-gde-HH001A").innerText = "";
+  document.getElementById("modal-gde-NV").innerText = fo(currentRow.HHCRRGGDEEFFNV);
   //PGM
   document.getElementById("modal-pgm-Acquistate").innerText = fo(currentRow.HHACQPGM);
   document.getElementById("modal-pgm-Consuntivate").innerText = fo(currentRow.HHCRRGPGMEFF);

@@ -908,15 +908,15 @@ footer {
 }
 
 .allarme-verde {
-  color: #15cb15;
+  color: #15cb15 !important;
 }
 
 .allarme-arancione {
-  color: orange;
+  color: orange !important;
 }
 
 .allarme-rosso {
-  color: red;
+  color: red !important;
 }
 
 .tgen-margin {

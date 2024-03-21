@@ -4977,9 +4977,21 @@ public partial class SataconsultingContext : DbContext
             entity.Property(e => e.HhcrrgSydEff)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_SYD_EFF");
+            entity.Property(e => e.HhcrrgGenEff)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_GEN_EFF");
+            entity.Property(e => e.HhcrrgGdeEff)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_GDE_EFF");
             entity.Property(e => e.HhcrrgSydEffNv)
                 .HasColumnType("numeric(38, 6)")
                 .HasColumnName("HHCRRG_SYD_EFF_NV");
+            entity.Property(e => e.HhcrrgGenEffNv)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_GEN_EFF_NV");
+            entity.Property(e => e.HhcrrgGdeEffNv)
+                .HasColumnType("numeric(38, 6)")
+                .HasColumnName("HHCRRG_GDE_EFF_NV");
             entity.Property(e => e.TbcpAComm)
                 .HasColumnType("numeric(4, 0)")
                 .HasColumnName("tbcp_a_comm");

@@ -148,11 +148,15 @@ namespace Mep01Web.Service.Impl
                 HHCRRGPJMEFF = item.HhcrrgPjmEff,
                 HHCRRGBUCEFF = item.HhcrrgBucEff,
                 HHCRRGSYDEFF = item.HhcrrgSydEff,
+                HHCRRGGENEFF = item.HhcrrgGenEff,
+                HHCRRGGDEEFF = item.HhcrrgGdeEff,
                 HHCRRGPGMEFFNV = item.HhcrrgPgmEffNv,
                 HHCRRGSOAEFFNV = item.HhcrrgSoaEffNv,
                 HHCRRGPJMEFFNV = item.HhcrrgPjmEffNv,
                 HHCRRGBUCEFFNV = item.HhcrrgBucEffNv,
                 HHCRRGSYDEFFNV = item.HhcrrgSydEffNv,
+                HHCRRGGENEFFNV = item.HhcrrgGenEffNv,
+                HHCRRGGDEEFFNV = item.HhcrrgGdeEffNv,
                 HH001APGM = item.Hh001aPgm ?? 0,
                 HH001ASOA = item.Hh001aSoa ?? 0,
                 HH001APJM = item.Hh001aPjm ?? 0,
@@ -546,10 +550,10 @@ namespace Mep01Web.Service.Impl
                     res = consXComm.HhacqSyd - consXComm.HhcrrgSydEff - hours;
                     break;
                 case "E**":
-                    res = consXComm.HhacqGen - (consXComm.HhcrrgSoaEff + consXComm.HhcrrgSydEff) - hours;
+                    res = consXComm.HhacqGen - consXComm.HhcrrgGenEff - hours;
                     break;
                 case "D**":
-                    res = consXComm.HhacqGen - (consXComm.HhcrrgPgmEff + consXComm.HhcrrgPjmEff + consXComm.HhcrrgBucEff) - hours;
+                    res = consXComm.HhacqGde - consXComm.HhcrrgGdeEff - hours;
                     break;
             }
 
