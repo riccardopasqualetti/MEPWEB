@@ -29,18 +29,18 @@ namespace MepWeb.Service.Impl
 
             var client = new HttpClient(handlerHttp);
 
-            var values = new Dictionary<string, string>
-                          {
-                              { "Email", loginRequest.Email },
-                              { "Password", loginRequest.Password }
-                          };
+            //var values = new Dictionary<string, string>
+            //              {
+            //                  { "Email", loginRequest.Email },
+            //                  { "Password", loginRequest.Password }
+            //              };
 
             string platformUrl = ScwPlatformURL;
             client.BaseAddress = new Uri(platformUrl);
-            //var conv = JsonConvert.SerializeObject(loginRequest);
-            //var strcontent = new StringContent(conv, System.Text.Encoding.UTF8, "application/json");
-            var content = new FormUrlEncodedContent(values);
-            HttpResponseMessage resp = await client.PostAsync("api/VerifyCredentials", content);
+            var conv = JsonConvert.SerializeObject(loginRequest);
+            var strcontent = new StringContent(conv, System.Text.Encoding.UTF8, "application/json");
+            //var content = new FormUrlEncodedContent(values);
+            HttpResponseMessage resp = await client.PostAsync("api/VerifyCredentials", strcontent);
             return resp;
         }
         public async Task<string> GetMepUsrSigla(string email)

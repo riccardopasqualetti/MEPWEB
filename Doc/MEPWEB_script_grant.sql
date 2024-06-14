@@ -24,6 +24,14 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_QUAL    TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_NMDT	TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_NMDC	TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.PSC_001A    TO mepweb
+-- 14/06/2024
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_scc8 TO mepweb
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_scc9 TO mepweb
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_orcc TO mepweb
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_arpp TO mepweb
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_pgmc TO mepweb
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_ciac TO mepweb 
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.CT_16071303 TO mepweb
 
 
 GRANT VIEW DEFINITION ON dba.flusso_acli                TO mepweb 
@@ -49,7 +57,14 @@ GRANT VIEW DEFINITION ON dba.PSC_QUAL                   TO mepweb
 GRANT VIEW DEFINITION ON dba.PSC_NMDT					TO mepweb
 GRANT VIEW DEFINITION ON dba.PSC_NMDC					TO mepweb
 GRANT VIEW DEFINITION ON dba.PSC_001A					TO mepweb
-
+-- 14/06/2024
+GRANT VIEW DEFINITION ON dba.flusso_scc8				TO mepweb
+GRANT VIEW DEFINITION ON dba.flusso_scc9				TO mepweb
+GRANT VIEW DEFINITION ON dba.flusso_orcc				TO mepweb
+GRANT VIEW DEFINITION ON dba.flusso_arpp				TO mepweb
+GRANT VIEW DEFINITION ON dba.flusso_pgmc				TO mepweb
+GRANT VIEW DEFINITION ON dba.flusso_ciac				TO mepweb
+GRANT VIEW DEFINITION ON dba.CT_16071303				TO mepweb
 
 GRANT SELECT ON dba.mvxpa01                             TO mepweb
 GRANT SELECT ON dba.vs_pp_monitor_ISL                   TO mepweb

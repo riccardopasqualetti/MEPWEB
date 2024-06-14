@@ -202,7 +202,7 @@ namespace Mep01Web.Controllers
         public async Task<IActionResult> UpdateCampiTbcp(TbcpUpdateCampiOpzionaliRequest request)
         {
             await _tbcpService.UpdateCampiOpzionaliAsync(request);
-            return Ok(new { response = "ciao" });
+            return Ok(new { response = "ok" });
         }
 
     }

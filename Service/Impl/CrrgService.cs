@@ -614,12 +614,12 @@ namespace Mep01Web.Service.Impl
                 if (macroGrpDefault == null || macroGrpDefaultOther == null) { return res; };
 
 				var vsConsXComm = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == comm.TbcpId);
-				if (vsConsXComm != null && ((macroGrpDefault.DescrizioneRidotta == "E**" || vsConsXComm.TfattGen != null)  || (macroGrpDefault.DescrizioneRidotta == "D**" || vsConsXComm.TfattGde != null))) 
+				if (vsConsXComm != null && ((macroGrpDefault.DescrizioneRidotta == "E**" && vsConsXComm.TfattGen != null)  || (macroGrpDefault.DescrizioneRidotta == "D**" && vsConsXComm.TfattGde != null))) 
                 {
                     res.CrrgGrpcdlPrev= macroGrpDefault.Cod; //Tentativo 2
 				} else
                 {
-					if (vsConsXComm != null && ((macroGrpDefault.DescrizioneRidotta == "E**" || vsConsXComm.TfattGde != null) || (macroGrpDefault.DescrizioneRidotta == "D**" || vsConsXComm.TfattGen != null)))
+					if (vsConsXComm != null && ((macroGrpDefault.DescrizioneRidotta == "E**" && vsConsXComm.TfattGde != null) || (macroGrpDefault.DescrizioneRidotta == "D**" && vsConsXComm.TfattGen != null)))
                     {
 						res.CrrgGrpcdlPrev = macroGrpDefaultOther.Cod; //Tentativo 3
 					}
