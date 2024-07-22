@@ -1,11 +1,15 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using MepWeb.Service
+@inject GetConfig _config
 @{
 }
 
 <div id="tgen" class="oreQualifica tgen-margin""></div>
 
 @section scripts{
+    <script>
+        window.__PLATFORM_URL = "@_config.ScwPlatformURL";
+        window.__TABLEGENERATOR_PATH = "@_config.TableGeneratorPath";
+    </script>
+    @* <script src="@(_config.ScwPlatformURL)@(_config.TableGeneratorPath)TableGenerator_bundle.js"></script> *@
 	<script type="module" src="/js/OreQualifica.js"></script>
 }

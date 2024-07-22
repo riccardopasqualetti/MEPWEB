@@ -45,12 +45,6 @@
         <div id="filters-container">
             <h2>Filtra per</h2>
             <form id="search-form" method="get">
-                <label for="numeroCommessa">Numero Commessa:</label>
-                <input autocomplete="off" type="text" class="form-control" name="numeroCommessa" id="numeroCommessa">
-                <label for="cliente">Cliente:</label>
-                <input autocomplete="off" type="text" class="form-control" name="cliente" id="cliente">
-                <button type="submit" class="btn btn-success mt-2" id="confirm-research">Cerca</button>
-                <button type="button" class="btn btn-secondary mt-2" id="reset-research">Reset</button>
             </form>
         </div>
         <div id="menu-btns">
@@ -64,13 +58,13 @@
             <thead>
                 <tr>
                     <th scope="col" class="n-riga"><div><p>#</p></div></th>
-                    <th scope="col"><div>Commessa</div></th>
-                    <th scope="col"><div>Cliente</div></th>
-                    <th scope="col"><div>Ragione<br />Sociale</div></th>
-                    <th scope="col"><div>Offerta/<br />Ordine</div></th>
-                    <th scope="col"><div>Area/<br />Progetto</div></th>
-                    <th scope="col"><div>Descrizione</div></th>
-                    <th scope="col"><div>Project<br />Manager</div></th>
+                    <th scope="col" data-sc-search-name="commessa" data-sc-search-pos="1"><div>Commessa</div></th>
+                    <th scope="col" data-sc-search-name="TBCP_C_CLI" data-sc-search-pos="2"><div>Cliente</div></th>
+                    <th scope="col" data-sc-search-name="ACLI_RAG_SOC_1" data-sc-search-pos="3"><div>Ragione<br />Sociale</div></th>
+                    <th scope="col" data-sc-search-name="TBCP_RIF_CLIENTE" data-sc-search-pos="4"><div>Offerta/<br />Ordine</div></th>
+                    <th scope="col" data-sc-search-name="TBCP_M1_PROJECT" data-sc-search-pos="5"><div>Area/<br />Progetto</div></th>
+                    <th scope="col" data-sc-search-name="ACLI_RAG_SOC_1" data-sc-search-pos="6"><div>Descrizione</div></th>
+                    <th scope="col" data-sc-search-name="tbcpProjectManager" data-sc-search-pos="7"><div>Project<br />Manager</div></th>
                     <th scope="col"><div class="text-center w-100">Avanzamento</div></th>
                     <th scope="col"><div class="text-center w-100">Preoccupazione</div></th>
 

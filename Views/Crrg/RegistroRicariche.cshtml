@@ -1,6 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using MepWeb.Service
+@inject GetConfig _config
 @{
 }
 
@@ -9,9 +8,9 @@
 <div id="tgen" class=""></div>
 
 @section scripts{
+	<script>
+		window.__PLATFORM_URL = "@_config.ScwPlatformURL";
+		window.__TABLEGENERATOR_PATH = "@_config.TableGeneratorPath";
+	</script>
 	<script type="module" src="~/js/RegistroRicariche.js"></script>
-@* 	<script>
-		let idDocumento = getBaseUrl("ID_Documento")
-		console.log("cshtml" + idDocumento)
-	</script> *@
 }
