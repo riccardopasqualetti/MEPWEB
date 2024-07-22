@@ -152,12 +152,25 @@ function createSearchInputs() {
 
    const btnReset = document.createElement('button');
    btnReset.type = 'button';
-   btnReset.className = 'btn btn-secondary mt-2';
+   btnReset.className = 'btn btn-secondary mt-2 ms-2';
    btnReset.id = 'reset-research';
-   btnReset.textContent = 'Reset';
+   btnReset.title = 'Reset campi'
    searchForm.appendChild(btnReset);
 
+   /* <i class="bi bi-arrow-counterclockwise"></i> */
+   const iResetWrap =  document.createElement("div")
+   iResetWrap.innerHTML = `<i class="bi bi-arrow-counterclockwise"></i>`
+   iResetWrap.style.transition = 'all 0.3s ease-in-out';
+   btnReset.appendChild(iResetWrap);
+      /* const iReset = document.createElement('i');
+   iReset.className = 'bi bi-arrow-counterclockwise';
+   btnReset.appendChild(iReset);
+   iReset.querySelector("::before").style.transition = 'all .2s ease-in-out'; */
+
+   let rotation = 0
    btnReset.addEventListener('click', () => {
+      iResetWrap.style.rotate = `${rotation -360}deg`;
+      rotation = rotation - 360
       resetRows();
    });
 }
