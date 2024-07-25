@@ -324,7 +324,9 @@ namespace Mep01Web.Service.Impl
             var grpRes = await GetGrpCdlsAsync(grpCdlRequest);
 
             var crrgTmRunIncr = new Duration(crrgRequest.CrrgTmRunIncrHMS);
+            var crrgTmRunIncrProd = new Duration(crrgRequest.CrrgTmRunIncrHMSProd);
             var hms = crrgTmRunIncr.GetSeconds();
+            var hmsProd = crrgTmRunIncrProd.GetSeconds();
 
             var record = await _dbContext.FlussoCrrgs.FirstOrDefaultAsync(x => x.CrrgCSrl == crrgRequest.CrrgCSrl);
             var hmsNew = record.CrrgTmRunIncr;
@@ -352,7 +354,7 @@ namespace Mep01Web.Service.Impl
             record.CrrgCmaatt = crrgRequest.CrrgCmaatt;
             record.CrrgNote = crrgRequest.CrrgNote;
             record.CrrgRifCliente = crrgRequest.CrrgRifCliente;
-            record.CrrgTmRunIncrProd = hms;
+            record.CrrgTmRunIncrProd = hmsProd;
             record.CrrgApp = crrgRequest.CrrgApp;
             record.CrrgMod = crrgRequest.CrrgMod;
             record.CrrgGrpcdlEff = grpRes.Body.CrrgGrpcdlEff;
