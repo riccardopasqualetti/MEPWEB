@@ -58,13 +58,13 @@
             <thead>
                 <tr>
                     <th scope="col" class="n-riga"><div><p>#</p></div></th>
-                    <th scope="col" data-sc-search-name="commessa" data-sc-search-pos="1"><div>Commessa</div></th>
-                    <th scope="col" data-sc-search-name="TBCP_C_CLI" data-sc-search-pos="2"><div>Cliente</div></th>
-                    <th scope="col" data-sc-search-name="ACLI_RAG_SOC_1" data-sc-search-pos="3"><div>Ragione<br />Sociale</div></th>
-                    <th scope="col" data-sc-search-name="TBCP_RIF_CLIENTE" data-sc-search-pos="4"><div>Offerta/<br />Ordine</div></th>
+                    <th scope="col" data-sc-search-name="TBCP_C_CLI" data-sc-search-pos="1"><div>Cliente</div></th>
+                    <th scope="col" data-sc-search-name="ACLI_RAG_SOC_1" data-sc-search-pos="2"><div>Ragione<br />Sociale</div></th>
+                    <th scope="col" data-sc-search-name="commessa" data-sc-search-pos="3"><div>Commessa</div></th>
+                    <th scope="col" @* data-sc-search-name="TBCP_RIF_CLIENTE" data-sc-search-pos="4" *@><div>Offerta/<br />Ordine</div></th>
                     <th scope="col" data-sc-search-name="TBCP_M1_PROJECT" data-sc-search-pos="5"><div>Area/<br />Progetto</div></th>
-                    <th scope="col" data-sc-search-name="ACLI_RAG_SOC_1" data-sc-search-pos="6"><div>Descrizione</div></th>
-                    <th scope="col" data-sc-search-name="tbcpProjectManager" data-sc-search-pos="7"><div>Project<br />Manager</div></th>
+                    <th scope="col" @* data-sc-search-name="ACLI_RAG_SOC_1" data-sc-search-pos="6" *@><div>Descrizione</div></th>
+                    <th scope="col" @* data-sc-search-name="tbcpProjectManager" data-sc-search-pos="7" *@><div>Project<br />Manager</div></th>
                     <th scope="col"><div class="text-center w-100">Avanzamento</div></th>
                     <th scope="col"><div class="text-center w-100">Preoccupazione</div></th>
 
@@ -89,9 +89,9 @@
                                 <p><strong>@(i + 1)</strong></p>
                             </div>
                         </td>
-                        <td campo="TBCP_COMM">@comm</td>
                         <td campo="TBCP_C_CLI">@Model[i].TBCP_C_CLI</td>
                         <td campo="ACLI_RAG_SOC_1">@Model[i].ACLI_RAG_SOC_1<br />@Model[i].TBCP_OFF_PREV</td>
+                        <td campo="TBCP_COMM">@comm</td>
                         <td campo="TBCP_RIF_CLIENTE">@Model[i].TBCP_RIF_CLIENTE</td>
                         <td campo="DESCRIZIONE_RIDOTTA/TBCP_M1_PROJECT">@Model[i].DESCRIZIONE_RIDOTTA<br />@Model[i].TBCP_M1_PROJECT</td>
                         <td campo="TBCP_DESC">@Model[i].TBCP_DESC</td>

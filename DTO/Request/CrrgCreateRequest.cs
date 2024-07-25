@@ -37,9 +37,10 @@ namespace Mep01Web.DTO.Request
         // Tempo
         [Required(ErrorMessage = "Tempo obbligatorio")]
         public DateTime CrrgTmRunIncrHMS { get; set; }
+        public DateTime CrrgTmRunIncrHMSProd { get; set; }
 
-		// ISL
-		[MaxLength(13)]
+        // ISL
+        [MaxLength(13)]
 		//[Range(13, 13, ErrorMessage = "ISL deve essere di 13 caratteri")]
 		public string? CrrgRifCliente { get; set; }
 

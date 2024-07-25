@@ -757,6 +757,10 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.getElementById("input-risorsa").addEventListener("input", (e) => {
     e.target.value = e.target.value.toUpperCase();
   });
+  document.getElementById("CrrgTmRunIncrHMS").addEventListener("input", (e) => {
+    console.log(e)
+    document.getElementById("CrrgTmRunIncrHMSProd").value = e.target.value
+  })
 
   //gli viene passato l'input su cui fare la ricerca, il container che conterrà le opzioni e l'input 'vero' che verrà valorizzato
   //setta gli event listener necessari per far funzionare la dropdown ma non gestisce la funzione per la creazione delle opzioni

@@ -65,8 +65,13 @@
 					</div>
 					<div class="ms-2 form-group">
 						<label asp-for="CrrgTmRunIncrHMS">Tempo</label>
-						<input asp-for="CrrgTmRunIncrHMS" class="form-control" style="width:150px" type="time" step="1" />
+						<input asp-for="CrrgTmRunIncrHMS" id="CrrgTmRunIncrHMS" class="form-control" style="width:150px" type="time" step="1" />
 						<span asp-validation-for="CrrgTmRunIncrHMS" class="text-danger"></span>
+					</div>
+					<div class="ms-2 form-group">
+						<label asp-for="CrrgTmRunIncrHMSProd">Tempo Prod</label>
+						<input asp-for="CrrgTmRunIncrHMSProd" id="CrrgTmRunIncrHMSProd" class="form-control" style="width:150px" type="time" step="1" />
+						<span asp-validation-for="CrrgTmRunIncrHMSProd" class="text-danger"></span>
 					</div>
 				</div>
 

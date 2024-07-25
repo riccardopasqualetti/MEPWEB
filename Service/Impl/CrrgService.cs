@@ -108,7 +108,9 @@ namespace Mep01Web.Service.Impl
 
         public async Task<ResponseBase<List<ConsXCommResponse>>?> GetAllConsAsync()
         {
-            var res = await _dbContext.VsConsXComms.Select(item => new ConsXCommResponse
+            var res = await _dbContext.VsConsXComms
+                .OrderBy(x => x.AcliRagSoc1)
+                .Select(item => new ConsXCommResponse
             {
                 TBCP_TST_COMM = item.TbcpTstComm,
                 TBCP_PRF_COMM = item.TbcpPrfComm,
@@ -197,9 +199,11 @@ namespace Mep01Web.Service.Impl
             //                tatv_stima_gg_test
             var m = _dbContext.FlussoCrrgs.Max(c => c.CrrgCSrl) + 1;
             var crrgTmRunIncr = new Duration(crrgRequest.CrrgTmRunIncrHMS);
+            var crrgTmRunIncrProd = new Duration(crrgRequest.CrrgTmRunIncrHMSProd); 
             var hms = crrgTmRunIncr.GetSeconds();
-            //var hms = crrgRequest.CrrgTmRunIncrHMS.Hour * 3600 + crrgRequest.CrrgTmRunIncrHMS.Minute * 60 + crrgRequest.CrrgTmRunIncrHMS.Second;
-            DateTime dt = DateTime.Now;
+            var hmsProd = crrgTmRunIncrProd.GetSeconds() == 0 ? hms : crrgTmRunIncrProd.GetSeconds();
+			//var hms = crrgRequest.CrrgTmRunIncrHMS.Hour * 3600 + crrgRequest.CrrgTmRunIncrHMS.Minute * 60 + crrgRequest.CrrgTmRunIncrHMS.Second;
+			DateTime dt = DateTime.Now;
             var flussoCrrg = new FlussoCrrg
             {
                 CrrgCSrl = m,
@@ -273,7 +277,7 @@ namespace Mep01Web.Service.Impl
                 //CrrgFlgEsito = NULL
                 //CrrgFlgQtaRilavora = NULL
                 CrrgRifCliente = crrgRequest.CrrgRifCliente,
-                CrrgTmRunIncrProd = hms,
+                CrrgTmRunIncrProd = hmsProd,
                 //CrrgM1ObjtypeOdl = 0
                 //CrrgM1DocentryOdl = 0
                 //CrrgNumVerbale = NULL
@@ -500,6 +504,7 @@ namespace Mep01Web.Service.Impl
             crrgCreateRequest.CrrgCRis = flussoCrrg.CrrgCRis;
             crrgCreateRequest.CrrgDtt = flussoCrrg.CrrgDtt == null ? DateTime.Now : (DateTime)flussoCrrg.CrrgDtt;
             crrgCreateRequest.CrrgTmRunIncrHMS = (new Duration(flussoCrrg.CrrgTmRunIncr)).GetDatetime();
+            crrgCreateRequest.CrrgTmRunIncrHMSProd = (new Duration(flussoCrrg.CrrgTmRunIncrProd)).GetDatetime();
             crrgCreateRequest.CrrgRifCliente = flussoCrrg.CrrgRifCliente;
             crrgCreateRequest.CommCode = flussoCrrg.CrrgTstDoc + "/" + flussoCrrg.CrrgPrfDoc + "/" + flussoCrrg.CrrgADoc + "/" + flussoCrrg.CrrgNDoc.ToString("000000"); ;
 
