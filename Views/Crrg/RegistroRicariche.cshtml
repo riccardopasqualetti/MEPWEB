@@ -8,9 +8,6 @@
 <div id="tgen" class=""></div>
 
 @section scripts{
-	<script>
-		window.__PLATFORM_URL = "@_config.ScwPlatformURL";
-		window.__TABLEGENERATOR_PATH = "@_config.TableGeneratorPath";
-	</script>
+	<script src="@(_config.ScwPlatformURL)@(_config.TableGeneratorPath)TableGeneratorVar_bundle.js"></script>
 	<script type="module" src="~/js/RegistroRicariche.js"></script>
 }

@@ -1,4 +1,6 @@
 ﻿@using MepWeb.DTO.Request;
+@using MepWeb.Service
+@inject GetConfig _config
 @model MepWeb.DTO.Request.IdDocumentoRequest;
 @{
 }
@@ -6,5 +8,6 @@
 <div id="tgen" class="tgen-margin"></div>
 
 @section scripts{
+	<script src="@(_config.ScwPlatformURL)@(_config.TableGeneratorPath)TableGeneratorVar_bundle.js"></script>
 	<script type="module" src="/js/AddettoQualifica.js"></script>
 }
