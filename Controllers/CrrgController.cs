@@ -192,8 +192,8 @@ namespace Mep01Web.Controllers
 				}
 
 				obj.Succeeded = "N";
-				//await _crrgService.AddCrrgPrepareDataAsync(obj);
-				//return View(obj);
+				await _crrgService.AddCrrgPrepareDataAsync(obj);
+				return View(obj);
             }
             else
             {
@@ -201,13 +201,14 @@ namespace Mep01Web.Controllers
 			}
 			//}
 
-			await _crrgService.AddCrrgPrepareDataAsync(obj);
-			return View(obj);
+			//await _crrgService.AddCrrgPrepareDataAsync(obj);
+			//return View(obj);
 
 			//return RedirectToAction("Create");
 			//return RedirectToAction("Index");
+            return RedirectToAction("Indexmantain");
 
-		}
+        }
 
 
         //GET Create con parametro csrl        
@@ -237,7 +238,8 @@ namespace Mep01Web.Controllers
 		public async Task<ActionResult> Duplicate(CrrgCreateRequest obj)
         {
             await Create(obj);
-            return View("Create",obj);
+            //return View("Create",obj);
+            return RedirectToAction("Indexmantain");
         }
 
         [HttpGet("[controller]/[action]/{crrgCSrl}")]

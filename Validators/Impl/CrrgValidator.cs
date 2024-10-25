@@ -74,11 +74,13 @@ namespace Mep01Web.Validators.Impl
 					return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCmaatt, $"Verbale obbligatorio per ISL con offerta");
 				}
 			}
-			// Se la ISL non è valorizzata, ma è valorizzato il campo CommCode con il codice in formato compatto,
+
+
+            // Se la ISL non è valorizzata, ma è valorizzato il campo CommCode con il codice in formato compatto,
             // la commessa è presa da quest'ultimo campo.
-			// Altrimenti, mantiene i campi della form inalterati.
-			else
-			{
+            // Altrimenti, mantiene i campi della form inalterati.
+            else
+            {
                 try {
 					
 					if (!string.IsNullOrWhiteSpace(crrgRequest.CommCode))
@@ -93,11 +95,6 @@ namespace Mep01Web.Validators.Impl
 					if (crrgRequest.CrrgCCaus != "CORI")
 					{
 						return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCCaus, $"Causale non ammessa");
-					}
-
-					if (crrgRequest.CrrgPrfDoc == "B" && crrgRequest.CrrgCmaatt != "3")
-					{
-						return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCmaatt, $"Verbale obbligatorio per il tipo di commessa");
 					}
 
 				}
@@ -157,8 +154,21 @@ namespace Mep01Web.Validators.Impl
 			}
 
 
-			// Validazione Applicativo
-			FlussoTbpn flussoTbpn;
+            // Se la commessa è E, la macroattività deve essere Assistenza(CrrgCmaatt=1) o Garanzia(CrrgCmaatt=2) o Verbale(CrrgCmaatt=3). 
+            if ((crrgRequest.CrrgPrfDoc == "E") && crrgRequest.CrrgCmaatt != "1" && crrgRequest.CrrgCmaatt != "2" && crrgRequest.CrrgCmaatt != "3")
+            {
+                return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCmaatt, $"Su commessa di tipo 'E' selezionare 'Garanzia', 'Assistenza' o 'Verbale'");
+            }
+            // Se la commessa è B, la macroattività deve essere Verbale(CrrgCmaatt=3). 
+            if (crrgRequest.CrrgPrfDoc == "B" && crrgRequest.CrrgCmaatt != "3")
+            {
+                return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgCmaatt, $"Verbale obbligatorio per il tipo di commessa");
+            }
+
+
+
+            // Validazione Applicativo
+            FlussoTbpn flussoTbpn;
 			if (!string.IsNullOrWhiteSpace(crrgRequest.CrrgApp))
 			{
 				flussoTbpn = await _dbContext.FlussoTbpns.SingleOrDefaultAsync(x => x.TbpnCPart == crrgRequest.CrrgApp && crrgRequest.CrrgApp.StartsWith("APP_"));
