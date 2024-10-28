@@ -86,29 +86,16 @@ document.getElementById('aggiungi-nota').addEventListener('submit', async (e) =>
    e.preventDefault();
    const data = new FormData(e.target);
    const value = Object.fromEntries(data.entries());
-   console.log(value);
+   debugger;
    if (preoccupazione) {
       const preoccupazioneSelezionata = preoccupazione.find((x) => !x.classList.contains('pointer-pointer'));
-      preoccupazioneSelezionata.classList.contains('bg-verde') &&
-         (await updateCommessa(value.commessa_attuale, {
-            preoccupazione: 'G',
-            Note: value.nota,
-            Avanzamento: value.avanzamento,
-         }));
-      preoccupazioneSelezionata.classList.contains('bg-giallo') &&
-         (await updateCommessa(value.commessa_attuale, {
-            preoccupazione: 'Y',
-            Note: value.nota,
-            Avanzamento: value.avanzamento,
-         }));
-      preoccupazioneSelezionata.classList.contains('bg-rosso') &&
-         (await updateCommessa(value.commessa_attuale, {
-            preoccupazione: 'R',
-            Note: value.nota,
-            Avanzamento: value.avanzamento,
-         }));
+      const req = { Note: value.nota, Avanzamento: value.avanzamento };
+      if (preoccupazioneSelezionata.classList.contains('bg-verde')) req.Preoccupazione = 'G';
+      if (preoccupazioneSelezionata.classList.contains('bg-giallo')) req.Preoccupazione = 'Y';
+      if (preoccupazioneSelezionata.classList.contains('bg-rosso')) req.Preoccupazione = 'R';
+
+      await updateCommessa(value.commessa_attuale, req);
    }
-   console.log(response);
 });
 
 document.getElementById('filter-btn').addEventListener('click', () => {
@@ -165,9 +152,9 @@ function createSearchInputs() {
    iResetWrap.style.transition = 'all 0.2s ease-in-out';
    btnReset.appendChild(iResetWrap);
    /* const iReset = document.createElement('i');
-   iReset.className = 'bi bi-arrow-counterclockwise';
-   btnReset.appendChild(iReset);
-   iReset.querySelector("::before").style.transition = 'all .2s ease-in-out'; */
+    iReset.className = 'bi bi-arrow-counterclockwise';
+    btnReset.appendChild(iReset);
+    iReset.querySelector("::before").style.transition = 'all .2s ease-in-out'; */
 
    let rotation = 0;
    btnReset.addEventListener('click', () => {
@@ -184,18 +171,17 @@ function closePreoccupazione() {
 }
 
 async function updateCommessa(comm, valueObj) {
-   console.log(valueObj);
+   //creo la request vuota
    let req = {
       tstComm: null,
       prfComm: null,
       aComm: null,
       nComm: null,
    };
-
+   //aggiorno la lista delle commesse in js in modo
    response.map((x) => {
       if (x.commessa === comm) {
          for (const key in valueObj) {
-            console.log(x[key]);
             x[key] = valueObj[key];
          }
 
@@ -203,8 +189,8 @@ async function updateCommessa(comm, valueObj) {
          req.prfComm = x.TBCP_PRF_COMM;
          req.aComm = x.TBCP_A_COMM;
          req.nComm = x.TBCP_N_COMM;
-         valueObj.Note && (req.nota = valueObj.Note);
-         valueObj.preoccupazione && (req.Preoccupazione = valueObj.preoccupazione);
+         valueObj.Note && (req.Nota = valueObj.Note);
+         valueObj.Preoccupazione && (req.Preoccupazione = valueObj.Preoccupazione);
          valueObj.Avanzamento && (req.Avanzamento = valueObj.Avanzamento);
       }
       return x;
@@ -223,23 +209,19 @@ async function updateCommessa(comm, valueObj) {
    if (valueObj.Avanzamento)
       document.querySelector(`#cons-tbody [rowComm="${comm}"] [campo="Avanzamento"]`).innerText =
          valueObj.Avanzamento + '%';
-   console.log(valueObj.preoccupazione);
-   switch (valueObj.preoccupazione) {
+   switch (valueObj.Preoccupazione) {
       case 'G':
          const campoPre = document.querySelector(`#cons-tbody [rowComm="${comm}"] [campo="Preoccupazione"] div`);
-         console.log(campoPre);
          campoPre.classList.remove('bg-giallo', 'bg-rosso');
          campoPre.classList.add('bg-verde');
          break;
       case 'Y':
          const campoPre1 = document.querySelector(`#cons-tbody [rowComm="${comm}"] [campo="Preoccupazione"] div`);
-         console.log(campoPre1);
          campoPre1.classList.remove('bg-verde', 'bg-rosso');
          campoPre1.classList.add('bg-giallo');
          break;
       case 'R':
          const campoPre2 = document.querySelector(`#cons-tbody [rowComm="${comm}"] [campo="Preoccupazione"] div`);
-         console.log(campoPre2);
          campoPre2.classList.remove('bg-verde', 'bg-giallo');
          campoPre2.classList.add('bg-rosso');
          break;
@@ -256,6 +238,7 @@ function populateNotaForm({ comm }) {
       populateNotaForm({ comm: e.target.value });
    });
    const currentRow = response.find((r) => r.commessa === comm);
+
    if (currentRow.Note) {
       form.querySelector('#nota').value = currentRow.Note;
    } else {
@@ -371,8 +354,6 @@ function search(searchObj) {
    const values = Object.entries(searchObj)
       .filter((x) => x[1].trim() != '')
       .map((x) => [parseInt(x[0]), x[1].trim()]);
-
-   console.log(values);
 
    for (const row of tableRows) {
       //controllo che tutti i campi valorizzati includano il valore del td della riga corrispondente
