@@ -17,6 +17,7 @@
         public string?   TBCP_M1_PROJECT { get; set; }
         public string?   TBCP_DESC { get; set; }
         public string?   TbcpProjectManager { get; set; }
+        public string?   Usr1Password { get; set; }
         public string?   USR1_DESC { get; set; }
         public decimal   TbcpId { get; set; }
         public decimal?  HHACQPGM { get; set; }

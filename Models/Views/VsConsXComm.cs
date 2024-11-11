@@ -35,6 +35,8 @@ public partial class VsConsXComm
 
     public string? TbcpProjectManager { get; set; }
 
+    public string? Usr1Password { get; set; }
+
     public string? Usr1Desc { get; set; }
 
     public decimal TbcpId { get; set; }

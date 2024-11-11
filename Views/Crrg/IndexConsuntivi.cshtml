@@ -64,7 +64,7 @@
                     <th scope="col" @* data-sc-search-name="TBCP_RIF_CLIENTE" data-sc-search-pos="4" *@><div>Offerta/<br />Ordine</div></th>
                     <th scope="col" data-sc-search-name="TBCP_M1_PROJECT" data-sc-search-pos="5"><div>Area/<br />Progetto</div></th>
                     <th scope="col" @* data-sc-search-name="ACLI_RAG_SOC_1" data-sc-search-pos="6" *@><div>Descrizione</div></th>
-                    <th scope="col" @* data-sc-search-name="tbcpProjectManager" data-sc-search-pos="7" *@><div>Project<br />Manager</div></th>
+                    <th scope="col" data-sc-search-name="tbcpProjectManager" data-sc-search-pos="7" data-sc-search-options="ProjectManager"><div>Project<br />Manager</div></th>
                     <th scope="col"><div class="text-center w-100">Avanzamento</div></th>
                     <th scope="col"><div class="text-center w-100">Preoccupazione</div></th>
 
@@ -310,6 +310,6 @@
 <input type="hidden" id="jsonI" value="@JsonConvert.SerializeObject(Model, Formatting.None)" />
 
 @section scripts {
+    <script src="~/js/generic.js"></script>
     <script src="~/js/ConsXComm.js"></script>
-
 }

@@ -111,63 +111,65 @@ namespace Mep01Web.Service.Impl
             var res = await _dbContext.VsConsXComms
                 .OrderBy(x => x.AcliRagSoc1)
                 .Select(item => new ConsXCommResponse
-            {
-                TBCP_TST_COMM = item.TbcpTstComm,
-                TBCP_PRF_COMM = item.TbcpPrfComm,
-                TBCP_A_COMM = item.TbcpAComm,
-                TBCP_N_COMM = item.TbcpNComm,
-                TBCP_C_CLI = item.TbcpCCli,
-                ACLI_RAG_SOC_1 = item.AcliRagSoc1,
-                TBCP_OFF_PREV = item.TbcpOffPrev,
-                TBCP_RIF_CLIENTE = item.TbcpRifCliente,
-                DESCRIZIONE_RIDOTTA = item.DescrizioneRidotta,
-                TBCP_M1_PROJECT = item.TbcpM1Project,
-                TBCP_DESC = item.TbcpDesc,
-                USR1_DESC = item.Usr1Desc,
-                TbcpId = item.TbcpId,
-                HHACQPGM = item.HhacqPgm,
-                HHACQSOA = item.HhacqSoa,
-                HHACQPJM = item.HhacqPjm,
-                HHACQBUC = item.HhacqBuc,
-                HHACQSYD = item.HhacqSyd,
-                HHACQGEN = item.HhacqGen,
-                HHACQGDE = item.HhacqGde,
-                TFATTPGM = item.TfattPgm,
-                TFATTSOA = item.TfattSoa,
-                TFATTPJM = item.TfattPjm,
-                TFATTBUC = item.TfattBuc,
-                TFATTSYD = item.TfattSyd,
-                TFATTGEN = item.TfattGen,
-                TFATTGDE = item.TfattGde,
-                //HHCRRGPGM = item.HhcrrgPgm,
-                //HHCRRGSOA = item.HhcrrgSoa,
-                //HHCRRGPJM = item.HhcrrgPjm,
-                //HHCRRGBUC = item.HhcrrgBuc,
-                //HHCRRGSYD = item.HhcrrgSyd,
-                //HHCRRGGEN = item.HhcrrgGen,
-                HHCRRGPGMEFF = item.HhcrrgPgmEff,
-                HHCRRGSOAEFF = item.HhcrrgSoaEff,
-                HHCRRGPJMEFF = item.HhcrrgPjmEff,
-                HHCRRGBUCEFF = item.HhcrrgBucEff,
-                HHCRRGSYDEFF = item.HhcrrgSydEff,
-                HHCRRGGENEFF = item.HhcrrgGenEff,
-                HHCRRGGDEEFF = item.HhcrrgGdeEff,
-                HHCRRGPGMEFFNV = item.HhcrrgPgmEffNv,
-                HHCRRGSOAEFFNV = item.HhcrrgSoaEffNv,
-                HHCRRGPJMEFFNV = item.HhcrrgPjmEffNv,
-                HHCRRGBUCEFFNV = item.HhcrrgBucEffNv,
-                HHCRRGSYDEFFNV = item.HhcrrgSydEffNv,
-                HHCRRGGENEFFNV = item.HhcrrgGenEffNv,
-                HHCRRGGDEEFFNV = item.HhcrrgGdeEffNv,
-                HH001APGM = item.Hh001aPgm ?? 0,
-                HH001ASOA = item.Hh001aSoa ?? 0,
-                HH001APJM = item.Hh001aPjm ?? 0,
-                HH001ABUC = item.Hh001aBuc ?? 0,
-                HH001ASYD = item.Hh001aSyd ?? 0,
-                Preoccupazione = _dbContext.FlussoTbcps.FirstOrDefault(x => x.TbcpTstComm == item.TbcpTstComm && x.TbcpPrfComm == item.TbcpPrfComm && x.TbcpAComm == item.TbcpAComm && x.TbcpNComm == item.TbcpNComm).TbcpFfllA1,
-                Avanzamento = _dbContext.FlussoTbcps.FirstOrDefault(x => x.TbcpTstComm == item.TbcpTstComm && x.TbcpPrfComm == item.TbcpPrfComm && x.TbcpAComm == item.TbcpAComm && x.TbcpNComm == item.TbcpNComm).TbcpFfllN1,
-                Note = _dbContext.FlussoTbcps.FirstOrDefault(x => x.TbcpTstComm == item.TbcpTstComm && x.TbcpPrfComm == item.TbcpPrfComm && x.TbcpAComm == item.TbcpAComm && x.TbcpNComm == item.TbcpNComm).TbcpFfllT1 
-            }).ToListAsync();
+                {
+                    TBCP_TST_COMM = item.TbcpTstComm,
+                    TBCP_PRF_COMM = item.TbcpPrfComm,
+                    TBCP_A_COMM = item.TbcpAComm,
+                    TBCP_N_COMM = item.TbcpNComm,
+                    TBCP_C_CLI = item.TbcpCCli,
+                    ACLI_RAG_SOC_1 = item.AcliRagSoc1,
+                    TBCP_OFF_PREV = item.TbcpOffPrev,
+                    TBCP_RIF_CLIENTE = item.TbcpRifCliente,
+                    DESCRIZIONE_RIDOTTA = item.DescrizioneRidotta,
+                    TBCP_M1_PROJECT = item.TbcpM1Project,
+                    TBCP_DESC = item.TbcpDesc,
+                    USR1_DESC = item.Usr1Desc ?? "No name",
+                    TbcpProjectManager = item.TbcpProjectManager,
+                    Usr1Password = item.Usr1Password,
+                    TbcpId = item.TbcpId,
+                    HHACQPGM = item.HhacqPgm,
+                    HHACQSOA = item.HhacqSoa,
+                    HHACQPJM = item.HhacqPjm,
+                    HHACQBUC = item.HhacqBuc,
+                    HHACQSYD = item.HhacqSyd,
+                    HHACQGEN = item.HhacqGen,
+                    HHACQGDE = item.HhacqGde,
+                    TFATTPGM = item.TfattPgm,
+                    TFATTSOA = item.TfattSoa,
+                    TFATTPJM = item.TfattPjm,
+                    TFATTBUC = item.TfattBuc,
+                    TFATTSYD = item.TfattSyd,
+                    TFATTGEN = item.TfattGen,
+                    TFATTGDE = item.TfattGde,
+                    //HHCRRGPGM = item.HhcrrgPgm,
+                    //HHCRRGSOA = item.HhcrrgSoa,
+                    //HHCRRGPJM = item.HhcrrgPjm,
+                    //HHCRRGBUC = item.HhcrrgBuc,
+                    //HHCRRGSYD = item.HhcrrgSyd,
+                    //HHCRRGGEN = item.HhcrrgGen,
+                    HHCRRGPGMEFF = item.HhcrrgPgmEff,
+                    HHCRRGSOAEFF = item.HhcrrgSoaEff,
+                    HHCRRGPJMEFF = item.HhcrrgPjmEff,
+                    HHCRRGBUCEFF = item.HhcrrgBucEff,
+                    HHCRRGSYDEFF = item.HhcrrgSydEff,
+                    HHCRRGGENEFF = item.HhcrrgGenEff,
+                    HHCRRGGDEEFF = item.HhcrrgGdeEff,
+                    HHCRRGPGMEFFNV = item.HhcrrgPgmEffNv,
+                    HHCRRGSOAEFFNV = item.HhcrrgSoaEffNv,
+                    HHCRRGPJMEFFNV = item.HhcrrgPjmEffNv,
+                    HHCRRGBUCEFFNV = item.HhcrrgBucEffNv,
+                    HHCRRGSYDEFFNV = item.HhcrrgSydEffNv,
+                    HHCRRGGENEFFNV = item.HhcrrgGenEffNv,
+                    HHCRRGGDEEFFNV = item.HhcrrgGdeEffNv,
+                    HH001APGM = item.Hh001aPgm ?? 0,
+                    HH001ASOA = item.Hh001aSoa ?? 0,
+                    HH001APJM = item.Hh001aPjm ?? 0,
+                    HH001ABUC = item.Hh001aBuc ?? 0,
+                    HH001ASYD = item.Hh001aSyd ?? 0,
+                    Preoccupazione = _dbContext.FlussoTbcps.FirstOrDefault(x => x.TbcpTstComm == item.TbcpTstComm && x.TbcpPrfComm == item.TbcpPrfComm && x.TbcpAComm == item.TbcpAComm && x.TbcpNComm == item.TbcpNComm).TbcpFfllA1,
+                    Avanzamento = _dbContext.FlussoTbcps.FirstOrDefault(x => x.TbcpTstComm == item.TbcpTstComm && x.TbcpPrfComm == item.TbcpPrfComm && x.TbcpAComm == item.TbcpAComm && x.TbcpNComm == item.TbcpNComm).TbcpFfllN1,
+                    Note = _dbContext.FlussoTbcps.FirstOrDefault(x => x.TbcpTstComm == item.TbcpTstComm && x.TbcpPrfComm == item.TbcpPrfComm && x.TbcpAComm == item.TbcpAComm && x.TbcpNComm == item.TbcpNComm).TbcpFfllT1
+                }).ToListAsync();
 
             return res;
         }
@@ -199,11 +201,11 @@ namespace Mep01Web.Service.Impl
             //                tatv_stima_gg_test
             var m = _dbContext.FlussoCrrgs.Max(c => c.CrrgCSrl) + 1;
             var crrgTmRunIncr = new Duration(crrgRequest.CrrgTmRunIncrHMS);
-            var crrgTmRunIncrProd = new Duration(crrgRequest.CrrgTmRunIncrHMSProd); 
+            var crrgTmRunIncrProd = new Duration(crrgRequest.CrrgTmRunIncrHMSProd);
             var hms = crrgTmRunIncr.GetSeconds();
             var hmsProd = crrgTmRunIncrProd.GetSeconds() == 0 ? hms : crrgTmRunIncrProd.GetSeconds();
-			//var hms = crrgRequest.CrrgTmRunIncrHMS.Hour * 3600 + crrgRequest.CrrgTmRunIncrHMS.Minute * 60 + crrgRequest.CrrgTmRunIncrHMS.Second;
-			DateTime dt = DateTime.Now;
+            //var hms = crrgRequest.CrrgTmRunIncrHMS.Hour * 3600 + crrgRequest.CrrgTmRunIncrHMS.Minute * 60 + crrgRequest.CrrgTmRunIncrHMS.Second;
+            DateTime dt = DateTime.Now;
             var flussoCrrg = new FlussoCrrg
             {
                 CrrgCSrl = m,
@@ -602,36 +604,37 @@ namespace Mep01Web.Service.Impl
             }
 
 
-			// Valorizzazione CrrgGrpcdlPrev
-			var pscCo01 = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.IdDoc == comm.TbcpId && x.Grpcdl == res.CrrgGrpcdlEff && x.CDitta == CommonCostants.CDitta);
-			if (pscCo01 != null)
+            // Valorizzazione CrrgGrpcdlPrev
+            var pscCo01 = await _dbContext.PscCo01s.FirstOrDefaultAsync(x => x.IdDoc == comm.TbcpId && x.Grpcdl == res.CrrgGrpcdlEff && x.CDitta == CommonCostants.CDitta);
+            if (pscCo01 != null)
             {
                 res.CrrgGrpcdlPrev = res.CrrgGrpcdlEff;  //Tentativo 1
             }
             else
             {
-				var mvxzz12E = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == "E**");
-				var mvxzz12D = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == "D**");
-				var tcdlDefault = (await _dbContext.FlussoTcdls.FirstOrDefaultAsync(x => x.TcdlCCdl == crrgGrpCdlsRequest.CrrgCdl && x.TcdlCDitta == CommonCostants.CDitta)).TcdlGrpcdl;
-				var mvxzz12Default = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.Cod == tcdlDefault);
-				Mvxzz12? macroGrpDefault = null;
-				Mvxzz12? macroGrpDefaultOther = null;
-				if ("SOA SYD".Contains(mvxzz12Default.DescrizioneRidotta)) { macroGrpDefault = mvxzz12E; macroGrpDefaultOther = mvxzz12D; }
-				if ("PGM PJM BUC".Contains(mvxzz12Default.DescrizioneRidotta)) { macroGrpDefault = mvxzz12D; macroGrpDefaultOther = mvxzz12E; }
+                var mvxzz12E = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == "E**");
+                var mvxzz12D = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.DescrizioneRidotta == "D**");
+                var tcdlDefault = (await _dbContext.FlussoTcdls.FirstOrDefaultAsync(x => x.TcdlCCdl == crrgGrpCdlsRequest.CrrgCdl && x.TcdlCDitta == CommonCostants.CDitta)).TcdlGrpcdl;
+                var mvxzz12Default = await _dbContext.Mvxzz12s.FirstOrDefaultAsync(x => x.Cprfc == "grpcdl" && x.Cod == tcdlDefault);
+                Mvxzz12? macroGrpDefault = null;
+                Mvxzz12? macroGrpDefaultOther = null;
+                if ("SOA SYD".Contains(mvxzz12Default.DescrizioneRidotta)) { macroGrpDefault = mvxzz12E; macroGrpDefaultOther = mvxzz12D; }
+                if ("PGM PJM BUC".Contains(mvxzz12Default.DescrizioneRidotta)) { macroGrpDefault = mvxzz12D; macroGrpDefaultOther = mvxzz12E; }
                 if (macroGrpDefault == null || macroGrpDefaultOther == null) { return res; };
 
-				var vsConsXComm = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == comm.TbcpId);
-				if (vsConsXComm != null && ((macroGrpDefault.DescrizioneRidotta == "E**" && vsConsXComm.TfattGen != null)  || (macroGrpDefault.DescrizioneRidotta == "D**" && vsConsXComm.TfattGde != null))) 
+                var vsConsXComm = await _dbContext.VsConsXComms.FirstOrDefaultAsync(x => x.TbcpId == comm.TbcpId);
+                if (vsConsXComm != null && ((macroGrpDefault.DescrizioneRidotta == "E**" && vsConsXComm.TfattGen != null) || (macroGrpDefault.DescrizioneRidotta == "D**" && vsConsXComm.TfattGde != null)))
                 {
-                    res.CrrgGrpcdlPrev= macroGrpDefault.Cod; //Tentativo 2
-				} else
+                    res.CrrgGrpcdlPrev = macroGrpDefault.Cod; //Tentativo 2
+                }
+                else
                 {
-					if (vsConsXComm != null && ((macroGrpDefault.DescrizioneRidotta == "E**" && vsConsXComm.TfattGde != null) || (macroGrpDefault.DescrizioneRidotta == "D**" && vsConsXComm.TfattGen != null)))
+                    if (vsConsXComm != null && ((macroGrpDefault.DescrizioneRidotta == "E**" && vsConsXComm.TfattGde != null) || (macroGrpDefault.DescrizioneRidotta == "D**" && vsConsXComm.TfattGen != null)))
                     {
-						res.CrrgGrpcdlPrev = macroGrpDefaultOther.Cod; //Tentativo 3
-					}
-				}
-			}
+                        res.CrrgGrpcdlPrev = macroGrpDefaultOther.Cod; //Tentativo 3
+                    }
+                }
+            }
 
             return ResponseBase<CrrgGrpCdlsResponse>.Success(res);
 

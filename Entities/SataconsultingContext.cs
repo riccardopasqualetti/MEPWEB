@@ -5028,6 +5028,10 @@ public partial class SataconsultingContext : DbContext
                 .HasMaxLength(5)
                 .IsUnicode(false)
                 .HasColumnName("tbcp_project_manager");
+            entity.Property(e => e.Usr1Password)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("usr1_password");
             entity.Property(e => e.TbcpRifCliente)
                 .HasMaxLength(300)
                 .IsUnicode(false)

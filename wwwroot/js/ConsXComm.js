@@ -11,6 +11,12 @@ console.log(response);
 const preoccupazione = Array.from(document.querySelectorAll('#aggiungi-nota .preoccupazione'));
 const rows = document.querySelectorAll('#aggiungi-nota tbody tr');
 const inputAvanzamento = document.querySelector('#modal-avanzamento input');
+const searchConfig = {
+   'ProjectManager': {
+      fields: ['TbcpProjectManager', 'USR1_DESC', 'Usr1Password'],
+      textField: ['USR1_DESC'],
+   },
+};
 
 inputAvanzamento.addEventListener('input', (e) => {
    if (e.target.value > 100) e.target.value = 100;
@@ -126,10 +132,23 @@ function createSearchInputs() {
 
       const input = document.createElement('input');
       input.type = 'text';
+      input.id = getUid();
       input.className = 'form-control';
       input.setAttribute('autocomplete', 'off');
       input.name = el.dataset.scSearchPos;
       searchForm.appendChild(input);
+
+      if (el.dataset.scSearchOptions) {
+         console.log(el.dataset.scSearchOptions);
+         const inputSearchConfig = searchConfig[el.dataset.scSearchOptions];
+         const valuesDistinct = inputSearchConfig.fields.map((x) => [...new Set(response.map((y) => y[x] ?? ''))]);
+         const texts = [...new Set(response.map((x) => x[inputSearchConfig.textField] ?? ''))];
+         const options = texts.map((x, i) => {
+            const values = valuesDistinct.map((y) => y[i]);
+            return { values: JSON.stringify(values), text: x };
+         });
+         setupCustomDropdownsV2(input.id, options, filterDropdownConsXComm);
+      }
    });
 
    const btnSubmit = document.createElement('button');
@@ -162,6 +181,36 @@ function createSearchInputs() {
       rotation = rotation - 360;
       resetRows();
    });
+}
+
+function filterDropdownConsXComm(input, dropdownId) {
+   console.log(dropdownId);
+   const value = input.value;
+   const dropdown = document.getElementById(dropdownId);
+   const elements = Array.from(dropdown.children);
+
+   elements.forEach((el) => {
+      console.log(el);
+      const elementValues = JSON.parse(el.getAttribute('valore'));
+      if (!elementValues.some((x) => x.toLowerCase().includes(value.toLowerCase()))) {
+         el.classList.add('d-none');
+      } else {
+         el.classList.remove('d-none');
+      }
+   });
+
+   //filtra le opzioni della dropdown, se non ne trova significa che il valore dell'input non è presente nella dropdown quindi fa il bordo rosso
+   const isValueAccepted = elements.find((x) =>
+      JSON.parse(x.getAttribute('valore')).some((x) => x.toLowerCase().includes(value.toLowerCase()))
+   );
+   if (!isValueAccepted) {
+      input.classList.add('bad-field');
+   } else {
+      input.classList.remove('bad-field');
+   }
+
+   //aggiunge l'hover al primo elemento di quelli visibili
+   addHoverClassToOpt(elements.find((x) => !x.classList.contains('d-none')));
 }
 
 function closePreoccupazione() {
