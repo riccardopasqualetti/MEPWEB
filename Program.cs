@@ -17,6 +17,7 @@ namespace WebApplication2
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var duration = builder.Configuration.GetValue<TimeSpan>("AuthCookieDuration");
 
             builder.Services.AddAuthentication(options =>
             {
@@ -31,7 +32,7 @@ namespace WebApplication2
                 options.LoginPath = "/login/login";
                 options.LogoutPath = "/login/login";
                 //options.AccessDeniedPath = "/Login";
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(240);
+                options.ExpireTimeSpan = duration;
                 options.Cookie.SameSite = SameSiteMode.Strict;
                 options.SlidingExpiration = true;
             });
@@ -47,7 +48,15 @@ namespace WebApplication2
             builder.Services.AddScoped<GetConfig>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddSession();
+            builder.Services.AddSession(options =>
+            {
+                // Allinea il timeout della sessione a quello del cookie di autenticazione,
+                // altrimenti la sessione scade dopo 20 minuti (default ASP.NET) anche se il cookie è ancora valido
+                options.IdleTimeout = duration;
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.SameSite = SameSiteMode.Strict;
+            });
 
 
             builder.Services.AddDbContext<SataconsultingContext>(options =>

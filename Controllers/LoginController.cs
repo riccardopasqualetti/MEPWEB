@@ -64,7 +64,13 @@ namespace MepWeb.Controllers
                 var identity = new ClaimsPrincipal(new ClaimsIdentity(jwtSecurityToken.Claims, CookieAuthenticationDefaults.AuthenticationScheme));
                 var authResult = await HttpContext.AuthenticateAsync();
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, identity);
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    identity,
+                    new AuthenticationProperties
+                    {
+                        IsPersistent = true,
+                    });
             }
             else if (resp.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {

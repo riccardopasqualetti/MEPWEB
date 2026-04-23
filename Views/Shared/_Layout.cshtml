@@ -23,14 +23,14 @@
 </head>
 <body>
     @if(_userScope.SV_USR_EMAIL == null) {
-        
+
     }
 
     <header>
 
        <nav id="main-navbar" class="navbar navbar-expand-md bg-dark fixed-top" data-bs-theme="dark">
-            <div class="container-fluid">                
-                <img src="/img/logo-sata.png" alt="Sample Photo" />                
+            <div class="container-fluid">
+                <img src="/img/logo-sata.png" alt="Sample Photo" />
                 <a class="navbar-brand" href="#"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -38,9 +38,9 @@
                 <div class="collapse navbar-collapse" id="navbarColor02">
                     @if (User.Identity.IsAuthenticated)
                     {
-                    <ul class="navbar-nav me-auto">  
-                            <li class="nav-item">                            
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>                   
+                    <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -60,14 +60,14 @@
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Crrg" asp-action="IndexConsuntivi">Monitor Commesse</a></li>
                                 </ul>
                             </li>
-                            
-                        
+
+
                            @*  <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
                             </li> *@
                         @*<li class="nav-item">
                             <a class="nav-link" asp-area="">
-                                @(@_contextAccessor.HttpContext.Session.GetString("User") == null ? "" : "Utente collegato: " + @_contextAccessor.HttpContext.Session.GetString("User")) 
+                                @(@_contextAccessor.HttpContext.Session.GetString("User") == null ? "" : "Utente collegato: " + @_contextAccessor.HttpContext.Session.GetString("User"))
                             </a>
                         </li>*@
                         @*<li class="nav-item dropdown">
@@ -82,13 +82,18 @@
                         </li>*@
                     </ul>
                     @* <p class="mb-0" align="right" style="margin-right:5px;"></p> *@
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            @(_userScope.SV_USR_EMAIL + "(" + _userScope.SV_USR_SIGLA + ")")
+                    <div class="d-flex gap-2 align-items-center">
+                        <button class="btn btn-info" type="button" id="btn-build-info" title="Informazioni di build">
+                            <i class="bi bi-info-circle"></i>
                         </button>
-                        <ul class="dropdown-menu">
-                            <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logout-modal">Logout</button></li>
-                        </ul>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @(_userScope.SV_USR_EMAIL + "(" + _userScope.SV_USR_SIGLA + ")")
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logout-modal">Logout</button></li>
+                            </ul>
+                        </div>
                     </div>
                     }
                     @* <form class="d-flex">
@@ -98,7 +103,7 @@
                 </div>
             </div>
        </nav>
-    
+
     </header>
     <div class="container-fluid p-0">
         <main role="main" class="">
@@ -118,6 +123,31 @@
     @* <script src="@(_config.ScwPlatformURL)@(_config.TableGeneratorPath)TableGenerator_bundle.js"></script>
     <script src="~/js/TableGenerator_bundle.js"></script> *@
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/versionModal.js" asp-append-version="true"></script>
+
+    <script>
+        // Gestione click pulsante Info Build
+        document.getElementById('btn-build-info').addEventListener('click', async function() {
+            try {
+                const response = await fetch('/api/Build/info');
+                if (!response.ok) {
+                    throw new Error('Errore nel recupero informazioni di build');
+                }
+
+                const buildResponse = await response.json();
+                openVersionModal({
+                    title: 'Informazioni di Build - MepWeb',
+                    buildResponse: buildResponse,
+                    additionalContentFlg: false,
+                    additionalContentFlg2: false
+                });
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('Errore nel recupero informazioni di build: ' + error.message);
+            }
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -4,6 +4,18 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Versione assembly -->
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <Version>1.0.0</Version>
+
+    <!-- Migliora metadati e riproducibilità -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+    <!-- Disabilita generazione automatica di InformationalVersion -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,5 +29,37 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.7" />
   </ItemGroup>
+
+  <!-- Target per aggiungere hash commit e data all'assembly -->
+  <Target Name="SetInformationalVersion"
+      AfterTargets="InitializeSourceControlInformation"
+      BeforeTargets="CoreCompile">
+
+    <Exec Command='git log -1 --pretty=format:%%cI'
+        WorkingDirectory="$(MSBuildProjectDirectory)"
+        ConsoleToMSBuild="true"
+        IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="CommitDateRaw" />
+    </Exec>
+
+    <PropertyGroup>
+      <CommitDate>$([System.String]::Copy('$(CommitDateRaw)').Trim())</CommitDate>
+      <CommitDate Condition="'$(CommitDate)'==''">unknown</CommitDate>
+      <InformationalVersion>$(Version)+$(SourceRevisionId);date=$(CommitDate)</InformationalVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyInformationalVersionAttribute">
+        <_Parameter1>$(InformationalVersion)</_Parameter1>
+      </AssemblyAttribute>
+
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>CommitDate</_Parameter1>
+        <_Parameter2>$(CommitDate)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+
+    <Message Importance="High" Text="[$(MSBuildProjectName)] INFO='$(InformationalVersion)'" />
+  </Target>
 
 </Project>

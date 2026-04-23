@@ -9,8 +9,13 @@ namespace MepWeb.Controllers
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            //context.HttpContext.User.Identity != null && context.HttpContext.User.Identity.IsAuthenticated
-            if (context.HttpContext.Request.Path.Value != null && !context.HttpContext.Request.Path.Value.EndsWith("/login/login", StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrWhiteSpace(context.HttpContext.Session.GetString("SV_USR_EMAIL")))
+            var path = context.HttpContext.Request.Path.Value;
+
+            // Escludi solo le rotte del BuildController e la pagina di login dal controllo di sessione
+            if (path != null &&
+                !path.EndsWith("/login/login", StringComparison.InvariantCultureIgnoreCase) &&
+                !path.StartsWith("/api/build/", StringComparison.InvariantCultureIgnoreCase) &&
+                string.IsNullOrWhiteSpace(context.HttpContext.Session.GetString("SV_USR_EMAIL")))
             {
                 await context.HttpContext.SignOutAsync();
                 // Esegui il logout o effettua altra gestione in caso di sessione scaduta
