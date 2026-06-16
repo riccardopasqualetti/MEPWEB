@@ -29,14 +29,13 @@ namespace Mep01Web.Validators.Impl
 
             // test provvisorio
             DateTime dd1 = new(2023, 01, 01, 0, 0, 0);
-            DateTime dd2 = DateTime.Now.AddDays(3);
 
 			if (string.IsNullOrWhiteSpace(crrgRequest.CrrgCdl))
 			{
 				crrgRequest.CrrgCdl = (await _dbContext.FlussoMaccs.FirstOrDefaultAsync(x => x.MaccCMatricola == crrgRequest.CrrgCRis)).MaccCCdl;
 			}
 
-            if (crrgRequest.CrrgDtt < dd1 || crrgRequest.CrrgDtt > dd2)
+            if (crrgRequest.CrrgDtt < dd1)
             {   
 				return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CrrgDtt, $"Data non valida (s)");
 			}
