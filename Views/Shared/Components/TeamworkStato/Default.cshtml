@@ -1,5 +1,6 @@
 @model bool
-@* [231009] Voci Teamwork nella dropdown utente: true = account Teamwork collegato.
+@* [231009] Voce Teamwork nella dropdown utente (solo collegamento dell'account; la pagina di import è nel menu Timesheet).
+   true = account Teamwork collegato.
    Icona: simbolo ufficiale Teamwork (pacchetto "teamwork-symbol.zip" della pagina https://www.teamwork.com/brand/,
    file RGB/SVG/teamwork-short-circle-slate-pink-dot-icon.svg, già tondo: non va ritagliato). *@
 <li>
@@ -11,13 +12,4 @@
         <span class="badge rounded-pill @(Model ? "text-bg-success" : "text-bg-secondary") ms-auto">@(Model ? "collegato" : "scollegato")</span>
     </a>
 </li>
-@if (Model)
-{
-    <li>
-        <a class="dropdown-item d-flex align-items-center gap-2" asp-area="" asp-controller="Teamwork" asp-action="Registrazioni">
-            <i class="bi bi-box-arrow-in-down" style="width:24px;text-align:center;flex:none;"></i>
-            <span>Importa da Teamwork</span>
-        </a>
-    </li>
-}
 <li><hr class="dropdown-divider" /></li>

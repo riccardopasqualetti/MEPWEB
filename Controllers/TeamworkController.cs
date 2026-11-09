@@ -65,6 +65,47 @@ namespace MepWeb.Controllers
             return View(esito.Body);
         }
 
+        /// <summary>Azione della griglia "Da allineare" (aggiorna consuntivo, scollega, elimina consuntivo).</summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Allinea(long timelogId, MepWeb.DTO.Response.TwAzioneAllineamento azione, DateTime dal, DateTime al)
+        {
+            var esito = await _import.AllineaAsync(timelogId, azione);
+            if (esito.Succeeded)
+            {
+                TempData["TwOk"] = esito.Body;
+            }
+            else
+            {
+                TempData["TwErrore"] = esito.Errors?.FirstOrDefault()?.Message ?? "Operazione non riuscita.";
+            }
+            return RedirectToAction(nameof(Registrazioni), new { dal = dal.ToString("yyyy-MM-dd"), al = al.ToString("yyyy-MM-dd") });
+        }
+
+        /// <summary>Importa come consuntivi le registrazioni selezionate nella pagina Registrazioni.</summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Importa(MepWeb.DTO.Request.TwImportRequest request)
+        {
+            var esito = await _import.ImportaAsync(request);
+            if (!esito.Succeeded || esito.Body == null)
+            {
+                TempData["TwErrore"] = esito.Errors?.FirstOrDefault()?.Message ?? "Import non riuscito.";
+            }
+            else
+            {
+                if (esito.Body.Importate.Count > 0)
+                {
+                    TempData["TwImportate"] = string.Join("\n", esito.Body.Importate);
+                }
+                if (esito.Body.Errori.Count > 0)
+                {
+                    TempData["TwErroriImport"] = string.Join("\n", esito.Body.Errori);
+                }
+            }
+            return RedirectToAction(nameof(Registrazioni), new { dal = request.Dal.ToString("yyyy-MM-dd"), al = request.Al.ToString("yyyy-MM-dd") });
+        }
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
