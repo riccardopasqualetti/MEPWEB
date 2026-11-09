@@ -26,6 +26,7 @@
 					<hr />
 				</div>
 				@*<div asp-validation-summary="All"></div>*@ @*Riporta qui gli stessi errori che mostra sotto i componenti che hanno asp-validation-for*@
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div> @*Errori non legati a un campo, es. consuntivo collegato a Teamwork*@
 				@* <p>Utente : @_userScope.SV_USR_SIGLA</p>  *@
 
 

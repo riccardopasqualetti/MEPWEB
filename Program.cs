@@ -81,6 +81,7 @@ namespace WebApplication2
             builder.Services.AddTransient<IMaccService, MaccService>();
             builder.Services.AddTransient<IQualificheService, QualificheService>();
             builder.Services.AddTransient<IPsc001AService, Psc001AService>();
+            builder.Services.AddTransient<ICrrgTwService, CrrgTwService>();
 
 
             var app = builder.Build();

@@ -1,0 +1,64 @@
+USE [sataconsulting_test]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+/*
+  [231009] MEPWEB - Tabella legami Registrazioni Teamwork e Consuntivi MEP
+
+  Una riga per ogni registrazione di tempo (timelog) Teamwork diventata consuntivo
+  (flusso_crrg). Rapporto 1:1: una registrazione -> un consuntivo, un consuntivo ->
+  al massimo una registrazione.
+
+  Le colonne tw_* sono la "fotografia" dei valori Teamwork al momento dell'import o
+  dell'ultimo allineamento: confrontandole con Teamwork si ricava lo stato della
+  registrazione (Nuova, Importata, Modificata, Cancellata). Lo stato non si salva.
+
+  Le date tw_* sono in UTC, come restituite dalle API Teamwork (timeLogged, updatedAt).
+
+  Nessuna FK verso flusso_crrg: se il consuntivo viene cancellato fuori da MEPWEB il
+  collegamento resta e la registrazione si presenta come "Consuntivo eliminato in MEP".
+*/
+CREATE TABLE [dba].[flusso_crrg_tw](
+    [tw_timelog_id]      [bigint]          NOT NULL,  -- id registrazione Teamwork
+    [crrg_c_srl]         [numeric](12, 0)  NOT NULL,  -- consuntivo MEP (crrg_c_ditta sempre '01')
+    [tw_task_id]         [bigint]          NOT NULL,  -- task Teamwork della registrazione
+    [tw_minutes]         [int]             NOT NULL,  -- minutes
+    [tw_date]            [datetime2](0)    NOT NULL,  -- timeLogged (UTC)
+    [tw_commessa]        [varchar](50)     NULL,      -- campo personalizzato Commessa/ISL del task (2956)
+    [tw_descrizione_reg] [nvarchar](2000)  NULL,      -- description
+    [tw_updated_at]      [datetime2](0)    NOT NULL,  -- updatedAt (UTC)
+    [sigla]              [varchar](5)      NULL,      -- utente MEPWEB che ha importato
+ CONSTRAINT [crtw_chiave] PRIMARY KEY CLUSTERED
+(
+    [tw_timelog_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+CREATE UNIQUE NONCLUSTERED INDEX [crtw_chiave_alt_1] ON [dba].[flusso_crrg_tw]
+(
+    [crrg_c_srl] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+CREATE NONCLUSTERED INDEX [crtw_chiave_alt_2] ON [dba].[flusso_crrg_tw]
+(
+    [tw_task_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_crrg_tw TO mepweb
+GO
+GRANT VIEW DEFINITION ON dba.flusso_crrg_tw TO mepweb
+GO
+
+SET ANSI_PADDING OFF
+GO

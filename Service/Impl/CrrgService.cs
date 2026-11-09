@@ -35,9 +35,11 @@ namespace Mep01Web.Service.Impl
         private readonly ITbpnService _tbpnService;
         private readonly ITatvService _tatvService;
         private readonly IVsCommAperteXCliService _vsCommAperteXCliService;
+        private readonly ICrrgTwService _crrgTwService;
 
-        public CrrgService(SataconsultingContext dbContext, ICrrgValidator crrgValidator, IAcliService acliService, ITbcpService tbcpService, IOlcaService olcaService, IMvxpa01Service mvxpa01Service, ITbpnService tbpnService, ITatvService tatvService, IVsCommAperteXCliService vsCommAperteXCliService)
+        public CrrgService(SataconsultingContext dbContext, ICrrgValidator crrgValidator, IAcliService acliService, ITbcpService tbcpService, IOlcaService olcaService, IMvxpa01Service mvxpa01Service, ITbpnService tbpnService, ITatvService tatvService, IVsCommAperteXCliService vsCommAperteXCliService, ICrrgTwService crrgTwService)
         {
+            _crrgTwService = crrgTwService;
             _dbContext = dbContext;
             _crrgValidator = crrgValidator;
             _acliService = acliService;
@@ -313,6 +315,12 @@ namespace Mep01Web.Service.Impl
 
         public async Task<ResponseBase<CrrgResponse>?> UpdateCrrgAsync(CrrgCreateRequest crrgRequest)
         {
+            var bloccato = await VerificaCollegamentoTeamworkAsync(crrgRequest, "modificato");
+            if (bloccato != null)
+            {
+                return bloccato;
+            }
+
             var grpCdlRequest = new CrrgGrpCdlsRequest
             {
                 CrrgCdl = crrgRequest.CrrgCdl,
@@ -380,6 +388,12 @@ namespace Mep01Web.Service.Impl
 
         public async Task<ResponseBase<CrrgResponse>?> DeleteCrrgAsync(CrrgCreateRequest crrgRequest)
         {
+            var bloccato = await VerificaCollegamentoTeamworkAsync(crrgRequest, "cancellato");
+            if (bloccato != null)
+            {
+                return bloccato;
+            }
+
             FlussoCrrg flussoCrrg = await _dbContext.FlussoCrrgs.SingleOrDefaultAsync(e => e.CrrgCSrl == crrgRequest.CrrgCSrl && e.CrrgCDitta == "01");
             if (flussoCrrg == null)
             {
@@ -398,6 +412,29 @@ namespace Mep01Web.Service.Impl
             var crrgResponse = new CrrgResponse();
             crrgResponse.FlussoCrrg = flussoCrrg;
             return ResponseBase<CrrgResponse?>.Success(crrgResponse);
+        }
+
+
+        /// <summary>
+        /// [231009] Un consuntivo collegato a una registrazione Teamwork (flusso_crrg_tw) si corregge solo
+        /// su Teamwork e arriva con l'allineamento: dal form e dalle API non si modifica né si cancella.
+        /// Ritorna null se l'operazione è consentita.
+        /// </summary>
+        private async Task<ResponseBase<CrrgResponse>?> VerificaCollegamentoTeamworkAsync(CrrgCreateRequest crrgRequest, string operazione)
+        {
+            if (crrgRequest.DaAllineamentoTeamwork)
+            {
+                return null;
+            }
+
+            var collegamento = await _crrgTwService.GetByCrrgCSrlAsync(crrgRequest.CrrgCSrl);
+            if (collegamento == null)
+            {
+                return null;
+            }
+
+            return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CollegatoTeamwork,
+                $"Il consuntivo è collegato alla registrazione Teamwork {collegamento.TwTimelogId} e non può essere {operazione} in MEPWEB: correggi la registrazione su Teamwork e allinea dalla pagina di import.");
         }
 
 

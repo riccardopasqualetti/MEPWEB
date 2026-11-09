@@ -13,5 +13,6 @@
 		public const string CrrgMod = "-10";
 		public const string CrrgCCaus = "-11";
 		public const string CrrgCmaatt = "-12";
+		public const string CollegatoTeamwork = "-13";
 	}
 }

@@ -186,6 +186,10 @@ namespace Mep01Web.Controllers
 				{
 					ModelState.AddModelError("CrrgApp", addCrrgResponse.Errors[0].Message);
 				}
+				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CollegatoTeamwork)
+				{
+					ModelState.AddModelError(string.Empty, addCrrgResponse.Errors[0].Message);
+				}
 				if (addCrrgResponse.Errors[0].Code == CrrgCreateErrors.CrrgMod)
 				{
 					ModelState.AddModelError("CrrgMod", addCrrgResponse.Errors[0].Message);
@@ -316,7 +320,15 @@ namespace Mep01Web.Controllers
         public async Task<ActionResult> Delete(CrrgCreateRequest obj)
         {
 			var deleteCrrgResponse = await _crrgService.DeleteCrrgAsync(obj);
-			
+
+			if (deleteCrrgResponse != null && !deleteCrrgResponse.Succeeded
+				&& deleteCrrgResponse.Errors[0].Code == CrrgCreateErrors.CollegatoTeamwork)
+			{
+				ModelState.AddModelError(string.Empty, deleteCrrgResponse.Errors[0].Message);
+				await _crrgService.DeleteCrrgPrepareDataAsync(obj);
+				return View(obj);
+			}
+
 			return RedirectToAction("IndexMantain");		
 			
         }

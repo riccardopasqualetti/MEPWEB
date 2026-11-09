@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Mep01Web.DTO.Response;
@@ -100,6 +101,14 @@ namespace Mep01Web.DTO.Request
 
         public string Succeeded { get; set; } = "";
         public bool IsUpdate { get; set; } = false;
+
+        /// <summary>
+        /// [231009] True solo quando la modifica arriva dall'allineamento con Teamwork: è l'unico caso in cui
+        /// un consuntivo collegato a una registrazione Teamwork può essere modificato o cancellato.
+        /// Non viene mai letto dal form o dalle API.
+        /// </summary>
+        [BindNever]
+        public bool DaAllineamentoTeamwork { get; set; } = false;
 
 
         //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

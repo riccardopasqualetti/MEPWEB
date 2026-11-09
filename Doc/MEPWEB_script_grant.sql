@@ -32,6 +32,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_arpp TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_pgmc TO mepweb
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_ciac TO mepweb 
 GRANT SELECT, INSERT, UPDATE, DELETE ON dba.CT_16071303 TO mepweb
+-- 09/11/2026 [231009] collegamento Registrazioni Teamwork / Consuntivi MEP
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_crrg_tw TO mepweb
 
 
 GRANT VIEW DEFINITION ON dba.flusso_acli                TO mepweb 
@@ -65,6 +67,8 @@ GRANT VIEW DEFINITION ON dba.flusso_arpp				TO mepweb
 GRANT VIEW DEFINITION ON dba.flusso_pgmc				TO mepweb
 GRANT VIEW DEFINITION ON dba.flusso_ciac				TO mepweb
 GRANT VIEW DEFINITION ON dba.CT_16071303				TO mepweb
+-- 09/11/2026 [231009]
+GRANT VIEW DEFINITION ON dba.flusso_crrg_tw				TO mepweb
 
 GRANT SELECT ON dba.mvxpa01                             TO mepweb
 GRANT SELECT ON dba.vs_pp_monitor_ISL                   TO mepweb
