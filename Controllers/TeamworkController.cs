@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using MepWeb.DTO.Response;
 using MepWeb.Service;
 using MepWeb.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -31,11 +32,73 @@ namespace MepWeb.Controllers
         }
 
         /// <summary>
-        /// Pagina di import (per ora in sola lettura): registrazioni Teamwork del periodo con il loro stato.
+        /// Pagina di import: registrazioni Teamwork del periodo con il loro stato.
         /// Periodo predefinito: dal lunedì della settimana corrente a oggi.
+        /// Dopo il primo caricamento la pagina lavora via fetch (TeamworkImport.js): Griglie, Importa e Allinea.
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> Registrazioni(DateTime? dal, DateTime? al)
+        {
+            var (inizio, fine) = Periodo(dal, al);
+            var esito = await _import.GetAnteprimaAsync(inizio, fine);
+            if (!esito.Succeeded || esito.Body == null)
+            {
+                var errore = esito.Errors?.FirstOrDefault();
+                if (errore?.Code is "nonCollegato" or "401")
+                {
+                    TempData["TwErrore"] = errore.Message;
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["Errore"] = errore?.Message ?? "Lettura da Teamwork non riuscita.";
+                return View(new TwAnteprimaResponse { Dal = inizio, Al = fine });
+            }
+            return View(esito.Body);
+        }
+
+        /// <summary>Solo le griglie (partial), per aggiornare la pagina senza ricaricarla.</summary>
+        [HttpGet]
+        public async Task<IActionResult> Griglie(DateTime? dal, DateTime? al)
+        {
+            var (inizio, fine) = Periodo(dal, al);
+            var esito = await _import.GetAnteprimaAsync(inizio, fine);
+            if (!esito.Succeeded || esito.Body == null)
+            {
+                var errore = esito.Errors?.FirstOrDefault();
+                ViewData["Errore"] = errore?.Message ?? "Lettura da Teamwork non riuscita.";
+                ViewData["NonCollegato"] = errore?.Code is "nonCollegato" or "401";
+                return PartialView("_Griglie", new TwAnteprimaResponse { Dal = inizio, Al = fine });
+            }
+            return PartialView("_Griglie", esito.Body);
+        }
+
+        /// <summary>Azione della griglia "Da allineare" (aggiorna consuntivo, scollega, elimina consuntivo). Risposta JSON.</summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Allinea(long timelogId, TwAzioneAllineamento azione)
+        {
+            var esito = await _import.AllineaAsync(timelogId, azione);
+            return Json(new
+            {
+                ok = esito.Succeeded,
+                messaggio = esito.Succeeded ? esito.Body : esito.Errors?.FirstOrDefault()?.Message ?? "Operazione non riuscita."
+            });
+        }
+
+        /// <summary>Importa come consuntivi le registrazioni selezionate. Risposta JSON con consuntivi creati ed errori.</summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Importa(MepWeb.DTO.Request.TwImportRequest request)
+        {
+            var esito = await _import.ImportaAsync(request);
+            if (!esito.Succeeded || esito.Body == null)
+            {
+                return Json(new { errore = esito.Errors?.FirstOrDefault()?.Message ?? "Import non riuscito." });
+            }
+            return Json(new { importate = esito.Body.Importate, errori = esito.Body.Errori });
+        }
+
+        /// <summary>Periodo richiesto, con estremi in ordine e al massimo 3 mesi.</summary>
+        private static (DateTime inizio, DateTime fine) Periodo(DateTime? dal, DateTime? al)
         {
             var oggi = DateTime.Today;
             var inizio = (dal ?? oggi.AddDays(-(((int)oggi.DayOfWeek + 6) % 7))).Date;
@@ -46,64 +109,9 @@ namespace MepWeb.Controllers
             }
             if ((fine - inizio).TotalDays > 92)
             {
-                TempData["TwErrore"] = "Periodo troppo lungo: massimo 3 mesi.";
                 fine = inizio.AddDays(92);
             }
-
-            var esito = await _import.GetAnteprimaAsync(inizio, fine);
-            if (!esito.Succeeded || esito.Body == null)
-            {
-                var errore = esito.Errors?.FirstOrDefault();
-                if (errore?.Code is "nonCollegato" or "401")
-                {
-                    TempData["TwErrore"] = errore.Message;
-                    return RedirectToAction(nameof(Index));
-                }
-                ViewBag.Errore = errore?.Message ?? "Lettura da Teamwork non riuscita.";
-                return View(new MepWeb.DTO.Response.TwAnteprimaResponse { Dal = inizio, Al = fine });
-            }
-            return View(esito.Body);
-        }
-
-        /// <summary>Azione della griglia "Da allineare" (aggiorna consuntivo, scollega, elimina consuntivo).</summary>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Allinea(long timelogId, MepWeb.DTO.Response.TwAzioneAllineamento azione, DateTime dal, DateTime al)
-        {
-            var esito = await _import.AllineaAsync(timelogId, azione);
-            if (esito.Succeeded)
-            {
-                TempData["TwOk"] = esito.Body;
-            }
-            else
-            {
-                TempData["TwErrore"] = esito.Errors?.FirstOrDefault()?.Message ?? "Operazione non riuscita.";
-            }
-            return RedirectToAction(nameof(Registrazioni), new { dal = dal.ToString("yyyy-MM-dd"), al = al.ToString("yyyy-MM-dd") });
-        }
-
-        /// <summary>Importa come consuntivi le registrazioni selezionate nella pagina Registrazioni.</summary>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Importa(MepWeb.DTO.Request.TwImportRequest request)
-        {
-            var esito = await _import.ImportaAsync(request);
-            if (!esito.Succeeded || esito.Body == null)
-            {
-                TempData["TwErrore"] = esito.Errors?.FirstOrDefault()?.Message ?? "Import non riuscito.";
-            }
-            else
-            {
-                if (esito.Body.Importate.Count > 0)
-                {
-                    TempData["TwImportate"] = string.Join("\n", esito.Body.Importate);
-                }
-                if (esito.Body.Errori.Count > 0)
-                {
-                    TempData["TwErroriImport"] = string.Join("\n", esito.Body.Errori);
-                }
-            }
-            return RedirectToAction(nameof(Registrazioni), new { dal = request.Dal.ToString("yyyy-MM-dd"), al = request.Al.ToString("yyyy-MM-dd") });
+            return (inizio, fine);
         }
 
         [HttpGet]

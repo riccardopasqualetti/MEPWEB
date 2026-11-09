@@ -394,8 +394,7 @@ namespace MepWeb.Service.Impl
                 var errore = await ImportaUnaAsync(crrgRequest, collegamento);
                 if (errore == null)
                 {
-                    // "nome task<TAB>numero consuntivo": la pagina mostra il numero separato ed evidenziato
-                    esito.Importate.Add($"{task.Nome}\t{collegamento.CrrgCSrl:0}");
+                    esito.Importate.Add(new TwImportato { Nome = task.Nome ?? $"Task {task.Id}", CrrgCSrl = collegamento.CrrgCSrl });
                 }
                 else
                 {

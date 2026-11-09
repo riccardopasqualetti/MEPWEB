@@ -1,0 +1,279 @@
+@using MepWeb.DTO.Response
+@model TwAnteprimaResponse
+@*
+    [231009] Griglie della pagina "Importa da Teamwork". Partial ricaricata via fetch (TeamworkImport.js) dopo il
+    cambio periodo, l'import e le azioni di allineamento, senza ricaricare la pagina.
+*@
+@{
+    string BadgeStato(TwStatoRegistrazione s) => s switch
+    {
+        TwStatoRegistrazione.Nuova => "text-bg-primary",
+        TwStatoRegistrazione.Importata => "text-bg-secondary",
+        TwStatoRegistrazione.ModificataInTeamwork => "text-bg-warning",
+        _ => "text-bg-danger"
+    };
+    string TestoStato(TwStatoRegistrazione s) => s switch
+    {
+        TwStatoRegistrazione.Nuova => "Nuova",
+        TwStatoRegistrazione.Importata => "Importata",
+        TwStatoRegistrazione.ModificataInTeamwork => "Modificata in Teamwork",
+        TwStatoRegistrazione.CancellataInTeamwork => "Cancellata in Teamwork",
+        TwStatoRegistrazione.ConsuntivoEliminatoInMep => "Consuntivo eliminato in MEP",
+        _ => s.ToString()
+    };
+
+    var righe = Model.Nuove.Concat(Model.Importate).OrderBy(x => x.DataOra).ToList();
+    var importabili = Model.Nuove.Count(r => r.NonImportabile == null && r.CommessaMep?.TstDoc != null);
+    var indice = 0;
+}
+
+@if (ViewData["Errore"] is string errore)
+{
+    <div class="alert alert-danger">
+        @errore
+        @if (ViewData["NonCollegato"] is true)
+        {
+            <a class="alert-link ms-2" asp-action="Index">Collega Teamwork</a>
+        }
+    </div>
+}
+@foreach (var avviso in Model.Avvisi)
+{
+    <div class="alert alert-warning">@avviso</div>
+}
+
+@* Griglia 1: registrazioni nuove (importabili con le scelte) e già importate, in grigio *@
+<h4>Registrazioni del periodo</h4>
+@if (righe.Count == 0)
+{
+    @if (ViewData["Errore"] == null)
+    {
+        <p class="text-muted">Nessuna registrazione Teamwork nel periodo.</p>
+    }
+}
+else
+{
+    <form method="post" asp-action="Importa" id="tw-form-import">
+        <div class="table-responsive mb-2">
+            <table class="table table-sm table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>
+                            @if (importabili > 0)
+                            {
+                                <input class="form-check-input" type="checkbox" id="tw-sel-tutte" title="Seleziona tutte" />
+                            }
+                        </th>
+                        <th>Data</th>
+                        <th class="text-end">Ore</th>
+                        <th>Task / Note consuntivo</th>
+                        <th>Commessa</th>
+                        <th>Operazione</th>
+                        <th>Causale</th>
+                        <th>Macroattività</th>
+                        <th>Stato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in righe)
+                    {
+                        var importata = r.Stato == TwStatoRegistrazione.Importata;
+                        var importabile = !importata && r.NonImportabile == null && r.CommessaMep?.TstDoc != null;
+                        var comm = r.CommessaMep;
+                        <tr class="@(importata ? "text-muted" : "")">
+                            @if (importabile)
+                            {
+                                var i = indice++;
+                                var operazioni = Model.OperazioniPerCommessa.TryGetValue(comm!.Codice, out var ops) ? ops : new List<TwOpzione>();
+                                var completa = r.PropostaNTOper != null && r.PropostaCausale != null && r.PropostaMacroattivita != null && r.AvvisoDoppione == null;
+                                <td>
+                                    <input type="hidden" name="Righe[@i].TimelogId" value="@r.TimelogId" />
+                                    <input class="form-check-input tw-sel" type="checkbox" name="Righe[@i].Seleziona" value="true" @(completa ? "checked" : "") />
+                                </td>
+                                <td class="text-nowrap">@r.DataOra.ToString("ddd dd/MM HH:mm")</td>
+                                <td class="text-end">@r.Durata</td>
+                                <td style="min-width:260px">
+                                    <div class="small text-muted">@r.TaskNome</div>
+                                    <input class="form-control form-control-sm" name="Righe[@i].Note" value="@r.PropostaNote" maxlength="2000" />
+                                    @if (r.AvvisoDoppione != null)
+                                    {
+                                        <small class="d-block text-warning">@r.AvvisoDoppione</small>
+                                    }
+                                </td>
+                                <td class="text-nowrap">
+                                    <span title="@comm.Descrizione">@comm.Codice</span>
+                                    @if (comm.Isl != null) { <small class="d-block">ISL @comm.Isl</small> }
+                                </td>
+                                <td>
+                                    <select class="form-select form-select-sm" name="Righe[@i].NTOper" style="min-width:160px">
+                                        <option value="">— scegli —</option>
+                                        @foreach (var o in operazioni)
+                                        {
+                                            <option value="@o.Valore" selected="@(o.Valore == r.PropostaNTOper)">@o.Testo</option>
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    @if (comm.CausaleFissaCori)
+                                    {
+                                        <input type="hidden" name="Righe[@i].Causale" value="CORI" />
+                                        <span>CORI</span>
+                                    }
+                                    else
+                                    {
+                                        <select class="form-select form-select-sm" name="Righe[@i].Causale">
+                                            <option value="">— scegli —</option>
+                                            @foreach (var c in Model.CausaliIsl)
+                                            {
+                                                <option value="@c.Valore" selected="@(c.Valore == r.PropostaCausale)">@c.Testo</option>
+                                            }
+                                        </select>
+                                    }
+                                </td>
+                                <td>
+                                    @if (comm.VerbaleObbligatorio)
+                                    {
+                                        <input type="hidden" name="Righe[@i].Macroattivita" value="3" />
+                                        <span>@(Model.Macroattivita.FirstOrDefault(m => m.Valore == "3")?.Testo ?? "Verbale")</span>
+                                    }
+                                    else
+                                    {
+                                        <select class="form-select form-select-sm" name="Righe[@i].Macroattivita">
+                                            <option value="">— scegli —</option>
+                                            @foreach (var m in Model.Macroattivita.Where(m => comm.PrfDoc != "E" || m.Valore is "1" or "2" or "3"))
+                                            {
+                                                <option value="@m.Valore" selected="@(m.Valore == r.PropostaMacroattivita)">@m.Testo</option>
+                                            }
+                                        </select>
+                                    }
+                                </td>
+                                <td><span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                                <td class="text-nowrap">@r.DataOra.ToString("ddd dd/MM HH:mm")</td>
+                                <td class="text-end">@r.Durata</td>
+                                <td>
+                                    @(r.TaskNome ?? (r.TaskId == null ? "—" : $"#{r.TaskId}"))
+                                    @if (!string.IsNullOrWhiteSpace(r.Descrizione)) { <small class="d-block">@r.Descrizione</small> }
+                                </td>
+                                <td class="text-nowrap">
+                                    @if (comm?.TstDoc != null)
+                                    {
+                                        <span title="@comm.Descrizione">@comm.Codice</span>
+                                        @if (comm.Isl != null) { <small class="d-block">ISL @comm.Isl</small> }
+                                    }
+                                    else
+                                    {
+                                        @r.CommessaTeamwork
+                                    }
+                                </td>
+                                <td colspan="3"></td>
+                                <td>
+                                    <span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span>
+                                    @if (importata && r.CrrgCSrl != null)
+                                    {
+                                        <small class="d-block">consuntivo @r.CrrgCSrl.Value.ToString("0")</small>
+                                    }
+                                    @if (!importata && r.NonImportabile != null)
+                                    {
+                                        <small class="d-block text-danger">Non importabile: @r.NonImportabile</small>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (importabili > 0)
+        {
+            <button type="submit" class="btn btn-primary mb-1">Importa selezionate</button>
+            <p class="small text-muted">Le righe con un possibile doppione non sono selezionate: controlla prima il consuntivo indicato.</p>
+        }
+    </form>
+}
+
+@* Griglia 2: registrazioni collegate da allineare *@
+<h4 class="mt-4">Da allineare</h4>
+@if (Model.DaAllineare.Count == 0)
+{
+    <p class="text-muted">Nessuna differenza tra Teamwork e i consuntivi importati.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th class="text-end">Ore</th>
+                    <th>Task</th>
+                    <th>Descrizione</th>
+                    <th>Consuntivo</th>
+                    <th>Stato</th>
+                    <th>Differenze</th>
+                    <th>Azione</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.DaAllineare.OrderBy(x => x.DataOra))
+                {
+                    <tr>
+                        <td class="text-nowrap">@r.DataOra.ToString("ddd dd/MM HH:mm")</td>
+                        <td class="text-end">@r.Durata</td>
+                        <td>@(r.TaskNome ?? (r.TaskId == null ? "—" : $"#{r.TaskId}"))</td>
+                        <td>@r.Descrizione</td>
+                        <td>@r.CrrgCSrl?.ToString("0")</td>
+                        <td><span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span></td>
+                        <td>
+                            <ul class="mb-0 ps-3">
+                                @foreach (var d in r.Differenze) { <li>@d</li> }
+                            </ul>
+                            @if (r.Stato == TwStatoRegistrazione.ModificataInTeamwork && r.NonImportabile != null)
+                            {
+                                <small class="d-block text-danger">Non allineabile: @r.NonImportabile</small>
+                            }
+                        </td>
+                        <td class="text-nowrap">
+                            @switch (r.Stato)
+                            {
+                                case TwStatoRegistrazione.ModificataInTeamwork:
+                                    <form method="post" asp-action="Allinea" class="d-inline tw-form-allinea">
+                                        <input type="hidden" name="timelogId" value="@r.TimelogId" />
+                                        <input type="hidden" name="azione" value="@TwAzioneAllineamento.Aggiorna" />
+                                        <button type="submit" class="btn btn-sm btn-warning" @(r.NonImportabile != null ? "disabled" : "")
+                                                title="@(r.SoloRiallineamento ? "Il consuntivo non cambia: si aggiorna solo il collegamento" : "Aggiorna ore, data, note o commessa del consuntivo")">
+                                            @(r.SoloRiallineamento ? "Riallinea" : "Aggiorna consuntivo")
+                                        </button>
+                                    </form>
+                                    break;
+                                case TwStatoRegistrazione.CancellataInTeamwork:
+                                    <form method="post" asp-action="Allinea" class="d-inline tw-form-allinea">
+                                        <input type="hidden" name="timelogId" value="@r.TimelogId" />
+                                        <input type="hidden" name="azione" value="@TwAzioneAllineamento.Scollega" />
+                                        <button type="submit" class="btn btn-sm btn-outline-light" title="Il consuntivo resta e torna modificabile in MEPWEB">Scollega, tieni consuntivo</button>
+                                    </form>
+                                    <form method="post" asp-action="Allinea" class="d-inline tw-form-allinea"
+                                          data-conferma="Eliminare il consuntivo @(r.CrrgCSrl?.ToString("0")) e il suo collegamento a Teamwork? L'operazione non si può annullare.">
+                                        <input type="hidden" name="timelogId" value="@r.TimelogId" />
+                                        <input type="hidden" name="azione" value="@TwAzioneAllineamento.Elimina" />
+                                        <button type="submit" class="btn btn-sm btn-danger">Elimina consuntivo</button>
+                                    </form>
+                                    break;
+                                case TwStatoRegistrazione.ConsuntivoEliminatoInMep:
+                                    <form method="post" asp-action="Allinea" class="d-inline tw-form-allinea">
+                                        <input type="hidden" name="timelogId" value="@r.TimelogId" />
+                                        <input type="hidden" name="azione" value="@TwAzioneAllineamento.Scollega" />
+                                        <button type="submit" class="btn btn-sm btn-outline-light" title="La registrazione torna tra quelle da importare">Scollega e reimporta</button>
+                                    </form>
+                                    break;
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

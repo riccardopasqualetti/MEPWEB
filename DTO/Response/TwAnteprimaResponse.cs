@@ -100,11 +100,17 @@ namespace MepWeb.DTO.Response
         public List<TwOpzione> CausaliIsl { get; set; } = new();
     }
 
+    /// <summary>[231009] Consuntivo creato dall'import.</summary>
+    public class TwImportato
+    {
+        public string Nome { get; init; } = "";
+        public decimal CrrgCSrl { get; init; }
+    }
+
     /// <summary>[231009] Esito dell'import: una riga per ogni registrazione selezionata.</summary>
     public class TwImportEsito
     {
-        /// <summary>Una voce per consuntivo creato, nel formato "nome task&lt;TAB&gt;numero consuntivo".</summary>
-        public List<string> Importate { get; set; } = new();
+        public List<TwImportato> Importate { get; set; } = new();
         public List<string> Errori { get; set; } = new();
     }
 }
