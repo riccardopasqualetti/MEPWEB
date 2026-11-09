@@ -197,11 +197,24 @@ namespace Mep01Web.Service.Impl
 
             var grpRes = await GetGrpCdlsAsync(grpCdlRequest);
 
+            if (crrgRequest.IsUpdate)
+            {
+                return await UpdateCrrgAsync(crrgRequest);
+            }
+
+            // Calcolo del nuovo CrrgCSrl, aggiornamento giorni ISL e inserimento nella stessa transazione:
+            // il lock preso da GetNuovoCrrgCSrlAsync resta fino al commit, così due inserimenti contemporanei
+            // non possono ottenere lo stesso numero. Se il chiamante (es. import Teamwork) ha già aperto una
+            // transazione si usa quella, e il commit lo fa lui.
+            await using var transazione = _dbContext.Database.CurrentTransaction == null
+                ? await _dbContext.Database.BeginTransactionAsync()
+                : null;
+
             //            tatv_residuo_gg
             //              tatv_residuo_gg_test
             //              tatv_stima_gg
             //                tatv_stima_gg_test
-            var m = _dbContext.FlussoCrrgs.Max(c => c.CrrgCSrl) + 1;
+            var m = await GetNuovoCrrgCSrlAsync();
             var crrgTmRunIncr = new Duration(crrgRequest.CrrgTmRunIncrHMS);
             var crrgTmRunIncrProd = new Duration(crrgRequest.CrrgTmRunIncrHMSProd);
             var hms = crrgTmRunIncr.GetSeconds();
@@ -292,21 +305,19 @@ namespace Mep01Web.Service.Impl
 
             };
 
-            if (crrgRequest.IsUpdate)
+            var diff = (decimal)hms / (3600 * 8);
+            if (crrgRequest.CrrgRifCliente != null && (crrgRequest.CrrgCCaus == "DELI" || crrgRequest.CrrgCCaus == "SVIL"))
             {
-                return await UpdateCrrgAsync(crrgRequest);
+                await _tatvService.UpdateTatvAsync(crrgRequest.CrrgRifCliente, crrgRequest.CrrgCCaus, diff);
             }
-            else
-            {
-                var diff = (decimal)hms / (3600 * 8);
-                if (crrgRequest.CrrgRifCliente != null && (crrgRequest.CrrgCCaus == "DELI" || crrgRequest.CrrgCCaus == "SVIL"))
-                {
-                    await _tatvService.UpdateTatvAsync(crrgRequest.CrrgRifCliente, crrgRequest.CrrgCCaus, diff);
-                }
-                _dbContext.FlussoCrrgs.Add(flussoCrrg);
-            }
+            _dbContext.FlussoCrrgs.Add(flussoCrrg);
 
             var affected = await _dbContext.SaveChangesAsync();
+
+            if (transazione != null)
+            {
+                await transazione.CommitAsync();
+            }
 
             var crrgResponse = new CrrgResponse();
             crrgResponse.FlussoCrrg = flussoCrrg;
@@ -412,6 +423,21 @@ namespace Mep01Web.Service.Impl
             var crrgResponse = new CrrgResponse();
             crrgResponse.FlussoCrrg = flussoCrrg;
             return ResponseBase<CrrgResponse?>.Success(crrgResponse);
+        }
+
+
+        /// <summary>
+        /// Nuovo CrrgCSrl = massimo attuale + 1, letto con UPDLOCK e HOLDLOCK: il lock sull'ultimo valore resta
+        /// fino alla fine della transazione, quindi un secondo inserimento contemporaneo aspetta e legge il
+        /// massimo aggiornato invece di ottenere lo stesso numero. Va chiamato dentro una transazione.
+        /// Resta compatibile con altri programmi che inseriscono in flusso_crrg calcolando anch'essi il massimo.
+        /// </summary>
+        private async Task<decimal> GetNuovoCrrgCSrlAsync()
+        {
+            var max = await _dbContext.Database
+                .SqlQueryRaw<decimal>("SELECT ISNULL(MAX(crrg_c_srl), 0) AS [Value] FROM dba.flusso_crrg WITH (UPDLOCK, HOLDLOCK)")
+                .SingleAsync();
+            return max + 1;
         }
 
 
