@@ -214,6 +214,16 @@ namespace MepWeb.Service.Impl
                     new List<string> { $"Il consuntivo {coll.CrrgCSrl:0} non esiste più in MEP" }));
                 return;
             }
+            if (task == null || task.Cancellato)
+            {
+                // Su Teamwork la registrazione resta "non cancellata" ma il suo task è nel cestino (o non c'è più)
+                risultato.DaAllineare.Add(CreaRiga(reg, task, commesse, TwStatoRegistrazione.CancellataInTeamwork, coll.CrrgCSrl,
+                    new List<string> { task == null
+                        ? "Task non più presente su Teamwork"
+                        : "Task cancellato su Teamwork: la registrazione è nel cestino insieme al task" },
+                    commessaTeamwork: coll.TwCommessa));
+                return;
+            }
 
             var confronto = Confronta(coll, reg, task);
             var stato = confronto.Tutte.Count == 0 ? TwStatoRegistrazione.Importata : TwStatoRegistrazione.ModificataInTeamwork;
@@ -291,7 +301,8 @@ namespace MepWeb.Service.Impl
         private static string? MotivoNonImportabile(TwRegistrazione reg, TwTask? task, string? valoreCommessa, TwCommessaMep? commessa)
         {
             if (reg.TaskId == null) return "Registrazione senza task: manca il campo Commessa/ISL";
-            if (task == null) return "Task non leggibile su Teamwork";
+            if (task == null) return "Task non trovato su Teamwork (cancellato o non visibile)";
+            if (task.Cancellato) return "Task cancellato su Teamwork";
             if (string.IsNullOrWhiteSpace(valoreCommessa)) return "Campo Commessa/ISL del task vuoto";
             if (commessa?.Errore != null) return commessa.Errore;
             if (reg.Minuti <= 0) return "Durata nulla";
@@ -476,6 +487,16 @@ namespace MepWeb.Service.Impl
                 return ResponseBase<string>.Failed("utente", "La registrazione Teamwork non è tua.");
             }
             var cancellata = reg == null || reg.Cancellata;
+            if (!cancellata && reg!.TaskId != null)
+            {
+                // Registrazione su un task cancellato: per Teamwork non è cancellata, per MEPWEB sì
+                var taskEsito = await LeggiTaskAsync(conn, new List<long> { reg.TaskId.Value });
+                if (!taskEsito.Succeeded || taskEsito.Body == null)
+                {
+                    return ResponseBase<string>.Failed(taskEsito.Errors!);
+                }
+                cancellata = !taskEsito.Body.Tasks.TryGetValue(reg.TaskId.Value, out var taskAttuale) || taskAttuale.Cancellato;
+            }
             string cDitta = CommonCostants.CDitta;
             var consuntivo = await _db.FlussoCrrgs.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.CrrgCSrl == coll.CrrgCSrl && c.CrrgCDitta == cDitta);

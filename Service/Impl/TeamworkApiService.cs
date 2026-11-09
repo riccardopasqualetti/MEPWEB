@@ -64,7 +64,8 @@ namespace MepWeb.Service.Impl
             {
                 var url = $"{conn.ApiEndpoint}projects/api/v3/tasks.json?ids={string.Join(",", blocco)}" +
                           $"&includeCustomFields=true&includeCustomFieldIds={campo}&include=customfieldTasks" +
-                          $"&includeCompletedTasks=true&includeArchivedProjects=true&showDeleted=true&pageSize={IdPerChiamata}";
+                          // Senza showDeleted: i task nel cestino non vengono restituiti e le loro registrazioni risultano cancellate
+                          $"&includeCompletedTasks=true&includeArchivedProjects=true&pageSize={IdPerChiamata}";
                 var risposta = await GetJsonAsync(conn, url);
                 if (!risposta.Succeeded || risposta.Body == null)
                 {
@@ -107,7 +108,9 @@ namespace MepWeb.Service.Impl
                         {
                             Id = id.Value,
                             Nome = TeamworkJson.Stringa(t, "name"),
-                            Commessa = valori.TryGetValue(id.Value, out var c) && !string.IsNullOrWhiteSpace(c) ? c : null
+                            Commessa = valori.TryGetValue(id.Value, out var c) && !string.IsNullOrWhiteSpace(c) ? c : null,
+                            Cancellato = !string.IsNullOrEmpty(TeamworkJson.Stringa(t, "deletedAt"))
+                                         || string.Equals(TeamworkJson.Stringa(t, "status"), "deleted", StringComparison.OrdinalIgnoreCase)
                         };
                     }
                 }

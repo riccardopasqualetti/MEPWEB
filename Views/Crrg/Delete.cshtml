@@ -14,6 +14,16 @@
 		</div>
 		@*<div asp-validation-summary="All"></div>*@ @*Riporta qui gli stessi errori che mostra sotto i componenti che hanno asp-validation-for*@
 		<div asp-validation-summary="ModelOnly" class="text-danger"></div> @*Errori non legati a un campo, es. consuntivo collegato a Teamwork*@
+		@if (Model.TwTimelogId != null)
+		{
+			@* [231009] Consuntivo importato da Teamwork: non si cancella da qui *@
+			<div class="alert alert-info">
+				<i class="bi bi-lock-fill"></i>
+				Consuntivo importato da Teamwork (registrazione @Model.TwTimelogId): non si può cancellare da qui.
+				Cancella la registrazione su Teamwork e poi elimina il consuntivo dalla pagina
+				<a class="alert-link" asp-controller="Teamwork" asp-action="Registrazioni">Importa da Teamwork</a>.
+			</div>
+		}
 		<p>Utente : @_userScope.SV_USR_SIGLA</p>
 
 		<input asp-for="CrrgCSrl" hidden />
@@ -62,7 +72,14 @@
 		</div>
 		<br />
 
-		<button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
+		@if (Model.TwTimelogId == null)
+		{
+			<button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
+		}
+		else
+		{
+			<button type="button" class="btn btn-danger" style="width:150px" disabled title="Consuntivo importato da Teamwork">Delete</button>
+		}
 		<a asp-controller="Crrg" asp-action="IndexMantain" class="btn btn-secondary" style="width:150px">
 			Back to List		
 		</a>

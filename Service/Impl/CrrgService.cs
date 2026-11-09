@@ -326,7 +326,7 @@ namespace Mep01Web.Service.Impl
 
         public async Task<ResponseBase<CrrgResponse>?> UpdateCrrgAsync(CrrgCreateRequest crrgRequest)
         {
-            var bloccato = await VerificaCollegamentoTeamworkAsync(crrgRequest, "modificato");
+            var bloccato = await VerificaModificaCollegatoTeamworkAsync(crrgRequest);
             if (bloccato != null)
             {
                 return bloccato;
@@ -442,8 +442,59 @@ namespace Mep01Web.Service.Impl
 
 
         /// <summary>
-        /// [231009] Un consuntivo collegato a una registrazione Teamwork (flusso_crrg_tw) si corregge solo
-        /// su Teamwork e arriva con l'allineamento: dal form e dalle API non si modifica né si cancella.
+        /// [231009] Consuntivo collegato a una registrazione Teamwork (flusso_crrg_tw): i dati che arrivano da Teamwork
+        /// (risorsa, data, durata, commessa/ISL) si correggono solo su Teamwork e arrivano con l'allineamento.
+        /// Operazione, causale, macroattività, applicativo, modulo e note invece si possono modificare in MEPWEB.
+        /// Ritorna null se la modifica è consentita.
+        /// </summary>
+        private async Task<ResponseBase<CrrgResponse>?> VerificaModificaCollegatoTeamworkAsync(CrrgCreateRequest crrgRequest)
+        {
+            if (crrgRequest.DaAllineamentoTeamwork)
+            {
+                return null;
+            }
+
+            var collegamento = await _crrgTwService.GetByCrrgCSrlAsync(crrgRequest.CrrgCSrl);
+            if (collegamento == null)
+            {
+                return null;
+            }
+
+            var attuale = await _dbContext.FlussoCrrgs.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.CrrgCSrl == crrgRequest.CrrgCSrl && x.CrrgCDitta == "01");
+            if (attuale == null)
+            {
+                return null;
+            }
+
+            static string N(string? s) => (s ?? "").Trim().ToUpperInvariant();
+            var cambiati = new List<string>();
+            if (N(attuale.CrrgCRis) != N(crrgRequest.CrrgCRis))
+                cambiati.Add("risorsa");
+            if (attuale.CrrgDtt?.Date != crrgRequest.CrrgDtt.Date)
+                cambiati.Add("data");
+            if (attuale.CrrgTmRunIncr != new Duration(crrgRequest.CrrgTmRunIncrHMS).GetSeconds())
+                cambiati.Add("tempo");
+            if (N(attuale.CrrgRifCliente) != N(crrgRequest.CrrgRifCliente))
+                cambiati.Add("ISL");
+            if (N(attuale.CrrgTstDoc) != N(crrgRequest.CrrgTstDoc) || N(attuale.CrrgPrfDoc) != N(crrgRequest.CrrgPrfDoc)
+                || attuale.CrrgADoc != crrgRequest.CrrgADoc || attuale.CrrgNDoc != crrgRequest.CrrgNDoc)
+                cambiati.Add("commessa");
+
+            if (cambiati.Count == 0)
+            {
+                return null;
+            }
+
+            return ResponseBase<CrrgResponse?>.Failed(CrrgCreateErrors.CollegatoTeamwork,
+                $"Il consuntivo è collegato alla registrazione Teamwork {collegamento.TwTimelogId}: {string.Join(", ", cambiati)} " +
+                "si correggono su Teamwork e arrivano con l'allineamento dalla pagina Importa da Teamwork. " +
+                "In MEPWEB puoi modificare operazione, causale, macroattività, applicativo, modulo e note.");
+        }
+
+        /// <summary>
+        /// [231009] Un consuntivo collegato a una registrazione Teamwork (flusso_crrg_tw) non si cancella da MEPWEB:
+        /// la cancellazione passa dalla pagina Importa da Teamwork quando la registrazione è cancellata su Teamwork.
         /// Ritorna null se l'operazione è consentita.
         /// </summary>
         private async Task<ResponseBase<CrrgResponse>?> VerificaCollegamentoTeamworkAsync(CrrgCreateRequest crrgRequest, string operazione)

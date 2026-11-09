@@ -256,7 +256,7 @@ else
                                         <button type="submit" class="btn btn-sm btn-outline-light" title="Il consuntivo resta e torna modificabile in MEPWEB">Scollega, tieni consuntivo</button>
                                     </form>
                                     <form method="post" asp-action="Allinea" class="d-inline tw-form-allinea"
-                                          data-conferma="Eliminare il consuntivo @(r.CrrgCSrl?.ToString("0")) e il suo collegamento a Teamwork? L'operazione non si può annullare.">
+                                          data-conferma="@($"Eliminare il consuntivo {r.CrrgCSrl:0} e il suo collegamento a Teamwork?\nLa registrazione su Teamwork non verrà eliminata: si elimina solo il consuntivo in MEPWEB.\nL'operazione non si può annullare.")">
                                         <input type="hidden" name="timelogId" value="@r.TimelogId" />
                                         <input type="hidden" name="azione" value="@TwAzioneAllineamento.Elimina" />
                                         <button type="submit" class="btn btn-sm btn-danger">Elimina consuntivo</button>

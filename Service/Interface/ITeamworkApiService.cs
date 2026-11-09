@@ -22,6 +22,11 @@ namespace MepWeb.Service.Interface
         public long Id { get; init; }
         public string? Nome { get; init; }
         public string? Commessa { get; init; }
+        /// <summary>
+        /// Task cancellato (nel cestino di Teamwork). Le sue registrazioni restano con deleted = false,
+        /// ma vanno trattate come cancellate: se il task viene ripristinato, tornano visibili.
+        /// </summary>
+        public bool Cancellato { get; init; }
     }
 
     /// <summary>[231009] Risultato della lettura dei task, con l'indicazione se Teamwork ha restituito i campi personalizzati.</summary>

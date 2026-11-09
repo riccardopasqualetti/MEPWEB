@@ -27,6 +27,46 @@
 				</div>
 				@*<div asp-validation-summary="All"></div>*@ @*Riporta qui gli stessi errori che mostra sotto i componenti che hanno asp-validation-for*@
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div> @*Errori non legati a un campo, es. consuntivo collegato a Teamwork*@
+				@if (Model.IsUpdate && Model.TwTimelogId != null)
+				{
+					@* [231009] Consuntivo importato da Teamwork: i campi che arrivano da Teamwork sono in sola lettura (script in fondo) *@
+					<div class="alert alert-info d-flex align-items-start gap-3" id="tw-collegato">
+						<div class="flex-grow-1">
+							<i class="bi bi-lock-fill"></i>
+							Consuntivo importato da Teamwork (registrazione @Model.TwTimelogId).
+							<strong>Risorsa, data, tempo e commessa/ISL</strong> si correggono su Teamwork e arrivano con l'allineamento dalla pagina
+							<a class="alert-link" asp-controller="Teamwork" asp-action="Registrazioni">Importa da Teamwork</a>.
+							Qui puoi modificare operazione, causale, macroattività, applicativo, modulo e note.
+						</div>
+						<button type="button" class="btn btn-sm btn-outline-secondary text-nowrap" id="tw-avviso-nascondi">Non mostrare più</button>
+					</div>
+					@* Versione breve, mostrata al posto dell'avviso quando l'utente ha scelto "Non mostrare più" *@
+					<div class="small mb-2 d-none" id="tw-collegato-breve">
+						<i class="bi bi-lock-fill"></i> Importato da Teamwork (registrazione @Model.TwTimelogId):
+						risorsa, data, tempo e commessa/ISL non modificabili.
+						<a href="#" id="tw-avviso-mostra">Mostra dettagli</a>
+					</div>
+					<script>
+						// [231009] Scelta "Non mostrare più" salvata nel browser (localStorage); eseguito subito per evitare lo sfarfallio
+						(function () {
+							var chiave = 'mepweb.teamwork.avvisoConsuntivoCollegato.nascosto';
+							var avviso = document.getElementById('tw-collegato');
+							var breve = document.getElementById('tw-collegato-breve');
+							function leggi() { try { return localStorage.getItem(chiave) === '1'; } catch (e) { return false; } }
+							function scrivi(nascosto) {
+								try { if (nascosto) { localStorage.setItem(chiave, '1'); } else { localStorage.removeItem(chiave); } } catch (e) { }
+							}
+							function applica(nascosto) {
+								avviso.classList.toggle('d-none', nascosto);
+								avviso.classList.toggle('d-flex', !nascosto);
+								breve.classList.toggle('d-none', !nascosto);
+							}
+							applica(leggi());
+							document.getElementById('tw-avviso-nascondi').addEventListener('click', function () { scrivi(true); applica(true); });
+							document.getElementById('tw-avviso-mostra').addEventListener('click', function (ev) { ev.preventDefault(); scrivi(false); applica(false); });
+						})();
+					</script>
+				}
 				@* <p>Utente : @_userScope.SV_USR_SIGLA</p>  *@
 
 
@@ -302,6 +342,28 @@
 	<script src="~/js/generic.js"></script>
 	<script src="~/js/Crrg.js"></script>
 	<script src="~/js/isl.js"></script>
+	<style>
+		/* [231009] Campi di un consuntivo importato da Teamwork: non modificabili */
+		.tw-bloccato { pointer-events: none; opacity: .65; }
+	</style>
+	<script>
+		// [231009] Consuntivo importato da Teamwork: risorsa, data, tempo e commessa/ISL in sola lettura.
+		// readonly (e non disabled) perché i valori devono comunque arrivare al server con il salvataggio.
+		(function () {
+			if (!document.getElementById('tw-collegato')) return;
+			var campi = ['input-risorsa', 'CrrgTmRunIncrHMS', 'CrrgRifCliente', 'CliDropdownInput', 'ComDropdownInput']
+				.map(function (id) { return document.getElementById(id); })
+				.concat([document.querySelector('input[name="CrrgDtt"]')]);
+			campi.forEach(function (el) {
+				if (!el) return;
+				el.readOnly = true;
+				el.tabIndex = -1;
+				el.classList.add('tw-bloccato');
+			});
+			document.querySelectorAll('input[name="modalita"]').forEach(function (r) { r.disabled = true; });
+			document.querySelectorAll('button[onclick^="setupSearchIsl"]').forEach(function (b) { b.disabled = true; });
+		})();
+	</script>
 
 }
 

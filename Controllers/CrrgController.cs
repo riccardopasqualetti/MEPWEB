@@ -29,9 +29,11 @@ namespace Mep01Web.Controllers
         private readonly UserScope _userScope;
         private readonly IRegistroRicaricheService _registroRicaricheService;
 		private readonly IOreQualificaService _oreQualificaService;
+		private readonly ICrrgTwService _crrgTwService;
 
-		public CrrgController(SataconsultingContext sataconsulting, ICrrgService crrgService, IHttpContextAccessor contextAccessor, UserScope userScope, IRegistroRicaricheService registroRicaricheService, IOreQualificaService oreQualificaService)
+		public CrrgController(SataconsultingContext sataconsulting, ICrrgService crrgService, IHttpContextAccessor contextAccessor, UserScope userScope, IRegistroRicaricheService registroRicaricheService, IOreQualificaService oreQualificaService, ICrrgTwService crrgTwService)
 		{
+			_crrgTwService = crrgTwService;
 			_db = sataconsulting;
 			_crrgService = crrgService;
 			_contextAccessor = contextAccessor;
@@ -197,6 +199,10 @@ namespace Mep01Web.Controllers
 
 				obj.Succeeded = "N";
 				await _crrgService.AddCrrgPrepareDataAsync(obj);
+				if (obj.IsUpdate)
+				{
+					await ImpostaCollegamentoTeamworkAsync(obj);
+				}
 				return View(obj);
             }
             else
@@ -265,6 +271,7 @@ namespace Mep01Web.Controllers
             {
                 obj.MemoModalita = "modIsl";
             }
+            await ImpostaCollegamentoTeamworkAsync(obj);
 
             return View("Create", obj);
         }
@@ -274,7 +281,20 @@ namespace Mep01Web.Controllers
         public async Task<ActionResult> Update(CrrgCreateRequest obj)
         {
             await Create(obj);
+            await ImpostaCollegamentoTeamworkAsync(obj);
             return View("Create", obj);
+        }
+
+        /// <summary>
+        /// [231009] Se il consuntivo è collegato a una registrazione Teamwork, la pagina di modifica blocca risorsa,
+        /// data, tempo e commessa/ISL e quella di cancellazione non permette di eliminarlo.
+        /// </summary>
+        private async Task ImpostaCollegamentoTeamworkAsync(CrrgCreateRequest obj)
+        {
+            if (obj.CrrgCSrl > 0)
+            {
+                obj.TwTimelogId = (await _crrgTwService.GetByCrrgCSrlAsync(obj.CrrgCSrl))?.TwTimelogId;
+            }
         }
 
 
@@ -311,6 +331,7 @@ namespace Mep01Web.Controllers
             }            
             CrrgCreateRequest obj = new CrrgCreateRequest((decimal)crrgCSrl);
 			await _crrgService.DeleteCrrgPrepareDataAsync(obj);
+			await ImpostaCollegamentoTeamworkAsync(obj);
 			return View(obj);
         }
 
@@ -326,6 +347,7 @@ namespace Mep01Web.Controllers
 			{
 				ModelState.AddModelError(string.Empty, deleteCrrgResponse.Errors[0].Message);
 				await _crrgService.DeleteCrrgPrepareDataAsync(obj);
+				await ImpostaCollegamentoTeamworkAsync(obj);
 				return View(obj);
 			}
 

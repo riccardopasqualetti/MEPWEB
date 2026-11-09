@@ -110,6 +110,13 @@ namespace Mep01Web.DTO.Request
         [BindNever]
         public bool DaAllineamentoTeamwork { get; set; } = false;
 
+        /// <summary>
+        /// [231009] Registrazione Teamwork a cui è collegato il consuntivo (flusso_crrg_tw), solo per le pagine di
+        /// modifica e cancellazione: se valorizzato la pagina blocca risorsa, data, tempo e commessa/ISL.
+        /// </summary>
+        [BindNever]
+        public long? TwTimelogId { get; set; }
+
 
         //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         //{
