@@ -16,6 +16,7 @@
     <!-- Disabilita generazione automatica di InformationalVersion -->
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <UserSecretsId>931a60fe-1128-4834-a1a7-b2cd37c552a9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

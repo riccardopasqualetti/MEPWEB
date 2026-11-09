@@ -1,0 +1,22 @@
+@{
+    // Pagina senza layout: arriva da teamwork.com senza cookie di login e sessione (SameSite=Strict).
+    // Rimanda subito a /Teamwork/Completa dallo stesso sito, così il browser invia i cookie.
+    Layout = null;
+    var urlCompleta = (string)ViewBag.UrlCompleta;
+}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Collegamento Teamwork</title>
+</head>
+<body style="font-family: sans-serif; padding: 2rem;">
+    <p>Completamento del collegamento a Teamwork…</p>
+    <p><a id="continua" href="@urlCompleta">Continua</a></p>
+    <script>
+        window.location.replace(document.getElementById("continua").href);
+    </script>
+</body>
+</html>

@@ -91,6 +91,8 @@
                                 @(_userScope.SV_USR_EMAIL + "(" + _userScope.SV_USR_SIGLA + ")")
                             </button>
                             <ul class="dropdown-menu">
+                                @* [231009] Teamwork: stato del collegamento (qui andrà anche la voce della pagina di import) *@
+                                @await Component.InvokeAsync("TeamworkStato")
                                 <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logout-modal">Logout</button></li>
                             </ul>
                         </div>

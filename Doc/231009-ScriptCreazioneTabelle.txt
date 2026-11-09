@@ -60,5 +60,35 @@ GO
 GRANT VIEW DEFINITION ON dba.flusso_crrg_tw TO mepweb
 GO
 
+
+/*
+  [231009] MEPWEB - Collegamento utenti MEPWEB / account Teamwork (login OAuth per utente)
+
+  Una riga per ogni utente MEPWEB (flusso_usr1, ditta sempre '01') che ha collegato il proprio
+  account Teamwork. L'email non si salva: al collegamento si verifica che l'account Teamwork
+  abbia la stessa email di flusso_usr1.usr1_e_mail.
+  tw_access_token è cifrato con ASP.NET Data Protection: non è leggibile dal database.
+  Se il token non è più valido (password cambiata, accesso revocato) la riga viene
+  eliminata e all'utente si richiede il login Teamwork.
+*/
+CREATE TABLE [dba].[flusso_usr1_tw](
+    [usr1_c_srl]         [numeric](12, 0)  NOT NULL,  -- utente MEPWEB (flusso_usr1)
+    [tw_user_id]         [bigint]          NOT NULL,  -- id utente Teamwork
+    [tw_api_endpoint]    [varchar](200)    NOT NULL,  -- es. https://sataconsulting.teamwork.com/
+    [tw_access_token]    [varchar](2000)   NOT NULL,  -- token cifrato
+    [dt_ins]             [datetime]        NULL,
+    [dt_um]              [datetime]        NULL,
+ CONSTRAINT [usr1tw_chiave] PRIMARY KEY CLUSTERED
+(
+    [usr1_c_srl] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON dba.flusso_usr1_tw TO mepweb
+GO
+GRANT VIEW DEFINITION ON dba.flusso_usr1_tw TO mepweb
+GO
+
 SET ANSI_PADDING OFF
 GO

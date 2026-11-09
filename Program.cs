@@ -83,6 +83,10 @@ namespace WebApplication2
             builder.Services.AddTransient<IPsc001AService, Psc001AService>();
             builder.Services.AddTransient<ICrrgTwService, CrrgTwService>();
 
+            // [231009] Login Teamwork per utente
+            builder.Services.Configure<TeamworkOptions>(builder.Configuration.GetSection(TeamworkOptions.Sezione));
+            builder.Services.AddHttpClient<ITeamworkAuthService, TeamworkAuthService>(c => c.Timeout = TimeSpan.FromSeconds(30));
+
 
             var app = builder.Build();
 

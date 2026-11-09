@@ -11,9 +11,12 @@ namespace MepWeb.Controllers
         {
             var path = context.HttpContext.Request.Path.Value;
 
-            // Escludi solo le rotte del BuildController e la pagina di login dal controllo di sessione
+            // Escludi solo le rotte del BuildController, la pagina di login e la callback del login Teamwork dal controllo di sessione.
+            // La callback arriva da teamwork.com: con i cookie SameSite=Strict il browser non invia la sessione,
+            // quindi la pagina rimanda subito a /Teamwork/Completa (stesso sito, con sessione) dove avviene il controllo.
             if (path != null &&
                 !path.EndsWith("/login/login", StringComparison.InvariantCultureIgnoreCase) &&
+                !path.EndsWith("/teamwork/callback", StringComparison.InvariantCultureIgnoreCase) &&
                 !path.StartsWith("/api/build/", StringComparison.InvariantCultureIgnoreCase) &&
                 string.IsNullOrWhiteSpace(context.HttpContext.Session.GetString("SV_USR_EMAIL")))
             {

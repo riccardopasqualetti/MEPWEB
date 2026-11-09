@@ -1,0 +1,60 @@
+@model Mep01Web.Models.FlussoUsr1Tw?
+@{
+    ViewData["Title"] = "Collegamento Teamwork";
+    var configurato = (bool)(ViewBag.Configurato ?? false);
+}
+
+<div class="border p-3 mt-4">
+    <div class="row pb-2">
+        <h2 class="text-primary">Collegamento Teamwork</h2>
+        <hr />
+    </div>
+
+    @if (TempData["TwOk"] != null)
+    {
+        <div class="alert alert-success">@TempData["TwOk"]</div>
+    }
+    @if (TempData["TwErrore"] != null)
+    {
+        <div class="alert alert-danger">@TempData["TwErrore"]</div>
+    }
+
+    @if (!configurato)
+    {
+        <div class="alert alert-warning">
+            Login Teamwork non configurato: impostare <code>Teamwork:ClientSecret</code>
+            (in sviluppo con <code>dotnet user-secrets</code>, sul server con la variabile d'ambiente <code>Teamwork__ClientSecret</code>).
+        </div>
+    }
+
+    @if (Model == null)
+    {
+        <p>Il tuo utente MEPWEB non è ancora collegato a un account Teamwork.</p>
+        <p>Collegandolo, MEPWEB potrà leggere le tue registrazioni di tempo per importarle come consuntivi.</p>
+        <a class="btn btn-primary @(configurato ? "" : "disabled")" asp-action="Collega">Collega Teamwork</a>
+    }
+    else
+    {
+        <dl class="row">
+            <dt class="col-sm-3">Account Teamwork</dt>
+            <dd class="col-sm-9">@ViewBag.EmailMepweb (id Teamwork @Model.TwUserId)</dd>
+            <dt class="col-sm-3">Sito</dt>
+            <dd class="col-sm-9">@Model.TwApiEndpoint</dd>
+            <dt class="col-sm-3">Collegato il</dt>
+            <dd class="col-sm-9">@Model.DtIns?.ToString("dd/MM/yyyy HH:mm")</dd>
+            <dt class="col-sm-3">Ultimo aggiornamento</dt>
+            <dd class="col-sm-9">@Model.DtUm?.ToString("dd/MM/yyyy HH:mm")</dd>
+        </dl>
+        <div class="d-flex gap-2">
+            <form method="post" asp-action="Verifica">
+                <button type="submit" class="btn btn-outline-primary">Verifica collegamento</button>
+            </form>
+            <a class="btn btn-outline-secondary @(configurato ? "" : "disabled")" asp-action="Collega">Ricollega</a>
+            <form method="post" asp-action="Scollega">
+                <button type="submit" class="btn btn-outline-danger">Scollega</button>
+            </form>
+        </div>
+    }
+
+    <p class="text-muted small mt-4 mb-0">Indirizzo di ritorno da registrare nell'app Teamwork: <code>@ViewBag.RedirectUri</code></p>
+</div>
