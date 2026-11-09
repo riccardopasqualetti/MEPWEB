@@ -86,6 +86,8 @@ namespace WebApplication2
             // [231009] Login Teamwork per utente
             builder.Services.Configure<TeamworkOptions>(builder.Configuration.GetSection(TeamworkOptions.Sezione));
             builder.Services.AddHttpClient<ITeamworkAuthService, TeamworkAuthService>(c => c.Timeout = TimeSpan.FromSeconds(30));
+            builder.Services.AddHttpClient<ITeamworkApiService, TeamworkApiService>(c => c.Timeout = TimeSpan.FromSeconds(60));
+            builder.Services.AddTransient<ITeamworkImportService, TeamworkImportService>();
 
 
             var app = builder.Build();

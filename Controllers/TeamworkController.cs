@@ -18,14 +18,51 @@ namespace MepWeb.Controllers
         private const string SessionState = "TW_OAUTH_STATE";
 
         private readonly ITeamworkAuthService _auth;
+        private readonly ITeamworkImportService _import;
         private readonly UserScope _userScope;
         private readonly TeamworkOptions _options;
 
-        public TeamworkController(ITeamworkAuthService auth, UserScope userScope, IOptions<TeamworkOptions> options)
+        public TeamworkController(ITeamworkAuthService auth, ITeamworkImportService import, UserScope userScope, IOptions<TeamworkOptions> options)
         {
             _auth = auth;
+            _import = import;
             _userScope = userScope;
             _options = options.Value;
+        }
+
+        /// <summary>
+        /// Pagina di import (per ora in sola lettura): registrazioni Teamwork del periodo con il loro stato.
+        /// Periodo predefinito: dal lunedì della settimana corrente a oggi.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> Registrazioni(DateTime? dal, DateTime? al)
+        {
+            var oggi = DateTime.Today;
+            var inizio = (dal ?? oggi.AddDays(-(((int)oggi.DayOfWeek + 6) % 7))).Date;
+            var fine = (al ?? oggi).Date;
+            if (fine < inizio)
+            {
+                (inizio, fine) = (fine, inizio);
+            }
+            if ((fine - inizio).TotalDays > 92)
+            {
+                TempData["TwErrore"] = "Periodo troppo lungo: massimo 3 mesi.";
+                fine = inizio.AddDays(92);
+            }
+
+            var esito = await _import.GetAnteprimaAsync(inizio, fine);
+            if (!esito.Succeeded || esito.Body == null)
+            {
+                var errore = esito.Errors?.FirstOrDefault();
+                if (errore?.Code is "nonCollegato" or "401")
+                {
+                    TempData["TwErrore"] = errore.Message;
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewBag.Errore = errore?.Message ?? "Lettura da Teamwork non riuscita.";
+                return View(new MepWeb.DTO.Response.TwAnteprimaResponse { Dal = inizio, Al = fine });
+            }
+            return View(esito.Body);
         }
 
         [HttpGet]

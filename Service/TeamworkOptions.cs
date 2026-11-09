@@ -16,5 +16,8 @@ namespace MepWeb.Service
 
         /// <summary>Se vuoto, l'indirizzo di callback si calcola dalla richiesta corrente.</summary>
         public string RedirectUri { get; set; } = "";
+
+        /// <summary>Id del campo personalizzato "Commessa/ISL" dei task Teamwork.</summary>
+        public long CampoCommessaTaskId { get; set; } = 2956;
     }
 }

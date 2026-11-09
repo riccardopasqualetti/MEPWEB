@@ -1,0 +1,156 @@
+@using MepWeb.DTO.Response
+@model TwAnteprimaResponse
+@{
+    ViewData["Title"] = "Importa da Teamwork";
+
+    string BadgeStato(TwStatoRegistrazione s) => s switch
+    {
+        TwStatoRegistrazione.Nuova => "text-bg-primary",
+        TwStatoRegistrazione.Importata => "text-bg-secondary",
+        TwStatoRegistrazione.ModificataInTeamwork => "text-bg-warning",
+        _ => "text-bg-danger"
+    };
+    string TestoStato(TwStatoRegistrazione s) => s switch
+    {
+        TwStatoRegistrazione.Nuova => "Nuova",
+        TwStatoRegistrazione.Importata => "Importata",
+        TwStatoRegistrazione.ModificataInTeamwork => "Modificata in Teamwork",
+        TwStatoRegistrazione.CancellataInTeamwork => "Cancellata in Teamwork",
+        TwStatoRegistrazione.ConsuntivoEliminatoInMep => "Consuntivo eliminato in MEP",
+        _ => s.ToString()
+    };
+}
+
+<div class="border p-3 mt-4">
+    <div class="row pb-2">
+        <h2 class="text-primary">Importa da Teamwork</h2>
+        <p class="text-muted mb-0">Anteprima in sola lettura: le tue registrazioni Teamwork del periodo e il loro stato rispetto ai consuntivi MEP.</p>
+        <hr />
+    </div>
+
+    @if (TempData["TwErrore"] != null)
+    {
+        <div class="alert alert-danger">@TempData["TwErrore"]</div>
+    }
+    @if (ViewBag.Errore != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Errore</div>
+    }
+    @foreach (var avviso in Model.Avvisi)
+    {
+        <div class="alert alert-warning">@avviso</div>
+    }
+
+    <form method="get" asp-action="Registrazioni" class="row g-2 align-items-end mb-4">
+        <div class="col-auto">
+            <label class="form-label" for="dal">Dal</label>
+            <input class="form-control" type="date" id="dal" name="dal" value="@Model.Dal.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-auto">
+            <label class="form-label" for="al">Al</label>
+            <input class="form-control" type="date" id="al" name="al" value="@Model.Al.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Aggiorna</button>
+        </div>
+    </form>
+
+    @* Griglia 1: registrazioni nuove (e quelle già importate, in grigio) *@
+    <h4>Registrazioni del periodo</h4>
+    @if (Model.Nuove.Count == 0 && Model.Importate.Count == 0)
+    {
+        <p class="text-muted">Nessuna registrazione Teamwork nel periodo.</p>
+    }
+    else
+    {
+        <div class="table-responsive mb-4">
+            <table class="table table-sm table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th class="text-end">Ore</th>
+                        <th>Task</th>
+                        <th>Descrizione</th>
+                        <th>Commessa/ISL</th>
+                        <th>Commessa MEP</th>
+                        <th>Stato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.Nuove.Concat(Model.Importate).OrderBy(x => x.DataOra))
+                    {
+                        var importata = r.Stato == TwStatoRegistrazione.Importata;
+                        <tr class="@(importata ? "text-muted" : "")">
+                            <td class="text-nowrap">@r.DataOra.ToString("ddd dd/MM HH:mm")</td>
+                            <td class="text-end">@r.Durata</td>
+                            <td>@(r.TaskNome ?? (r.TaskId == null ? "—" : $"#{r.TaskId}"))</td>
+                            <td>@r.Descrizione</td>
+                            <td>@r.CommessaTeamwork</td>
+                            <td>
+                                @if (r.CommessaMep?.TstDoc != null)
+                                {
+                                    <span title="@r.CommessaMep.Descrizione">@r.CommessaMep.Codice</span>
+                                    @if (r.CommessaMep.Isl != null) { <small class="d-block">ISL @r.CommessaMep.Isl</small> }
+                                }
+                            </td>
+                            <td>
+                                <span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span>
+                                @if (importata && r.CrrgCSrl != null)
+                                {
+                                    <small class="d-block">consuntivo @r.CrrgCSrl.Value.ToString("0")</small>
+                                }
+                                @if (!importata && r.NonImportabile != null)
+                                {
+                                    <small class="d-block text-danger">Non importabile: @r.NonImportabile</small>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @* Griglia 2: registrazioni collegate da allineare *@
+    <h4>Da allineare</h4>
+    @if (Model.DaAllineare.Count == 0)
+    {
+        <p class="text-muted">Nessuna differenza tra Teamwork e i consuntivi importati.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th class="text-end">Ore</th>
+                        <th>Task</th>
+                        <th>Descrizione</th>
+                        <th>Consuntivo</th>
+                        <th>Stato</th>
+                        <th>Differenze</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.DaAllineare.OrderBy(x => x.DataOra))
+                    {
+                        <tr>
+                            <td class="text-nowrap">@r.DataOra.ToString("ddd dd/MM HH:mm")</td>
+                            <td class="text-end">@r.Durata</td>
+                            <td>@(r.TaskNome ?? (r.TaskId == null ? "—" : $"#{r.TaskId}"))</td>
+                            <td>@r.Descrizione</td>
+                            <td>@r.CrrgCSrl?.ToString("0")</td>
+                            <td><span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span></td>
+                            <td>
+                                <ul class="mb-0 ps-3">
+                                    @foreach (var d in r.Differenze) { <li>@d</li> }
+                                </ul>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
