@@ -62,6 +62,8 @@ namespace MepWeb.DTO.Response
         public TwCommessaMep? CommessaMep { get; init; }
         public TwStatoRegistrazione Stato { get; init; }
         public decimal? CrrgCSrl { get; init; }
+        /// <summary>Note del consuntivo collegato (solo righe collegate a un consuntivo esistente).</summary>
+        public string? NoteConsuntivo { get; set; }
         /// <summary>Cosa è cambiato su Teamwork rispetto all'import (solo per le registrazioni collegate).</summary>
         public List<string> Differenze { get; init; } = new();
         /// <summary>Modificata in Teamwork, ma senza effetti sul consuntivo (orario, fatturabile...): basta riallineare la fotografia.</summary>

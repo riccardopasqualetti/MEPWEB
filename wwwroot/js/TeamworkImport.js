@@ -75,6 +75,7 @@
         try {
             const url = urlGriglie + '?dal=' + encodeURIComponent(p.dal) + '&al=' + encodeURIComponent(p.al);
             const risposta = await chiama(url, { headers: { 'Accept': 'text/html' } });
+            chiudiPopoverConsuntivo();
             contenitore.innerHTML = await risposta.text();
             // L'indirizzo della pagina segue il periodo, così un aggiornamento del browser mostra lo stesso periodo
             history.replaceState(null, '', formPeriodo.action + '?dal=' + encodeURIComponent(p.dal) + '&al=' + encodeURIComponent(p.al));
@@ -186,5 +187,88 @@
         if (ev.target.id === 'tw-sel-tutte') {
             contenitore.querySelectorAll('.tw-sel').forEach(function (c) { c.checked = ev.target.checked; });
         }
+    });
+
+    // ------------------------------------------------------------------ badge "Importata": numero del consuntivo
+
+    /** Badge con il popover aperto (uno alla volta). */
+    let badgeAperto = null;
+
+    function chiudiPopoverConsuntivo() {
+        if (!badgeAperto) return;
+        const istanza = bootstrap.Popover.getInstance(badgeAperto);
+        if (istanza) istanza.dispose();
+        badgeAperto = null;
+    }
+
+    function apriPopoverConsuntivo(badge) {
+        const id = badge.dataset.twConsuntivo;
+        const popover = new bootstrap.Popover(badge, {
+            trigger: 'manual',
+            placement: 'left',
+            html: true,
+            sanitize: false, // contenuto costruito qui, con il solo numero del consuntivo (escapato)
+            title: 'Consuntivo',
+            content:
+                '<div class="d-flex align-items-center gap-2">' +
+                '<span class="fs-6 fw-semibold user-select-all">' + testo(id) + '</span>' +
+                '<button type="button" class="btn btn-sm btn-outline-secondary" data-tw-copia="' + testo(id) + '" title="Copia">' +
+                '<i class="bi bi-clipboard"></i></button>' +
+                '<a class="btn btn-sm btn-outline-primary" href="' + testo(badge.dataset.twUrlConsuntivo) + '" title="Apri il consuntivo">' +
+                '<i class="bi bi-box-arrow-up-right"></i></a>' +
+                '</div>'
+        });
+        popover.show();
+        badgeAperto = badge;
+    }
+
+    /** Copia negli appunti; fuori da HTTPS/localhost navigator.clipboard non c'è e si usa execCommand. */
+    async function copia(valore) {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(valore);
+            return;
+        }
+        const area = document.createElement('textarea');
+        area.value = valore;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        const ok = document.execCommand('copy');
+        area.remove();
+        if (!ok) throw new Error('Copia non riuscita');
+    }
+
+    // Il popover viene aggiunto al body: i clic si gestiscono a livello di documento
+    document.addEventListener('click', async function (ev) {
+        const pulsanteCopia = ev.target.closest('[data-tw-copia]');
+        if (pulsanteCopia) {
+            const icona = pulsanteCopia.querySelector('i');
+            try {
+                await copia(pulsanteCopia.dataset.twCopia);
+                icona.className = 'bi bi-check2';
+                pulsanteCopia.title = 'Copiato';
+                setTimeout(function () { icona.className = 'bi bi-clipboard'; pulsanteCopia.title = 'Copia'; }, 1500);
+            } catch (e) {
+                notifica('Impossibile copiare: seleziona il numero e copialo a mano.', false);
+            }
+            return;
+        }
+
+        const badge = ev.target.closest('.tw-badge-consuntivo');
+        if (badge) {
+            const stesso = badge === badgeAperto;
+            chiudiPopoverConsuntivo();
+            if (!stesso) apriPopoverConsuntivo(badge);
+            return;
+        }
+
+        // Clic fuori dal popover: si chiude
+        if (badgeAperto && !ev.target.closest('.popover')) chiudiPopoverConsuntivo();
+    });
+
+    document.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape') chiudiPopoverConsuntivo();
     });
 })();

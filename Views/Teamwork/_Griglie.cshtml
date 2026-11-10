@@ -66,12 +66,12 @@ else
                         </th>
                         <th>Data</th>
                         <th class="text-end">Ore</th>
-                        <th>Task / Note consuntivo</th>
+                        <th>Note consuntivo</th>
                         <th>Commessa</th>
                         <th>Operazione</th>
                         <th>Causale</th>
                         <th>Macroattività</th>
-                        <th>Stato</th>
+                        <th class="text-center">Stato</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,7 +93,6 @@ else
                                 <td class="text-nowrap">@r.DataOra.ToString("ddd dd/MM HH:mm")</td>
                                 <td class="text-end">@r.Durata</td>
                                 <td style="min-width:260px">
-                                    <div class="small text-muted">@r.TaskNome</div>
                                     <input class="form-control form-control-sm" name="Righe[@i].Note" value="@r.PropostaNote" maxlength="2000" />
                                     @if (r.AvvisoDoppione != null)
                                     {
@@ -147,7 +146,7 @@ else
                                         </select>
                                     }
                                 </td>
-                                <td><span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span></td>
+                                <td class="text-center"><span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span></td>
                             }
                             else
                             {
@@ -155,8 +154,16 @@ else
                                 <td class="text-nowrap">@r.DataOra.ToString("ddd dd/MM HH:mm")</td>
                                 <td class="text-end">@r.Durata</td>
                                 <td>
-                                    @(r.TaskNome ?? (r.TaskId == null ? "—" : $"#{r.TaskId}"))
-                                    @if (!string.IsNullOrWhiteSpace(r.Descrizione)) { <small class="d-block">@r.Descrizione</small> }
+                                    @if (importata)
+                                    {
+                                        @r.NoteConsuntivo
+                                    }
+                                    else
+                                    {
+                                        @* Non importabile: task e descrizione aiutano a capire cosa sistemare su Teamwork *@
+                                        @(r.TaskNome ?? (r.TaskId == null ? "—" : $"#{r.TaskId}"))
+                                        @if (!string.IsNullOrWhiteSpace(r.Descrizione)) { <small class="d-block">@r.Descrizione</small> }
+                                    }
                                 </td>
                                 <td class="text-nowrap">
                                     @if (comm?.TstDoc != null)
@@ -170,11 +177,20 @@ else
                                     }
                                 </td>
                                 <td colspan="3"></td>
-                                <td>
-                                    <span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span>
+                                <td class="text-center">
                                     @if (importata && r.CrrgCSrl != null)
                                     {
-                                        <small class="d-block">consuntivo @r.CrrgCSrl.Value.ToString("0")</small>
+                                        @* Clic sul badge: popover con il numero del consuntivo da copiare (TeamworkImport.js) *@
+                                        <button type="button" class="badge border-0 @BadgeStato(r.Stato) tw-badge-consuntivo"
+                                                data-tw-consuntivo="@r.CrrgCSrl.Value.ToString("0")"
+                                                data-tw-url-consuntivo="@Url.Action("Update", "Crrg", new { id = r.CrrgCSrl.Value.ToString("0") })"
+                                                aria-label="Mostra il consuntivo">
+                                            @TestoStato(r.Stato) <i class="bi bi-info-circle ms-1"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span>
                                     }
                                     @if (!importata && r.NonImportabile != null)
                                     {

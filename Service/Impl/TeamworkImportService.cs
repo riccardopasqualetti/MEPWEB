@@ -99,14 +99,15 @@ namespace MepWeb.Service.Impl
             // 5. Commesse MEP per ogni valore distinto del campo Commessa/ISL
             var commesse = await RisolviCommesseAsync(tasks.Values.Select(t => t.Commessa).Concat(collegamenti.Values.Select(c => c.TwCommessa)));
 
-            // 6. Consuntivi ancora esistenti
+            // 6. Consuntivi ancora esistenti, con le note (mostrate nelle righe già importate)
             var srlCollegati = collegamenti.Values.Select(c => c.CrrgCSrl).Distinct().ToList();
             string cDitta = CommonCostants.CDitta;
             var consuntiviEsistenti = srlCollegati.Count == 0
-                ? new HashSet<decimal>()
+                ? new Dictionary<decimal, string?>()
                 : (await _db.FlussoCrrgs.AsNoTracking()
                     .Where(c => srlCollegati.Contains(c.CrrgCSrl) && c.CrrgCDitta == cDitta)
-                    .Select(c => c.CrrgCSrl).ToListAsync()).ToHashSet();
+                    .Select(c => new { c.CrrgCSrl, c.CrrgNote }).ToListAsync())
+                    .ToDictionary(c => c.CrrgCSrl, c => (string?)c.CrrgNote);
 
             // 7. Righe
             foreach (var reg in registrazioni.Values.OrderBy(r => r.TimeLoggedUtc))
@@ -206,9 +207,9 @@ namespace MepWeb.Service.Impl
         }
 
         private void AggiungiCollegata(TwAnteprimaResponse risultato, TwRegistrazione reg, TwTask? task, FlussoCrrgTw coll,
-            Dictionary<string, TwCommessaMep> commesse, HashSet<decimal> consuntiviEsistenti)
+            Dictionary<string, TwCommessaMep> commesse, Dictionary<decimal, string?> consuntiviEsistenti)
         {
-            if (!consuntiviEsistenti.Contains(coll.CrrgCSrl))
+            if (!consuntiviEsistenti.TryGetValue(coll.CrrgCSrl, out var noteConsuntivo))
             {
                 risultato.DaAllineare.Add(CreaRiga(reg, task, commesse, TwStatoRegistrazione.ConsuntivoEliminatoInMep, coll.CrrgCSrl,
                     new List<string> { $"Il consuntivo {coll.CrrgCSrl:0} non esiste più in MEP" }));
@@ -228,6 +229,7 @@ namespace MepWeb.Service.Impl
             var confronto = Confronta(coll, reg, task);
             var stato = confronto.Tutte.Count == 0 ? TwStatoRegistrazione.Importata : TwStatoRegistrazione.ModificataInTeamwork;
             var riga = CreaRiga(reg, task, commesse, stato, coll.CrrgCSrl, confronto.Tutte, soloRiallineamento: !confronto.CambiaConsuntivo);
+            riga.NoteConsuntivo = noteConsuntivo;
             (stato == TwStatoRegistrazione.Importata ? risultato.Importate : risultato.DaAllineare).Add(riga);
         }
 
@@ -699,46 +701,91 @@ namespace MepWeb.Service.Impl
             return commesse;
         }
 
+        /// <summary>ISL di MEP (flusso_tatv) con la sua commessa.</summary>
+        private sealed record IslMep(string? Tst, string? Prf, decimal Anno, decimal Num, bool Offerta);
+
+        /// <summary>Cerca l'ISL in MEP: null se non c'è, errore se il codice è presente più volte.</summary>
+        private async Task<(IslMep? Isl, string? Errore)> CercaIslAsync(string codice)
+        {
+            var isl = await _db.FlussoTatvs.AsNoTracking()
+                .Where(x => x.TatvRifCliente == codice)
+                .Select(x => new IslMep(x.TatvTstComm, x.TatvPrfComm, x.TatvAComm, x.TatvNComm, x.TatvFlgOfferta > 0))
+                .Take(2).ToListAsync();
+            return isl.Count switch
+            {
+                0 => (null, null),
+                1 => (isl[0], null),
+                _ => (null, $"ISL {codice} presente più volte in MEP")
+            };
+        }
+
         /// <summary>
-        /// Il campo Commessa/ISL può contenere un codice ISL (flusso_tatv.tatv_rif_cliente) o il numero commessa
-        /// (flusso_tbcp.tbcp_n_comm, es. 231009). Con una ISL la commessa è quella della ISL.
+        /// Il campo Commessa/ISL del task può contenere:
+        /// - il numero commessa (flusso_tbcp.tbcp_n_comm, es. 231009);
+        /// - il codice ISL (flusso_tatv.tatv_rif_cliente): la commessa è quella della ISL;
+        /// - "numerocommessa;ISL": vale l'ISL, il numero commessa deve essere quello della ISL.
         /// </summary>
         private async Task<TwCommessaMep> RisolviCommessaAsync(string valore)
         {
             string cDitta = CommonCostants.CDitta;
-            var v = valore.Trim();
-
-            var isl = await _db.FlussoTatvs.AsNoTracking()
-                .Where(x => x.TatvRifCliente == v)
-                .Select(x => new { x.TatvTstComm, x.TatvPrfComm, x.TatvAComm, x.TatvNComm, x.TatvFlgOfferta })
-                .Take(2).ToListAsync();
-            if (isl.Count > 1)
+            var parti = valore.Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            if (parti.Length == 0)
             {
-                return new TwCommessaMep { Isl = v, Errore = $"ISL {v} presente più volte in MEP" };
+                return new TwCommessaMep { Errore = "Campo Commessa/ISL del task vuoto" };
+            }
+            if (parti.Length > 2)
+            {
+                return new TwCommessaMep { Errore = $"«{valore.Trim()}»: formato non valido, usa «commessa», «ISL» oppure «commessa;ISL»" };
             }
 
             string? tst, prf; decimal anno, num; string? islTrovata = null; bool offerta = false;
-            if (isl.Count == 1)
+            if (parti.Length == 2)
             {
-                islTrovata = v;
-                offerta = isl[0].TatvFlgOfferta > 0;
-                (tst, prf, anno, num) = (isl[0].TatvTstComm, isl[0].TatvPrfComm, isl[0].TatvAComm, isl[0].TatvNComm);
-            }
-            else if (decimal.TryParse(v, out var nComm))
-            {
-                var comm = await _db.FlussoTbcps.AsNoTracking()
-                    .Where(x => x.TbcpNComm == nComm && x.TbcpCDitta == cDitta)
-                    .Select(x => new { x.TbcpTstComm, x.TbcpPrfComm, x.TbcpAComm, x.TbcpNComm })
-                    .Take(2).ToListAsync();
-                if (comm.Count == 0)
-                    return new TwCommessaMep { Errore = $"Commessa {v} non trovata in MEP" };
-                if (comm.Count > 1)
-                    return new TwCommessaMep { Errore = $"Numero commessa {v} ambiguo in MEP" };
-                (tst, prf, anno, num) = (comm[0].TbcpTstComm, comm[0].TbcpPrfComm, comm[0].TbcpAComm, comm[0].TbcpNComm);
+                var (numero, codiceIsl) = (parti[0], parti[1]);
+                if (!decimal.TryParse(numero, out var nAtteso))
+                    return new TwCommessaMep { Errore = $"«{numero}» non è un numero commessa: il formato è «commessa;ISL»" };
+
+                var (trovata, errore) = await CercaIslAsync(codiceIsl);
+                if (errore != null)
+                    return new TwCommessaMep { Isl = codiceIsl, Errore = errore };
+                if (trovata == null)
+                    return new TwCommessaMep { Errore = $"ISL {codiceIsl} non trovata in MEP" };
+                if (trovata.Num != nAtteso)
+                    return new TwCommessaMep { Isl = codiceIsl, Errore = $"L'ISL {codiceIsl} è della commessa {trovata.Num:0}, non della {numero}" };
+
+                islTrovata = codiceIsl;
+                offerta = trovata.Offerta;
+                (tst, prf, anno, num) = (trovata.Tst, trovata.Prf, trovata.Anno, trovata.Num);
             }
             else
             {
-                return new TwCommessaMep { Errore = $"«{v}» non è né una ISL né un numero commessa di MEP" };
+                var v = parti[0];
+                var (trovata, errore) = await CercaIslAsync(v);
+                if (errore != null)
+                    return new TwCommessaMep { Isl = v, Errore = errore };
+
+                if (trovata != null)
+                {
+                    islTrovata = v;
+                    offerta = trovata.Offerta;
+                    (tst, prf, anno, num) = (trovata.Tst, trovata.Prf, trovata.Anno, trovata.Num);
+                }
+                else if (decimal.TryParse(v, out var nComm))
+                {
+                    var comm = await _db.FlussoTbcps.AsNoTracking()
+                        .Where(x => x.TbcpNComm == nComm && x.TbcpCDitta == cDitta)
+                        .Select(x => new { x.TbcpTstComm, x.TbcpPrfComm, x.TbcpAComm, x.TbcpNComm })
+                        .Take(2).ToListAsync();
+                    if (comm.Count == 0)
+                        return new TwCommessaMep { Errore = $"Commessa {v} non trovata in MEP" };
+                    if (comm.Count > 1)
+                        return new TwCommessaMep { Errore = $"Numero commessa {v} ambiguo in MEP" };
+                    (tst, prf, anno, num) = (comm[0].TbcpTstComm, comm[0].TbcpPrfComm, comm[0].TbcpAComm, comm[0].TbcpNComm);
+                }
+                else
+                {
+                    return new TwCommessaMep { Errore = $"«{v}» non è né una ISL né un numero commessa di MEP" };
+                }
             }
 
             var desc = await _db.FlussoTbcps.AsNoTracking()
