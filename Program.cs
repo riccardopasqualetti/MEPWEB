@@ -60,7 +60,10 @@ namespace WebApplication2
 
 
             builder.Services.AddDbContext<SataconsultingContext>(options =>
-                 options.UseSqlServer(builder.Configuration.GetConnectionString("Main")));
+                 options.UseSqlServer(builder.Configuration.GetConnectionString("Main"),
+                     // Il DB è a livello di compatibilità 100 (SQL Server 2008): EF Core non deve generare
+                     // SQL con funzioni più recenti (OPENJSON, STRING_AGG, ...) non disponibili a quel livello
+                     sql => sql.UseCompatibilityLevel(100)));
             builder.Services.AddRazorPages();
             builder.Services.AddTransient<ICrrgService, CrrgService>();
             builder.Services.AddTransient<ICrrgValidator, CrrgValidator>();
