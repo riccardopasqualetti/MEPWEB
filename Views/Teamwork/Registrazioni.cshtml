@@ -13,7 +13,9 @@
     #tw-area.tw-occupato #tw-overlay { display: flex; }
 </style>
 
-<div class="border p-3 mt-4">
+@* main-mep-container scrolling-container: il body non scorre (site.css), scorre il contenitore come nelle altre pagine *@
+<div class="main-mep-container scrolling-container">
+<div class="p-3">
     <div class="row pb-2">
         <h2 class="text-primary">Importa da Teamwork</h2>
         <p class="text-muted mb-0">Le tue registrazioni Teamwork del periodo: completa operazione, causale e macroattività, seleziona le righe e importale come consuntivi.</p>
@@ -48,6 +50,7 @@
             <partial name="_Griglie" model="Model" />
         </div>
     </div>
+</div>
 </div>
 
 @* Esito dell'import *@

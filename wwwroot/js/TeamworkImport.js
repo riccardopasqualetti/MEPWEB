@@ -189,7 +189,8 @@
         }
     });
 
-    // ------------------------------------------------------------------ badge "Importata": numero del consuntivo
+    // ------------------------------------------------------------------ badge con popover
+    // "Importata": numero del consuntivo con Copia e Apri; "Non importabile": il motivo.
 
     /** Badge con il popover aperto (uno alla volta). */
     let badgeAperto = null;
@@ -201,22 +202,34 @@
         badgeAperto = null;
     }
 
-    function apriPopoverConsuntivo(badge) {
+    /** Titolo e HTML del popover; i valori arrivano dagli attributi data-* e sono sempre escapati. */
+    function contenutoPopover(badge) {
         const id = badge.dataset.twConsuntivo;
+        if (id) {
+            return {
+                titolo: 'Consuntivo',
+                html:
+                    '<div class="d-flex align-items-center gap-2">' +
+                    '<span class="fs-6 fw-semibold user-select-all">' + testo(id) + '</span>' +
+                    '<button type="button" class="btn btn-sm btn-outline-secondary" data-tw-copia="' + testo(id) + '" title="Copia">' +
+                    '<i class="bi bi-clipboard"></i></button>' +
+                    '<a class="btn btn-sm btn-outline-primary" href="' + testo(badge.dataset.twUrlConsuntivo) + '" title="Apri il consuntivo">' +
+                    '<i class="bi bi-box-arrow-up-right"></i></a>' +
+                    '</div>'
+            };
+        }
+        return { titolo: badge.dataset.twTitolo || '', html: '<div>' + testo(badge.dataset.twTesto) + '</div>' };
+    }
+
+    function apriPopoverConsuntivo(badge) {
+        const c = contenutoPopover(badge);
         const popover = new bootstrap.Popover(badge, {
             trigger: 'manual',
             placement: 'left',
             html: true,
-            sanitize: false, // contenuto costruito qui, con il solo numero del consuntivo (escapato)
-            title: 'Consuntivo',
-            content:
-                '<div class="d-flex align-items-center gap-2">' +
-                '<span class="fs-6 fw-semibold user-select-all">' + testo(id) + '</span>' +
-                '<button type="button" class="btn btn-sm btn-outline-secondary" data-tw-copia="' + testo(id) + '" title="Copia">' +
-                '<i class="bi bi-clipboard"></i></button>' +
-                '<a class="btn btn-sm btn-outline-primary" href="' + testo(badge.dataset.twUrlConsuntivo) + '" title="Apri il consuntivo">' +
-                '<i class="bi bi-box-arrow-up-right"></i></a>' +
-                '</div>'
+            sanitize: false, // contenuto costruito qui, con i soli valori escapati
+            title: c.titolo,
+            content: c.html
         });
         popover.show();
         badgeAperto = badge;
@@ -256,7 +269,7 @@
             return;
         }
 
-        const badge = ev.target.closest('.tw-badge-consuntivo');
+        const badge = ev.target.closest('.tw-badge-popover');
         if (badge) {
             const stesso = badge === badgeAperto;
             chiudiPopoverConsuntivo();

@@ -4,7 +4,8 @@
     var configurato = (bool)(ViewBag.Configurato ?? false);
 }
 
-<div class="border p-3 mt-4">
+<div class="main-mep-container scrolling-container">
+<div class="p-3">
     <div class="row pb-2">
         <h2 class="text-primary">Collegamento Teamwork</h2>
         <hr />
@@ -55,6 +56,5 @@
             </form>
         </div>
     }
-
-    <p class="text-muted small mt-4 mb-0">Indirizzo di ritorno da registrare nell'app Teamwork: <code>@ViewBag.RedirectUri</code></p>
+</div>
 </div>

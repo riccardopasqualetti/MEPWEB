@@ -64,8 +64,10 @@ namespace MepWeb.Service.Impl
             {
                 var url = $"{conn.ApiEndpoint}projects/api/v3/tasks.json?ids={string.Join(",", blocco)}" +
                           $"&includeCustomFields=true&includeCustomFieldIds={campo}&include=customfieldTasks" +
-                          // Senza showDeleted: i task nel cestino non vengono restituiti e le loro registrazioni risultano cancellate
-                          $"&includeCompletedTasks=true&includeArchivedProjects=true&pageSize={IdPerChiamata}";
+                          // Senza showDeleted: i task nel cestino non vengono restituiti e le loro registrazioni risultano cancellate.
+                          // showCompletedLists: senza, i task delle liste completate (es. sprint chiusi) non vengono restituiti
+                          // anche con includeCompletedTasks, e le registrazioni risulterebbero su task cancellati
+                          $"&includeCompletedTasks=true&showCompletedLists=true&includeArchivedProjects=true&pageSize={IdPerChiamata}";
                 var risposta = await GetJsonAsync(conn, url);
                 if (!risposta.Succeeded || risposta.Body == null)
                 {

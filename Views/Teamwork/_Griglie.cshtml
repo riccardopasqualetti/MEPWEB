@@ -181,20 +181,25 @@ else
                                     @if (importata && r.CrrgCSrl != null)
                                     {
                                         @* Clic sul badge: popover con il numero del consuntivo da copiare (TeamworkImport.js) *@
-                                        <button type="button" class="badge border-0 @BadgeStato(r.Stato) tw-badge-consuntivo"
+                                        <button type="button" class="badge border-0 @BadgeStato(r.Stato) tw-badge-popover"
                                                 data-tw-consuntivo="@r.CrrgCSrl.Value.ToString("0")"
                                                 data-tw-url-consuntivo="@Url.Action("Update", "Crrg", new { id = r.CrrgCSrl.Value.ToString("0") })"
                                                 aria-label="Mostra il consuntivo">
                                             @TestoStato(r.Stato) <i class="bi bi-info-circle ms-1"></i>
                                         </button>
                                     }
+                                    else if (r.NonImportabile != null)
+                                    {
+                                        @* Il motivo non sta nella cella: clic sul badge per leggerlo nel popover *@
+                                        <button type="button" class="badge border-0 text-bg-danger tw-badge-popover"
+                                                data-tw-titolo="Non importabile" data-tw-testo="@r.NonImportabile"
+                                                aria-label="Non importabile: @r.NonImportabile">
+                                            Non importabile <i class="bi bi-info-circle ms-1"></i>
+                                        </button>
+                                    }
                                     else
                                     {
                                         <span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span>
-                                    }
-                                    @if (!importata && r.NonImportabile != null)
-                                    {
-                                        <small class="d-block text-danger">Non importabile: @r.NonImportabile</small>
                                     }
                                 </td>
                             }

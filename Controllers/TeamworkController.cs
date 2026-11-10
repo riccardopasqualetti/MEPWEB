@@ -118,7 +118,6 @@ namespace MepWeb.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.Configurato = _auth.IsConfigurato;
-            ViewBag.RedirectUri = GetRedirectUri();
             ViewBag.EmailMepweb = _userScope.SV_USR_EMAIL;
 
             var usr1CSrl = await _auth.GetUsr1CSrlCorrenteAsync();
