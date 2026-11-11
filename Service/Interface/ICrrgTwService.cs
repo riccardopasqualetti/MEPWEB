@@ -16,6 +16,9 @@ namespace MepWeb.Service.Interface
 
         Task<FlussoCrrgTw?> GetByCrrgCSrlAsync(decimal crrgCSrl);
 
+        /// <summary>Task Teamwork dei consuntivi collegati, per consuntivo (i consuntivi non collegati non compaiono).</summary>
+        Task<Dictionary<decimal, long>> GetTaskPerConsuntiviAsync(IEnumerable<decimal> crrgCSrl);
+
         /// <summary>True se il consuntivo è collegato a una registrazione Teamwork (e quindi non modificabile da MEPWEB).</summary>
         Task<bool> IsCollegatoAsync(decimal crrgCSrl);
 

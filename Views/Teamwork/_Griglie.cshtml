@@ -1,5 +1,6 @@
 @using MepWeb.DTO.Response
 @model TwAnteprimaResponse
+@inject Microsoft.Extensions.Options.IOptions<MepWeb.Service.TeamworkOptions> _twOptions
 @*
     [231009] Griglie della pagina "Importa da Teamwork". Partial ricaricata via fetch (TeamworkImport.js) dopo il
     cambio periodo, l'import e le azioni di allineamento, senza ricaricare la pagina.
@@ -146,7 +147,16 @@ else
                                         </select>
                                     }
                                 </td>
-                                <td class="text-center"><span class="badge @BadgeStato(r.Stato)">@TestoStato(r.Stato)</span></td>
+                                <td class="text-center">
+                                    @* Clic sul badge: task della registrazione, con il link per aprirlo su Teamwork (TeamworkImport.js) *@
+                                    <button type="button" class="badge border-0 @BadgeStato(r.Stato) tw-badge-popover"
+                                            data-tw-titolo="Nuova registrazione"
+                                            data-tw-testo="@($"Registrazione Teamwork {r.TimelogId}, task: {r.TaskNome ?? (r.TaskId == null ? "—" : $"#{r.TaskId}")}")"
+                                            data-tw-url-task="@(r.TaskId is long idTaskNuova ? _twOptions.Value.UrlTask(idTaskNuova) : null)"
+                                            aria-label="@TestoStato(r.Stato): dettagli della registrazione">
+                                        @TestoStato(r.Stato) <i class="bi bi-info-circle ms-1"></i>
+                                    </button>
+                                </td>
                             }
                             else
                             {
@@ -184,6 +194,7 @@ else
                                         <button type="button" class="badge border-0 @BadgeStato(r.Stato) tw-badge-popover"
                                                 data-tw-consuntivo="@r.CrrgCSrl.Value.ToString("0")"
                                                 data-tw-url-consuntivo="@Url.Action("Update", "Crrg", new { id = r.CrrgCSrl.Value.ToString("0") })"
+                                                data-tw-url-task="@(r.TaskId is long idTask ? _twOptions.Value.UrlTask(idTask) : null)"
                                                 aria-label="Mostra il consuntivo">
                                             @TestoStato(r.Stato) <i class="bi bi-info-circle ms-1"></i>
                                         </button>
@@ -193,6 +204,7 @@ else
                                         @* Il motivo non sta nella cella: clic sul badge per leggerlo nel popover *@
                                         <button type="button" class="badge border-0 text-bg-danger tw-badge-popover"
                                                 data-tw-titolo="Non importabile" data-tw-testo="@r.NonImportabile"
+                                                data-tw-url-task="@(r.TaskId is long idTaskNonImp ? _twOptions.Value.UrlTask(idTaskNonImp) : null)"
                                                 aria-label="Non importabile: @r.NonImportabile">
                                             Non importabile <i class="bi bi-info-circle ms-1"></i>
                                         </button>

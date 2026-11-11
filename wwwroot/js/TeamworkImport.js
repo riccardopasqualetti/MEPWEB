@@ -214,11 +214,23 @@
                     '<button type="button" class="btn btn-sm btn-outline-secondary" data-tw-copia="' + testo(id) + '" title="Copia">' +
                     '<i class="bi bi-clipboard"></i></button>' +
                     '<a class="btn btn-sm btn-outline-primary" href="' + testo(badge.dataset.twUrlConsuntivo) + '" title="Apri il consuntivo">' +
-                    '<i class="bi bi-box-arrow-up-right"></i></a>' +
+                    '<i class="bi bi-pencil-fill"></i></a>' +
+                    (badge.dataset.twUrlTask
+                        ? '<a class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener" href="' + testo(badge.dataset.twUrlTask) + '" title="Apri il task su Teamwork">' +
+                          '<i class="bi bi-box-arrow-up-right"></i></a>'
+                        : '') +
                     '</div>'
             };
         }
-        return { titolo: badge.dataset.twTitolo || '', html: '<div>' + testo(badge.dataset.twTesto) + '</div>' };
+        // "Nuova" e "Non importabile": testo e, se c'è il task, il pulsante per aprirlo su Teamwork
+        return {
+            titolo: badge.dataset.twTitolo || '',
+            html: '<div>' + testo(badge.dataset.twTesto) + '</div>' +
+                (badge.dataset.twUrlTask
+                    ? '<div class="mt-2"><a class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener" href="' + testo(badge.dataset.twUrlTask) + '">' +
+                      '<i class="bi bi-box-arrow-up-right me-1"></i>Apri il task su Teamwork</a></div>'
+                    : '')
+        };
     }
 
     function apriPopoverConsuntivo(badge) {

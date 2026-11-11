@@ -117,6 +117,10 @@ namespace Mep01Web.DTO.Request
         [BindNever]
         public long? TwTimelogId { get; set; }
 
+        /// <summary>[231009] Task Teamwork della registrazione collegata, per il link alla pagina del task.</summary>
+        [BindNever]
+        public long? TwTaskId { get; set; }
+
 
         //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         //{

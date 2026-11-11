@@ -86,6 +86,8 @@ namespace Mep01Web.Controllers
             IEnumerable<FlussoCrrg> objCrrgList = pluto.Body;
 
             obj.CrrgList = objCrrgList;
+            // [231009] Consuntivi importati da Teamwork: icona con il link al task nel report
+            ViewBag.TaskTeamwork = await _crrgTwService.GetTaskPerConsuntiviAsync((objCrrgList ?? Enumerable.Empty<FlussoCrrg>()).Select(c => c.CrrgCSrl));
             return View(obj);
         }
 
@@ -119,6 +121,8 @@ namespace Mep01Web.Controllers
 			IEnumerable<FlussoCrrg> objCrrgList = pluto.Body;
 
             obj.CrrgList = objCrrgList;
+            // [231009] Consuntivi importati da Teamwork: icona con il link al task nel report
+            ViewBag.TaskTeamwork = await _crrgTwService.GetTaskPerConsuntiviAsync((objCrrgList ?? Enumerable.Empty<FlussoCrrg>()).Select(c => c.CrrgCSrl));
             return View(obj);
         }
 
@@ -293,7 +297,9 @@ namespace Mep01Web.Controllers
         {
             if (obj.CrrgCSrl > 0)
             {
-                obj.TwTimelogId = (await _crrgTwService.GetByCrrgCSrlAsync(obj.CrrgCSrl))?.TwTimelogId;
+                var collegamento = await _crrgTwService.GetByCrrgCSrlAsync(obj.CrrgCSrl);
+                obj.TwTimelogId = collegamento?.TwTimelogId;
+                obj.TwTaskId = collegamento?.TwTaskId;
             }
         }
 

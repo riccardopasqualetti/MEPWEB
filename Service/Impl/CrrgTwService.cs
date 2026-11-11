@@ -41,6 +41,30 @@ namespace MepWeb.Service.Impl
                 .SingleOrDefaultAsync(x => x.CrrgCSrl == crrgCSrl);
         }
 
+        public async Task<Dictionary<decimal, long>> GetTaskPerConsuntiviAsync(IEnumerable<decimal> crrgCSrl)
+        {
+            var srl = crrgCSrl.Distinct().ToList();
+            if (srl.Count == 0)
+            {
+                return new Dictionary<decimal, long>();
+            }
+
+            // A blocchi: con il livello di compatibilità 100 ogni valore diventa un parametro di IN (...)
+            var risultato = new Dictionary<decimal, long>();
+            foreach (var blocco in srl.Chunk(500))
+            {
+                var righe = await _db.FlussoCrrgTws.AsNoTracking()
+                    .Where(x => blocco.Contains(x.CrrgCSrl))
+                    .Select(x => new { x.CrrgCSrl, x.TwTaskId })
+                    .ToListAsync();
+                foreach (var r in righe)
+                {
+                    risultato[r.CrrgCSrl] = r.TwTaskId;
+                }
+            }
+            return risultato;
+        }
+
         public async Task<bool> IsCollegatoAsync(decimal crrgCSrl)
         {
             return await _db.FlussoCrrgTws.AnyAsync(x => x.CrrgCSrl == crrgCSrl);

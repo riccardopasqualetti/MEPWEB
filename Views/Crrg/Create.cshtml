@@ -3,6 +3,11 @@
 @model CrrgCreateRequest
 @inject UserScope _userScope;
 @inject IHttpContextAccessor _contextAccessor
+@inject Microsoft.Extensions.Options.IOptions<TeamworkOptions> _twOptions
+@{
+	// [231009] Consuntivo importato da Teamwork: etichetta "Da Teamwork" accanto al titolo e lucchetti sui campi bloccati
+	var daTeamwork = Model.IsUpdate && Model.TwTimelogId != null;
+}
 
 <div class="main-mep-container scrolling-container crrgCreateContainer">
 	<div class="container">
@@ -14,6 +19,13 @@
 						<h2 class="text-primary d-inline-block">
 							Inserimento consuntivo @(Model.CrrgCSrl > 0 && !Model.IsUpdate ? " - duplicato da: " + Decimal.ToInt32(Model.CrrgCSrl) : "") @(Model.CrrgCSrl > 0 && Model.IsUpdate ? " - Modifica: " + Decimal.ToInt32(Model.CrrgCSrl) : "")
 						</h2>
+						@if (daTeamwork)
+						{
+							<button type="button" class="badge rounded-pill bg-light text-dark border-0 ms-2 align-text-bottom tw-popover" id="tw-chip"
+									aria-label="Consuntivo importato da Teamwork: dettagli e collegamenti">
+								<img src="~/img/teamwork-symbol.svg" alt="" height="14" class="me-1" />Da Teamwork <i class="bi bi-info-circle ms-1"></i>
+							</button>
+						}
 					</div>
 					<div class="col-4 text-center">
 						@if (Model.Succeeded == "S")
@@ -27,46 +39,6 @@
 				</div>
 				@*<div asp-validation-summary="All"></div>*@ @*Riporta qui gli stessi errori che mostra sotto i componenti che hanno asp-validation-for*@
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div> @*Errori non legati a un campo, es. consuntivo collegato a Teamwork*@
-				@if (Model.IsUpdate && Model.TwTimelogId != null)
-				{
-					@* [231009] Consuntivo importato da Teamwork: i campi che arrivano da Teamwork sono in sola lettura (script in fondo) *@
-					<div class="alert alert-info d-flex align-items-start gap-3" id="tw-collegato">
-						<div class="flex-grow-1">
-							<i class="bi bi-lock-fill"></i>
-							Consuntivo importato da Teamwork (registrazione @Model.TwTimelogId).
-							<strong>Risorsa, data, tempo e commessa/ISL</strong> si correggono su Teamwork e arrivano con l'allineamento dalla pagina
-							<a class="alert-link" asp-controller="Teamwork" asp-action="Registrazioni">Importa da Teamwork</a>.
-							Qui puoi modificare operazione, causale, macroattività, applicativo, modulo e note.
-						</div>
-						<button type="button" class="btn btn-sm btn-outline-light text-nowrap" id="tw-avviso-nascondi">Non mostrare più</button>
-					</div>
-					@* Versione breve, mostrata al posto dell'avviso quando l'utente ha scelto "Non mostrare più" *@
-					<div class="small mb-2 d-none" id="tw-collegato-breve">
-						<i class="bi bi-lock-fill"></i> Importato da Teamwork (registrazione @Model.TwTimelogId):
-						risorsa, data, tempo e commessa/ISL non modificabili.
-						<a href="#" id="tw-avviso-mostra">Mostra dettagli</a>
-					</div>
-					<script>
-						// [231009] Scelta "Non mostrare più" salvata nel browser (localStorage); eseguito subito per evitare lo sfarfallio
-						(function () {
-							var chiave = 'mepweb.teamwork.avvisoConsuntivoCollegato.nascosto';
-							var avviso = document.getElementById('tw-collegato');
-							var breve = document.getElementById('tw-collegato-breve');
-							function leggi() { try { return localStorage.getItem(chiave) === '1'; } catch (e) { return false; } }
-							function scrivi(nascosto) {
-								try { if (nascosto) { localStorage.setItem(chiave, '1'); } else { localStorage.removeItem(chiave); } } catch (e) { }
-							}
-							function applica(nascosto) {
-								avviso.classList.toggle('d-none', nascosto);
-								avviso.classList.toggle('d-flex', !nascosto);
-								breve.classList.toggle('d-none', !nascosto);
-							}
-							applica(leggi());
-							document.getElementById('tw-avviso-nascondi').addEventListener('click', function () { scrivi(true); applica(true); });
-							document.getElementById('tw-avviso-mostra').addEventListener('click', function (ev) { ev.preventDefault(); scrivi(false); applica(false); });
-						})();
-					</script>
-				}
 				@* <p>Utente : @_userScope.SV_USR_SIGLA</p>  *@
 
 
@@ -342,28 +314,120 @@
 	<script src="~/js/generic.js"></script>
 	<script src="~/js/Crrg.js"></script>
 	<script src="~/js/isl.js"></script>
-	<style>
-		/* [231009] Campi di un consuntivo importato da Teamwork: non modificabili */
-		.tw-bloccato { pointer-events: none; opacity: .65; }
-	</style>
-	<script>
-		// [231009] Consuntivo importato da Teamwork: risorsa, data, tempo e commessa/ISL in sola lettura.
-		// readonly (e non disabled) perché i valori devono comunque arrivare al server con il salvataggio.
-		(function () {
-			if (!document.getElementById('tw-collegato')) return;
-			var campi = ['input-risorsa', 'CrrgTmRunIncrHMS', 'CrrgRifCliente', 'CliDropdownInput', 'ComDropdownInput']
-				.map(function (id) { return document.getElementById(id); })
-				.concat([document.querySelector('input[name="CrrgDtt"]')]);
-			campi.forEach(function (el) {
-				if (!el) return;
-				el.readOnly = true;
-				el.tabIndex = -1;
-				el.classList.add('tw-bloccato');
-			});
-			document.querySelectorAll('input[name="modalita"]').forEach(function (r) { r.disabled = true; });
-			document.querySelectorAll('button[onclick^="setupSearchIsl"]').forEach(function (b) { b.disabled = true; });
-		})();
-	</script>
+	@if (daTeamwork)
+	{
+		var giorno = Model.CrrgDtt.ToString("yyyy-MM-dd");
+		var datiTeamwork = new
+		{
+			timelogId = Model.TwTimelogId,
+			taskId = Model.TwTaskId,
+			urlTask = Model.TwTaskId is long taskId ? _twOptions.Value.UrlTask(taskId) : null,
+			urlImporta = Url.Action("Registrazioni", "Teamwork", new { dal = giorno, al = giorno })
+		};
+		<style>
+			/* [231009] Campi di un consuntivo importato da Teamwork: non modificabili. Sono readonly (il valore va inviato),
+			   ma con l'aspetto dei campi disabilitati del tema (SataTheme.css, .form-control:disabled): Bootstrap renderebbe
+			   i readonly più chiari dei campi normali */
+			.form-control.tw-bloccato { pointer-events: none; color: #fdf6e3; background-color: #839496; opacity: 1; }
+			.tw-lucchetto { color: inherit; opacity: .75; line-height: 1; vertical-align: baseline; }
+			.tw-lucchetto:hover, .tw-lucchetto:focus { opacity: 1; }
+		</style>
+		@* System.Text.Json escapa <, > e & : sicuro dentro <script> *@
+		<script>window.twCollegamento = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(datiTeamwork));</script>
+		<script>
+			// [231009] Consuntivo importato da Teamwork: risorsa, data, tempo e commessa/ISL in sola lettura.
+			// readonly (e non disabled) perché i valori devono comunque arrivare al server con il salvataggio.
+			// Accanto all'etichetta di ogni campo bloccato un lucchetto: al clic, popover con il motivo e i collegamenti.
+			(function () {
+				var tw = window.twCollegamento;
+				if (!tw) return;
+
+				function esc(s) {
+					var span = document.createElement('span');
+					span.textContent = s == null ? '' : String(s);
+					return span.innerHTML;
+				}
+
+				// Unico pulsante: il task su Teamwork; la pagina Importa da Teamwork è un link nel testo
+				var collegamenti = tw.urlTask
+					? '<div class="mt-2"><a class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener" href="' + esc(tw.urlTask) + '">' +
+					  '<i class="bi bi-box-arrow-up-right me-1"></i>Apri il task su Teamwork</a></div>'
+					: '';
+				var linkImporta = '<a href="' + esc(tw.urlImporta) + '">Importa da Teamwork</a>';
+				var comeCorreggere = ' Per correggere il valore modifica la registrazione su Teamwork e poi allinea dalla pagina ' + linkImporta + '.';
+
+				var campi = [
+					{ el: document.getElementById('input-risorsa'), testo: 'La risorsa è chi ha registrato il tempo su Teamwork.' },
+					{ el: document.querySelector('input[name="CrrgDtt"]'), testo: 'La data arriva dalla registrazione su Teamwork.' },
+					{ el: document.getElementById('CrrgTmRunIncrHMS'), testo: 'Il tempo arriva dalla registrazione su Teamwork.' },
+					{ el: document.getElementById('CrrgRifCliente'), testo: "L'ISL arriva dal campo Commessa/ISL del task su Teamwork." },
+					{ el: document.getElementById('CliDropdownInput'), testo: 'Il cliente è quello della commessa indicata nel task su Teamwork.' },
+					{ el: document.getElementById('ComDropdownInput'), testo: 'La commessa arriva dal campo Commessa/ISL del task su Teamwork.' }
+				];
+				// Etichetta del campo: il primo .form-group antenato che ne contiene una (cliente e commessa
+				// stanno in un .form-group interno, senza etichetta, dentro quello che la contiene)
+				function etichettaDi(el) {
+					for (var g = el.closest('.form-group'); g; g = g.parentElement ? g.parentElement.closest('.form-group') : null) {
+						var l = g.querySelector('label');
+						if (l) return l;
+					}
+					return null;
+				}
+				campi.forEach(function (c) {
+					if (!c.el) return;
+					c.el.readOnly = true;
+					c.el.tabIndex = -1;
+					c.el.classList.add('tw-bloccato');
+					var etichetta = etichettaDi(c.el);
+					if (!etichetta || etichetta.querySelector('.tw-lucchetto')) return;
+					var lucchetto = document.createElement('button');
+					lucchetto.type = 'button';
+					lucchetto.className = 'btn btn-link p-0 ms-1 tw-lucchetto tw-popover';
+					lucchetto.setAttribute('aria-label', 'Campo non modificabile: perché');
+					lucchetto.dataset.twTesto = c.testo;
+					lucchetto.innerHTML = '<i class="bi bi-lock-fill"></i>';
+					etichetta.appendChild(lucchetto);
+				});
+				document.querySelectorAll('input[name="modalita"]').forEach(function (r) { r.disabled = true; });
+				document.querySelectorAll('button[onclick^="setupSearchIsl"]').forEach(function (b) { b.disabled = true; });
+
+				// ------------------------------------------------ popover (uno alla volta, chiusura con clic fuori o Esc)
+				var aperto = null;
+				function chiudi() {
+					if (!aperto) return;
+					var p = bootstrap.Popover.getInstance(aperto);
+					if (p) p.dispose();
+					aperto = null;
+				}
+				function apri(el) {
+					var chip = el.id === 'tw-chip';
+					var titolo = chip ? 'Consuntivo importato da Teamwork' : 'Non modificabile';
+					var corpo = chip
+						? 'Registrazione Teamwork <strong>' + esc(tw.timelogId) + '</strong>' + (tw.taskId ? ' del task <strong>#' + esc(tw.taskId) + '</strong>' : '') + '.<br>' +
+						  'Qui modifichi operazione, causale, macroattività, applicativo, modulo e note. ' +
+						  'Risorsa, data, tempo e commessa/ISL si correggono su Teamwork e arrivano con l\'allineamento dalla pagina ' + linkImporta + '.'
+						: esc(el.dataset.twTesto) + comeCorreggere;
+					new bootstrap.Popover(el, {
+						trigger: 'manual', placement: chip ? 'bottom' : 'top', html: true,
+						sanitize: false, // contenuto costruito qui, con i soli valori escapati
+						title: titolo, content: '<div>' + corpo + '</div>' + collegamenti
+					}).show();
+					aperto = el;
+				}
+				document.addEventListener('click', function (ev) {
+					var el = ev.target.closest('.tw-popover');
+					if (el) {
+						var stesso = el === aperto;
+						chiudi();
+						if (!stesso) apri(el);
+						return;
+					}
+					if (aperto && !ev.target.closest('.popover')) chiudi();
+				});
+				document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') chiudi(); });
+			})();
+		</script>
+	}
 
 }
 

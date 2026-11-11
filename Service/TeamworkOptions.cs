@@ -19,5 +19,12 @@ namespace MepWeb.Service
 
         /// <summary>Id del campo personalizzato "Commessa/ISL" dei task Teamwork.</summary>
         public long CampoCommessaTaskId { get; set; } = 2956;
+
+        /// <summary>
+        /// Pagina del task su Teamwork, sul sito di <see cref="LoginUrl"/> (es. https://sataconsulting.teamwork.com/app/tasks/123).
+        /// Null se LoginUrl non è configurato.
+        /// </summary>
+        public string? UrlTask(long taskId) =>
+            Uri.TryCreate(LoginUrl, UriKind.Absolute, out var sito) ? $"{sito.GetLeftPart(UriPartial.Authority)}/app/tasks/{taskId}" : null;
     }
 }
